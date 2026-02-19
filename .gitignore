@@ -1,0 +1,61 @@
+# ======================================================================
+# UNITY .GITIGNORE ESTANDAR
+# ======================================================================
+
+# Carpetas generadas automaticamente por Unity (lo mas importante)
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# Capturas de memoria y grabaciones (pesan mucho)
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Archivos de cache y configuracion de IDEs
+.vs/
+.idea/
+.gradle/
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Archivos meta generados por Unity que no deben subirse
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Archivos de reportes de errores
+sysinfo.txt
+
+# Compilaciones del juego (para no subir el juego exportado al codigo fuente)
+*.apk
+*.aab
+*.unitypackage
+*.app
+*.exe
+
+# Archivos generados por el Sistema Operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
