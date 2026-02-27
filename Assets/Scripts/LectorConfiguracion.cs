@@ -47,7 +47,7 @@ public class LectorConfiguracion : MonoBehaviour
         {
             Debug.LogError("No se encontró el archivo de configuración. Usando valores por defecto.");
             Datos = new DatosJuego {
-                velocidadJuego = 3f,
+                velocidadJuego = 4f,
                 frecuenciaObstaculos = 2f,
                 gravedadJugador = 1.5f
             };

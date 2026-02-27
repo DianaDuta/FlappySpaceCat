@@ -5,7 +5,7 @@ using UnityEngine;
 * Los obstáculos se mueven hacia la izquierda a una velocidad que se puede configurar desde un archivo JSON.
 * Cuando un obstáculo se pasa del límite izquierdo de la pantalla, se destruye automáticamente para liberar memoria.
 */
-public class MovimientoObstaculo : MonoBehaviour
+public class MovimientoObjetos : MonoBehaviour
 {
     //--------------------------------
     // CAMPOS
@@ -32,7 +32,7 @@ public class MovimientoObstaculo : MonoBehaviour
         }
 
         // MUEVE HACIA LA IZQUIERDA: Multiplica por Time.deltaTime para que el movimiento sea suave y constante
-        transform.Translate(Vector3.left * velocidad * Time.deltaTime);
+        transform.Translate(Vector3.left * velocidad * Time.deltaTime, Space.World);
 
         // AUTODESTRUCCIÓN: Si el objeto se pasa del límite izquierdo, se borra de la memoria
         if (transform.position.x < limiteIzquierda)
