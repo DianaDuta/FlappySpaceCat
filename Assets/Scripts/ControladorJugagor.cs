@@ -66,13 +66,21 @@ public class ControladorJugagor : MonoBehaviour
     }
 
     /*
-    * Método que se ejecuta automáticamente cuando el jugador colisiona con otro objeto.
-    * Se detiene la ejecución del juego y se muestra un mensaje de "Game Over".
+    * Método OnCollisionEnter2D:
+    * @param Collision2D colision: Objeto contra el que chocamos físicamente.
+    * Se ejecuta automáticamente cuando el jugador colisiona con otro objeto.
+    * Se detienen el tiempo y las físicas del juego y se muestra la pantalla de "Game Over".
     */
     void OnCollisionEnter2D(Collision2D colision)
     {
-        estaVivo = false; // Ya no puede saltar
-        Debug.Log("¡Game Over!"); 
-        Time.timeScale = 0; // Detiene el tiempo del juego
+        if (colision.gameObject.CompareTag("Obstaculo"))
+        {
+            estaVivo = false;
+            //Abre la pantalla de Game Over
+            if (GameManager.Instancia != null)
+            {
+                GameManager.Instancia.ActivarGameOver();
+            }
+        }        
     }
 }
