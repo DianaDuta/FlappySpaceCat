@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3732069373012739107}
   - component: {fileID: 5745708663697084652}
   - component: {fileID: 1074377367915610724}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Username_Input_Extra_Large
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 3837381840739151798}
   - component: {fileID: 2564266437448024056}
   - component: {fileID: 2018896023598539797}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8619107029063107544}
   - component: {fileID: 1653683309826142224}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,7 +378,7 @@ GameObject:
   - component: {fileID: 8221206418482081653}
   - component: {fileID: 7277292591888448514}
   - component: {fileID: 8427349847246294373}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Username_Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -454,7 +454,7 @@ GameObject:
   - component: {fileID: 4029035656183737957}
   - component: {fileID: 6853770261195878135}
   - component: {fileID: 4156313511774823816}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}

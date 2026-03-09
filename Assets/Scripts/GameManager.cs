@@ -18,12 +18,23 @@ public class GameManager : MonoBehaviour
     //de momento 0, porteriormente se introducirá de un JSON
     public int contadorGemas = 0;
 
+    [Header("Ajustes de Dificultad (Velocidad)")]
+    public float velocidadActual;
+    public float velocidadInicial = 4f; // La velocidad a la que empieza el juego
+    public float cantidadAumento = 0.5f; // Cuánto sube la velocidad cada vez
+    public float tiempoParaAumentar = 10f; // Cada cuántos segundos sube la dificultad
+    
+    private float temporizador = 0f; // El cronómetro interno oculto para los cambios de velocidad
+
     [Header("Interfaz Gráfica (UI)")]
     [Tooltip("Arrastra aquí el texto de las gemas del Canvas")]
     public TextMeshProUGUI textoGemas;
 
     [Tooltip("Arrastra aquí el Panel_GameOver desde el Canvas")]
     public GameObject panelGameOver;
+
+    [Tooltip("Arrastra aquí el Panel_InicioSesion desde el Canvas")]
+    public GameObject panelInicioSesion;
 
     // -----------------------------------------------------------------------------
     // MÉTODOS
@@ -53,6 +64,36 @@ public class GameManager : MonoBehaviour
         //Tiempo = velocidad normal
         Time.timeScale = 1f;
         ActualizarTextoPantalla();
+
+        velocidadActual = velocidadInicial; // Inicia con la velocidad base
+        temporizador = 0f; // Reinicia el cronómetro
+    }
+
+    /*
+    * Método Update():
+    * Se ejecuta cada frame.
+    * Controla el aumento progresivo de dificultad.
+    */
+    void Update()
+    {
+        // Solo cuenta el tiempo si el juego no está en Game Over (timeScale > 0)
+        if (Time.timeScale > 0f)
+        {
+            // Suma el tiempo que ha pasado desde el último frame
+            temporizador += Time.deltaTime;
+
+            // Si el cronómetro llega al límite marcado
+            if (temporizador >= tiempoParaAumentar)
+            {
+                // Sube la velocidad
+                velocidadActual += cantidadAumento;
+                
+                // Resetea el cronómetro a 0 para que vuelva a contar
+                temporizador = 0f;
+                
+                Debug.Log("¡Subida de dificultad! Nueva velocidad: " + velocidadActual);
+            }
+        }
     }
 
     /*
@@ -88,12 +129,44 @@ public class GameManager : MonoBehaviour
     {
         // Congela todas las físicas y mvtos del juego
         Time.timeScale = 0f; 
+
+        // Gemas guardadas de partidas anteriores
+        int gemasGuardadas = PlayerPrefs.GetInt("GemasLocales", 0);
         
-        // Enciende el panel de Game Over (versión corta: panelGameOver?.SetActive(true))
-        if (panelGameOver != null)
+        // Suma las gemas de esta partida a las que ya teníamos
+        int totalGemas = gemasGuardadas + contadorGemas;
+        PlayerPrefs.SetInt("GemasLocales", totalGemas);
+
+        // Comprueba si es la primera vez que juega
+        bool primeraVez = PlayerPrefs.GetInt("PrimeraVez", 1) == 1;
+
+        if (primeraVez)
         {
-            panelGameOver.SetActive(true);
+            // Si es la primera vez, activa el panel de tutorial
+            if (panelInicioSesion != null)
+            {
+                panelInicioSesion.SetActive(true);
+            }
+            // Marca que ya no es la primera vez
+            PlayerPrefs.SetInt("PrimeraVez", 0);
         }
+        else
+        {
+            // Si no es la primera vez, aparece el panel de GameOver
+            if (panelGameOver != null)
+            {
+                panelGameOver.SetActive(true);
+            }
+        }
+            
+        //Guarda todos los cambios
+        PlayerPrefs.Save();
+        
+
+        // Guarda el nuevo total en el disco duro del móvil
+        PlayerPrefs.Save(); 
+        
+        Debug.Log("Juego Guardado Localmente. Gemas totales: " + totalGemas);
     }
 
     /*

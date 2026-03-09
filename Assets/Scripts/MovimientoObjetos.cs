@@ -2,7 +2,7 @@ using UnityEngine;
 
 /*
 * Controla el movimiento de los obstáculos en el juego.
-* Los obstáculos se mueven hacia la izquierda a una velocidad que se puede configurar desde un archivo JSON.
+* Los obstáculos se mueven hacia la izquierda a una velocidad progresiva en tiempo real desde el GameManager.
 * Cuando un obstáculo se pasa del límite izquierdo de la pantalla, se destruye automáticamente para liberar memoria.
 */
 public class MovimientoObjetos : MonoBehaviour
@@ -26,9 +26,9 @@ public class MovimientoObjetos : MonoBehaviour
         // OBTENER VELOCIDAD
         // Lee la velocidad del JSON. Si no existe, usa 3 por defecto.
         float velocidad = 3f;
-        if (LectorConfiguracion.Datos != null)
+        if (GameManager.Instancia != null)
         {
-            velocidad = LectorConfiguracion.Datos.velocidadJuego;
+            velocidad = GameManager.Instancia.velocidadActual;
         }
 
         // MUEVE HACIA LA IZQUIERDA: Multiplica por Time.deltaTime para que el movimiento sea suave y constante

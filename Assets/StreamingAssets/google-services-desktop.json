@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "30477118691",
+    "firebase_url": "https://flappycatspace-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "flappycatspace",
+    "storage_bucket": "flappycatspace.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30477118691:android:a6d0ca4bf354ccf6d969d6",
+        "android_client_info": {
+          "package_name": "com.Dianarcado.FlappySpaceCat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30477118691-auejkukvrbkqrirqhasdhs9v9bcn4lvr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Dianarcado.FlappySpaceCat",
+            "certificate_hash": "046ccfdc15cfdd9394d432f449dea3ee565cfef8"
+          }
+        },
+        {
+          "client_id": "30477118691-n2in89rvvajilkmtu2mb22u8t2rn4hqr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ1U4-NW0QuJ-tjQC1u6LjwgZupn1Nf9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30477118691-n2in89rvvajilkmtu2mb22u8t2rn4hqr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "30477118691-mod8ijh8hv4t6jvfsmlthfv2316kj7qa.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.Dianarcado.FlappySpaceCat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

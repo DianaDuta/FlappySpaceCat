@@ -4,6 +4,7 @@ using UnityEngine;
 * El fondo se mueve hacia la izquierda a una velocidad que es una fracción de la velocidad del juego para crear un efecto de parallax (profundidad).
 * Cuando el fondo se ha movido completamente hacia la izquierda, se teletransporta a la derecha para crear un efecto de fondo infinito.
 * El factor de parallax se puede ajustar desde el inspector para crear diferentes capas de fondo con diferentes velocidades.
+* Lee la velocidad progresiva en tiempo real desde el GameManager.
 */
 public class ControladorFondo : MonoBehaviour
 {
@@ -40,7 +41,7 @@ public class ControladorFondo : MonoBehaviour
         }
     }
 
-    /* Método Update, se obtiene la velocidad del juego desde el JSON y se calcula la velocidad real del fondo multiplicando la velocidad del juego por el factor de parallax.
+    /* Método Update, se obtiene la velocidad del juego desde el GameManager y se calcula la velocidad real del fondo multiplicando la velocidad del juego por el factor de parallax.
     * Luego se mueve el fondo hacia la izquierda utilizando transform.Translate.
     * Si el fondo se ha movido completamente hacia la izquierda (su posición es menor que -ancho), se teletransporta a la derecha sumando 2 veces el ancho a su posición X.
     * Esto crea un efecto de fondo infinito sin necesidad de tener múltiples imágenes.
@@ -49,9 +50,9 @@ public class ControladorFondo : MonoBehaviour
     {
         /* Obtiene la velocidad base del juego del JSON, si no, usa 3 por defecto.*/
         float velocidadBase = 3f;
-        if (LectorConfiguracion.Datos != null)
+        if (GameManager.Instancia != null)
         {
-            velocidadBase = LectorConfiguracion.Datos.velocidadJuego;
+            velocidadBase = GameManager.Instancia.velocidadActual;
         }
 
         /*Calcula la velocidad real del fondo multiplicando la velocidad del juego por el factor de parallax.
