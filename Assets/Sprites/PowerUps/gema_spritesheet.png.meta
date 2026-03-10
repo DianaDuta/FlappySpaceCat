@@ -186,7 +186,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gema_spritesheet_0: 7366619717433111314
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

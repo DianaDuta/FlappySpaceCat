@@ -561,7 +561,23 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      1_Obstaculo_meteorito_0: 7436022283296966039
+      1_Obstaculo_meteorito_1: 7904849934410684369
+      1_Obstaculo_meteorito_10: 7429987281665717360
+      1_Obstaculo_meteorito_11: 1844165614445810555
+      1_Obstaculo_meteorito_12: 6771305430615208739
+      1_Obstaculo_meteorito_13: 8374971011849658004
+      1_Obstaculo_meteorito_14: 4489294071116680149
+      1_Obstaculo_meteorito_15: -8974512182940203369
+      1_Obstaculo_meteorito_2: 8851921109017233304
+      1_Obstaculo_meteorito_3: 8926920784232002028
+      1_Obstaculo_meteorito_4: 3030801903186363268
+      1_Obstaculo_meteorito_5: -8034077609522524318
+      1_Obstaculo_meteorito_6: 3058563674081513011
+      1_Obstaculo_meteorito_7: 3028182650201581946
+      1_Obstaculo_meteorito_8: 3327841937687060310
+      1_Obstaculo_meteorito_9: 5791026999538657690
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

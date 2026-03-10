@@ -21,7 +21,7 @@ public class DatosJuego
 public class LectorConfiguracion : MonoBehaviour
 {
     // Instancia estática para poder acceder a los datos desde cualquier otro script
-    public static DatosJuego Datos;
+    public static DatosJuego Datos = new DatosJuego { velocidadJuego = 4f, frecuenciaObstaculos = 2f, gravedadJugador = 1.5f };
 
 /*
 * Método Awake, se construye la ruta al archivo JSON y se verifica si existe.

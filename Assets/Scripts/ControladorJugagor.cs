@@ -13,6 +13,7 @@ public class ControladorJugagor : MonoBehaviour
     private Rigidbody2D rb;
     public float fuerzaSalto = 5f; // Fuerza del impulso hacia arriba
     private bool estaVivo = true;
+    private Vector3 posicionOriginal;
     // Límites de pantalla (Ajustables)
     public float limiteArriba = 4.5f; 
     public float limiteAbajo = -4.5f;
@@ -27,6 +28,7 @@ public class ControladorJugagor : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        posicionOriginal = transform.position;
 
         // La gravedad viene del JSON.
         if (LectorConfiguracion.Datos != null)
@@ -82,5 +84,19 @@ public class ControladorJugagor : MonoBehaviour
                 GameManager.Instancia.ActivarGameOver();
             }
         }        
+    }
+
+    /*
+    * Método Revivir():
+    * Restablece al jugador a su posición original, reviviéndolo y deteniendo su inercia.
+    */
+    public void Revivir()
+    {
+        estaVivo = true;
+        transform.position = posicionOriginal;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
     }
 }

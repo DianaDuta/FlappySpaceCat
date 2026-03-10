@@ -21,6 +21,18 @@ public class GeneradorMaestro : MonoBehaviour
     // MÉTODOS
     // ----------------------------------------------------------------------
     /*
+    * Método Awake:
+    * Busca el componente GeneradorObstaculo automáticamente para evitar problemas en el Inspector.
+    */
+    void Awake()
+    {
+        if (genObstaculos == null)
+        {
+            genObstaculos = GetComponent<GeneradorObstaculo>();
+        }
+    }
+
+    /*
     * Método Update:
     * Se ejecuta 1 vez por frame.
     * Actualiza los temporizadores y, si debe, genera un nuevo obstáculo.

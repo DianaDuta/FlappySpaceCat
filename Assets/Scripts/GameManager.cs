@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
             if (panelGameOver != null)
             {
                 panelGameOver.SetActive(true);
-                
+
                 //FUNNEL RETENCIÓN Y FUNNEL DIFICULTAD
                 // Registra la muerte para el Funnel de Retención
                 AnalyticsManager.Instancia.RegistrarEventoSimple("jugador_muere");
@@ -177,6 +177,28 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.Save(); 
         
         Debug.Log("Juego Guardado Localmente. Gemas totales: " + totalGemas);
+    }
+
+    /*
+    * Método ContinuarPartida():
+    * Se llama después de ver el anuncio del botón "Continuar". Oculta la pantalla de derrota y reanuda el tiempo.
+    */
+    public void ContinuarPartida()
+    {
+        // Oculta el panel de Game Over
+        if (panelGameOver != null) panelGameOver.SetActive(false);
+
+        // Pone el tiempo a su velocidad normal
+        Time.timeScale = 1f;
+
+        // Busca al jugador y lo devuelve a su posición original, reviviéndolo
+        ControladorJugagor jugador = FindAnyObjectByType<ControladorJugagor>();
+        if (jugador != null)
+        {
+            jugador.Revivir();
+        }
+
+        Debug.Log("¡Partida reanudada tras el anuncio!");
     }
 
     /*
