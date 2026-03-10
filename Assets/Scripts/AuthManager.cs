@@ -77,6 +77,9 @@ public class AuthManager : MonoBehaviour
             Debug.Log("¡Piloto registrado con éxito! ID: " + resultado.User.UserId);
             if (textoAvisos != null) textoAvisos.text = "¡Cuenta creada con éxito!";
 
+            // FUNNEL REGISTRO
+            AnalyticsManager.Instancia.RegistrarEventoSimple("registro_email_exito");
+
             // Guarda las gemas en Firebase
             int gemasLocales = PlayerPrefs.GetInt("GemasLocales", 0);
             
@@ -142,6 +145,9 @@ public class AuthManager : MonoBehaviour
                 // Firebase devuelve directamente el FirebaseUser para Google
                 FirebaseUser usuarioGoogle = tareaFirebase.Result;
                 Debug.Log("¡Piloto de Google registrado! ID: " + usuarioGoogle.UserId);
+
+                // FUNNEL REGISTRO
+                AnalyticsManager.Instancia.RegistrarEventoSimple("registro_google_exito");
                 
                 int gemasLocales = PlayerPrefs.GetInt("GemasLocales", 0);
                 

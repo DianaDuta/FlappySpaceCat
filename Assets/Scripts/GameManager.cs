@@ -67,6 +67,9 @@ public class GameManager : MonoBehaviour
 
         velocidadActual = velocidadInicial; // Inicia con la velocidad base
         temporizador = 0f; // Reinicia el cronómetro
+
+        // FUNNEL INICIO JUEGO
+        AnalyticsManager.Instancia.RegistrarEventoSimple("inicio_juego");
     }
 
     /*
@@ -156,6 +159,13 @@ public class GameManager : MonoBehaviour
             if (panelGameOver != null)
             {
                 panelGameOver.SetActive(true);
+                
+                //FUNNEL RETENCIÓN Y FUNNEL DIFICULTAD
+                // Registra la muerte para el Funnel de Retención
+                AnalyticsManager.Instancia.RegistrarEventoSimple("jugador_muere");
+
+                // Registra la velocidad exacta de la muerte para el Funnel de Dificultad
+                AnalyticsManager.Instancia.RegistrarEventoDificultad(velocidadActual);
             }
         }
             

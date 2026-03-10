@@ -613,6 +613,7 @@ GameObject:
   - component: {fileID: 473187928}
   - component: {fileID: 473187929}
   - component: {fileID: 473187930}
+  - component: {fileID: 473187931}
   m_Layer: 3
   m_Name: Generador
   m_TagString: Untagged
@@ -708,6 +709,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76aef104dcd56614983aaa565ff70334, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &473187931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473187921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f4e189ffdb070647b87e545ae29b0f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &482069064
