@@ -36,6 +36,9 @@ public class GameManager : MonoBehaviour
     [Tooltip("Arrastra aquí el Panel_InicioSesion desde el Canvas")]
     public GameObject panelInicioSesion;
 
+    [Tooltip("Arrastra aquí el Panel_MenuPrincipal desde el Canvas")]
+    public GameObject panelMenuPrincipal;
+
     // -----------------------------------------------------------------------------
     // MÉTODOS
     // -----------------------------------------------------------------------------
@@ -57,16 +60,50 @@ public class GameManager : MonoBehaviour
         }
     }
     /* Método Start():
-    * Obligamos al texto a mostrar un "0" al comienzo de la partida.
+    * Arranca el juego mostrando el menú principal en lugar de empezar directamente.
     */
     void Start()
     {
+        MostrarMenuPrincipal();
+    }
+
+    /*
+    * Método MostrarMenuPrincipal():
+    * Activa el menú principal, oculta game over y pausa el tiempo.
+    */
+    public void MostrarMenuPrincipal()
+    {
+        Time.timeScale = 0f; // Pausa el tiempo mientras estamos en el menú
+        
+        if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(true);
+        if (panelGameOver != null) panelGameOver.SetActive(false);
+        if (panelInicioSesion != null) panelInicioSesion.SetActive(false);
+    }
+
+    /*
+    * Método IniciarJuego():
+    * Se ejecuta al pulsar el botón "Jugar". Oculta el menú, reanuda el tiempo 
+    * y resetea las variables a su estado inicial.
+    */
+    public void IniciarJuego()
+    {
+        if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(false);
+
+        // Reiniciar variables
+        contadorGemas = 0;
+        ActualizarTextoPantalla();
+        velocidadActual = velocidadInicial;
+        temporizador = 0f;
+
+        // Reiniciar posición del jugador
+        ControladorJugagor jugador = FindAnyObjectByType<ControladorJugagor>();
+        if (jugador != null)
+        {
+            jugador.Revivir();
+        }
+
         //Tiempo = velocidad normal
         Time.timeScale = 1f;
-        ActualizarTextoPantalla();
-
-        velocidadActual = velocidadInicial; // Inicia con la velocidad base
-        temporizador = 0f; // Reinicia el cronómetro
 
         // FUNNEL INICIO JUEGO
         AnalyticsManager.Instancia.RegistrarEventoSimple("inicio_juego");
@@ -181,34 +218,53 @@ public class GameManager : MonoBehaviour
 
     /*
     * Método ContinuarPartida():
-    * Se llama después de ver el anuncio del botón "Continuar". Oculta la pantalla de derrota y reanuda el tiempo.
+    * Se llama después de ver el anuncio del botón "Continuar". Oculta la pantalla de derrota,
+    * limpia los obstáculos cercanos y reanuda el tiempo de juego.
     */
     public void ContinuarPartida()
     {
         // Oculta el panel de Game Over
         if (panelGameOver != null) panelGameOver.SetActive(false);
 
-        // Pone el tiempo a su velocidad normal
-        Time.timeScale = 1f;
-
         // Busca al jugador y lo devuelve a su posición original, reviviéndolo
         ControladorJugagor jugador = FindAnyObjectByType<ControladorJugagor>();
+        float xJugador = -7.35f; // Posición X por defecto
         if (jugador != null)
         {
             jugador.Revivir();
+            xJugador = jugador.transform.position.x;
         }
 
-        Debug.Log("¡Partida reanudada tras el anuncio!");
+        // DESTRUIR EL OBSTÁCULO DEL CHOQUE Y EL SIGUIENTE
+        GameObject[] obstaculos = GameObject.FindGameObjectsWithTag("Obstaculo");
+        // Ordenamos los obstáculos de izquierda a derecha (por su posición en X)
+        System.Array.Sort(obstaculos, (a, b) => a.transform.position.x.CompareTo(b.transform.position.x));
+
+        int obstáculosDestruidos = 0;
+        foreach (GameObject obs in obstaculos)
+        {
+            // Buscamos los obstáculos que estén interactuando con el jugador o justo a su derecha
+            if (obs.transform.position.x >= xJugador - 2f) 
+            {
+                Destroy(obs);
+                obstáculosDestruidos++;
+                // Rompemos el bucle al haber destruido 2
+                if (obstáculosDestruidos >= 2) break; 
+            }
+        }
+
+        // Pone el tiempo a su velocidad normal
+        Time.timeScale = 1f;
+
+        Debug.Log("¡Partida reanudada tras el anuncio! Obstáculos cercanos despejados.");
     }
 
     /*
     * Método VolverMenuPrincipal():
-    * Al pulsar el botón, vuelve a la pantalla de inicio del juego.
-    * Debe estar descongelado el tiempo para animaciones y efectos visuales.
+    * Al pulsar el botón (por ejemplo Rendirse), volvemos a mostrar el menú principal.
     */
     public void VolverMenuPrincipal()
     {
-        Time.timeScale = 1f; // Descongela el tiempo
-        SceneManager.LoadScene("MenuPrincipal");
+        MostrarMenuPrincipal();
     }
 }

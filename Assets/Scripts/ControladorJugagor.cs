@@ -16,7 +16,7 @@ public class ControladorJugagor : MonoBehaviour
     private Vector3 posicionOriginal;
     // Límites de pantalla (Ajustables)
     public float limiteArriba = 4.5f; 
-    public float limiteAbajo = -4.5f;
+    public float limiteAbajo = -6.5f; // Ajustado para que muera al desaparecer de la pantalla 
 
     //------------------------------------
     // MÉTODOS
@@ -52,11 +52,22 @@ public class ControladorJugagor : MonoBehaviour
             rb.linearVelocity = Vector2.up * fuerzaSalto;       // NOTA: 'linearVelocity' = 'velocity'.
         }
 
-        // LIMITAR POSICIÓN EN PANTALLA
+        // LIMITAR POSICIÓN EN PANTALLA Y MUERTE POR CAÍDA
         // Posición actual del jugador en una variable temporal
         Vector3 posicion = transform.position;  
-        // Clamp obliga a la Y a quedarse entre el mínimo y el máximo
-        posicion.y = Mathf.Clamp(posicion.y, limiteAbajo, limiteArriba);        
+        
+        // Si el jugador cae por debajo del límite, muere
+        if (posicion.y <= limiteAbajo && estaVivo)
+        {
+            estaVivo = false;
+            if (GameManager.Instancia != null)
+            {
+                GameManager.Instancia.ActivarGameOver();
+            }
+        }
+
+        // Clamp obliga a la Y a no superar el techo, pero ahora permitimos que caiga para morir
+        posicion.y = Mathf.Min(posicion.y, limiteArriba);        
         // Aplicamos la posición corregida al gato
         transform.position = posicion;
 
@@ -93,10 +104,16 @@ public class ControladorJugagor : MonoBehaviour
     public void Revivir()
     {
         estaVivo = true;
+        
+        // Restablece la posición y la rotación original (recta)
         transform.position = posicionOriginal;
+        transform.rotation = Quaternion.identity;
+
         if (rb != null)
         {
+            // Frena en seco cualquier inercia de movimiento o de giro por el golpe
             rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
         }
     }
 }
