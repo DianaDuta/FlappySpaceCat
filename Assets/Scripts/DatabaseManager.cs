@@ -58,8 +58,8 @@ public class DatabaseManager : MonoBehaviour
             { "ultimaConexion", FieldValue.ServerTimestamp } // Guarda la fecha y hora
         };
 
-        // Envía los datos a la nube
-        docRef.SetAsync(datosUsuario).ContinueWithOnMainThread(tarea => 
+        // Envía los datos a la nube (Usando SetOptions.MergeAll para no borrar otros datos como la puntuación)
+        docRef.SetAsync(datosUsuario, SetOptions.MergeAll).ContinueWithOnMainThread(tarea => 
         {
             if (tarea.IsFaulted)
             {
@@ -69,6 +69,51 @@ public class DatabaseManager : MonoBehaviour
             {
                 Debug.Log("¡Caja fuerte actualizada en la nube! Gemas aseguradas.");
             }
+        });
+    }
+
+    /*
+    * Método GuardarMejorPuntuacionEnNube():
+    * Guarda el nuevo récord en Firebase sin borrar las gemas.
+    */
+    public void GuardarMejorPuntuacionEnNube(string idUsuario, int mejorPuntuacion)
+    {
+        DocumentReference docRef = db.Collection("Jugadores").Document(idUsuario);
+
+        Dictionary<string, object> datosUsuario = new Dictionary<string, object>
+        {
+            { "mejorPuntuacion", mejorPuntuacion }
+        };
+
+        docRef.SetAsync(datosUsuario, SetOptions.MergeAll).ContinueWithOnMainThread(tarea => 
+        {
+            if (tarea.IsFaulted) Debug.LogError("Error al guardar récord en la nube: " + tarea.Exception);
+            else if (tarea.IsCompleted) Debug.Log("¡Nuevo Récord guardado en la nube!: " + mejorPuntuacion);
+        });
+    }
+
+    /*
+    * Método ObtenerMejorPuntuacion():
+    * Recupera la mejor puntuación histórica de este usuario desde Firebase
+    */
+    public void ObtenerMejorPuntuacion(string idUsuario, System.Action<int> alCompletar)
+    {
+        DocumentReference docRef = db.Collection("Jugadores").Document(idUsuario);
+        
+        docRef.GetSnapshotAsync().ContinueWithOnMainThread(tarea =>
+        {
+            if (tarea.IsCompleted && !tarea.IsFaulted)
+            {
+                DocumentSnapshot snap = tarea.Result;
+                if (snap.Exists && snap.ContainsField("mejorPuntuacion"))
+                {
+                    int mejor = snap.GetValue<int>("mejorPuntuacion");
+                    alCompletar?.Invoke(mejor);
+                    return;
+                }
+            }
+            // Si hay error o no existe el campo, devolvemos 0
+            alCompletar?.Invoke(0);
         });
     }
 }

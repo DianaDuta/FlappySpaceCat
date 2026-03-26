@@ -14,6 +14,20 @@ public class MovimientoObjetos : MonoBehaviour
     // Jugador está en -7.35, lo pone en -12  para asegurar que salga totalmente de la pantalla.
     public float limiteIzquierda = -12f; 
 
+    private bool haPuntuado = false;
+    private bool esObstaculoPuntuable = false;
+    private ControladorJugagor jugador;
+
+    void Start()
+    {
+        jugador = FindAnyObjectByType<ControladorJugagor>();
+        // Solo comprobamos la puntuación si este objeto es un Obstáculo (y no una Gema u otro adorno)
+        if (gameObject.name.Contains("Obstaculo"))
+        {
+            esObstaculoPuntuable = true;
+        }
+    }
+
     //--------------------------------
     // MÉTODOS
     //--------------------------------
@@ -33,6 +47,17 @@ public class MovimientoObjetos : MonoBehaviour
 
         // MUEVE HACIA LA IZQUIERDA: Multiplica por Time.deltaTime para que el movimiento sea suave y constante
         transform.Translate(Vector3.left * velocidad * Time.deltaTime, Space.World);
+
+        // PUNTUACIÓN AUTOMÁTICA POR POSICIÓN (Sin necesidad de colliders)
+        if (esObstaculoPuntuable && !haPuntuado && jugador != null)
+        {
+            // Si la coordenada X del obstáculo ha sobrepasado la del jugador... ¡Punto!
+            if (transform.position.x < jugador.transform.position.x)
+            {
+                haPuntuado = true;
+                if (GameManager.Instancia != null) GameManager.Instancia.SumarPunto();
+            }
+        }
 
         // AUTODESTRUCCIÓN: Si el objeto se pasa del límite izquierdo, se borra de la memoria
         if (transform.position.x < limiteIzquierda)

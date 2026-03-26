@@ -46,18 +46,33 @@ public class AuthManager : MonoBehaviour
     */
     public void RegistrarUsuarioConEmail()
     {
-        string email = inputEmail.text;
+        string idUsuario = inputEmail.text.Trim(); // Limpia los espacios
         string password = inputPassword.text;
 
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+        if (string.IsNullOrEmpty(idUsuario) || string.IsNullOrEmpty(password))
         {
-            if (textoAvisos != null) textoAvisos.text = "Por favor, rellena tu email y contraseña.";
+            if (textoAvisos != null) textoAvisos.text = "Por favor, rellena tu ID y contraseña.";
             return;
+        }
+
+        // Firebase exige que la contraseña tenga mínimo 6 carácteres
+        if (password.Length < 6)
+        {
+            if (textoAvisos != null) textoAvisos.text = "Error: La contraseña debe tener 6 o más números/letras.";
+            return;
+        }
+
+        // TRUCO: Si el usuario escribe solo un nombre ("dianarcado"), Firebase dirá que el formato está mal.
+        // Simulamos un correo invisible añadiendo un dominio para que Firebase lo acepte súper feliz.
+        string emailParaFirebase = idUsuario;
+        if (!emailParaFirebase.Contains("@"))
+        {
+            emailParaFirebase = idUsuario + "@flappyspacecat.com";
         }
 
         if (textoAvisos != null) textoAvisos.text = "Conectando con la base estelar...";
 
-        auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(tarea =>
+        auth.CreateUserWithEmailAndPasswordAsync(emailParaFirebase, password).ContinueWithOnMainThread(tarea =>
         {
             if (tarea.IsCanceled)
             {
@@ -68,7 +83,15 @@ public class AuthManager : MonoBehaviour
             if (tarea.IsFaulted)
             {
                 Debug.LogError("Error en el registro: " + tarea.Exception);
-                if (textoAvisos != null) textoAvisos.text = "Error al crear la cuenta. Revisa los datos.";
+                
+                // Intentamos dar un mensaje más claro dependiendo del error de Firebase
+                string mensajeError = "Error al crear la cuenta. Revisa los datos.";
+                if (tarea.Exception.ToString().Contains("EmailAlreadyInUse"))
+                {
+                    mensajeError = "Ese Nombre (ID) ya está cogido. ¡Elige otro!";
+                }
+
+                if (textoAvisos != null) textoAvisos.text = mensajeError;
                 return;
             }
 
@@ -95,7 +118,28 @@ public class AuthManager : MonoBehaviour
             {
                 Debug.LogError("No se encontró el DatabaseManager en la escena.");
             } 
+
+            // Cerrar el panel de inicio de sesión y mostrar el Game Over para que decidan si ver anuncio
+            StartCoroutine(TransicionAGameOver());
         });
+    }
+
+    /*
+    * Método TransicionAGameOver():
+    * Espera un segundo para que el usuario pueda leer el mensaje de éxito antes de cambiar de pantalla.
+    */
+    private System.Collections.IEnumerator TransicionAGameOver()
+    {
+        yield return new WaitForSecondsRealtime(1.5f); // Usamos Realtime porque Time.timeScale suele ser 0 en menús
+
+        if (GameManager.Instancia != null)
+        {
+            if (GameManager.Instancia.panelInicioSesion != null)
+                GameManager.Instancia.panelInicioSesion.SetActive(false);
+
+            if (GameManager.Instancia.panelGameOver != null)
+                GameManager.Instancia.panelGameOver.SetActive(true);
+        }
     }
 
     /*
@@ -160,6 +204,9 @@ public class AuthManager : MonoBehaviour
                 }
 
                 if (textoAvisos != null) textoAvisos.text = "¡Cuenta de Google conectada con éxito!";
+
+                // Cerrar el panel de inicio de sesión y mostrar el Game Over
+                StartCoroutine(TransicionAGameOver());
             });
         });
     }

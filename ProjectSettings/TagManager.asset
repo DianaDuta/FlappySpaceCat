@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Premio
   - Obstaculo
+  - Background
   layers:
   - Default
   - TransparentFX
@@ -40,8 +41,20 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 3712873555
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Foreground
+    uniqueID: 3896436265
+    locked: 0
+  - name: Player
+    uniqueID: 3060021913
+    locked: 0
+  - name: UI
+    uniqueID: 3118789599
     locked: 0
   m_RenderingLayers:
   - Default

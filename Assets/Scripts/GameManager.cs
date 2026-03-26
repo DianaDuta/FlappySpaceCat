@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Firebase.Auth;
 
 /**
 * CLASE GAME MANAGER:
@@ -15,8 +16,8 @@ public class GameManager : MonoBehaviour
     // -----------------------------------------------------------------------------
     // Instancia estática
     public static GameManager Instancia;
-    //de momento 0, porteriormente se introducirá de un JSON
     public int contadorGemas = 0;
+    public int puntuacionObstaculos = 0; // Puntos por atravesar tuberías
 
     [Header("Ajustes de Dificultad (Velocidad)")]
     public float velocidadActual;
@@ -30,6 +31,14 @@ public class GameManager : MonoBehaviour
     [Tooltip("Arrastra aquí el texto de las gemas del Canvas")]
     public TextMeshProUGUI textoGemas;
 
+    [Tooltip("Texto para la Puntuación gigante mientras juegas")]
+    public TextMeshProUGUI txtPuntuacionGameplay;
+    
+    [Header("Textos Pantalla Game Over")]
+    public TextMeshProUGUI txtPuntuacionActual_GameOver;
+    [Tooltip("Texto para la Mejor Puntuación (solo en Game Over)")]
+    public TextMeshProUGUI txtMejorPuntuacion_GameOver;
+
     [Tooltip("Arrastra aquí el Panel_GameOver desde el Canvas")]
     public GameObject panelGameOver;
 
@@ -38,6 +47,11 @@ public class GameManager : MonoBehaviour
 
     [Tooltip("Arrastra aquí el Panel_MenuPrincipal desde el Canvas")]
     public GameObject panelMenuPrincipal;
+
+    [Header("Música Ambiental")]
+    public AudioClip musicaInGame; // Arrastra tu música In-Game
+    public AudioClip musicaMenu;   // Arrastra tu música de Menús/GameOver
+    private AudioSource audioSourceMusica;
 
     // -----------------------------------------------------------------------------
     // MÉTODOS
@@ -53,6 +67,11 @@ public class GameManager : MonoBehaviour
         if (Instancia == null)
         {
             Instancia = this;
+            
+            // Crea un AudioSource automáticamente para la música de fondo
+            audioSourceMusica = gameObject.AddComponent<AudioSource>();
+            audioSourceMusica.loop = true; // Para que la música no acabe nunca
+            audioSourceMusica.volume = 0.5f; // Volumen al 50%
         }
         else
         {
@@ -68,6 +87,19 @@ public class GameManager : MonoBehaviour
     }
 
     /*
+    * Método CambiarMusica():
+    * Reproduce la pista musical que le pasemos si no está sonando ya.
+    */
+    private void CambiarMusica(AudioClip nuevaMusica)
+    {
+        // Si no hay reproductor, o no hay música nueva, o YA está sonando esa misma canción, no hace nada
+        if (audioSourceMusica == null || nuevaMusica == null || audioSourceMusica.clip == nuevaMusica) return;
+
+        audioSourceMusica.clip = nuevaMusica;
+        audioSourceMusica.Play();
+    }
+
+    /*
     * Método MostrarMenuPrincipal():
     * Activa el menú principal, oculta game over y pausa el tiempo.
     */
@@ -75,9 +107,53 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f; // Pausa el tiempo mientras estamos en el menú
         
+        // Pone la música relaja' del menú principal
+        CambiarMusica(musicaMenu);
+
         if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(true);
         if (panelGameOver != null) panelGameOver.SetActive(false);
         if (panelInicioSesion != null) panelInicioSesion.SetActive(false);
+
+        // Ocultar números mientras estamos en el menú
+        if (textoGemas != null) textoGemas.gameObject.SetActive(false);
+        if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(false);
+
+        // Destruir elementos sobrantes (obstáculos y gemas) de partidas anteriores
+        DestruirElementosJuego();
+
+        // Reiniciar el generador maestro para evitar arrastrar métricas de la partida anterior
+        GeneradorMaestro genMaestro = FindAnyObjectByType<GeneradorMaestro>();
+        if (genMaestro != null) genMaestro.Reiniciar();
+    }
+
+    /*
+    * Método DestruirElementosJuego:
+    * Se encarga de limpiar la escena de objetos instanciados
+    */
+    private void DestruirElementosJuego()
+    {
+        // Eliminar TODOS los obstáculos antiguos de la pantalla generados durante la partida
+        GameObject[] obstaculos = GameObject.FindGameObjectsWithTag("Obstaculo");
+        foreach (GameObject obs in obstaculos)
+        {
+            // El tag "Obstaculo" lo tienen los hijos (Tuberia Arriba/Abajo), así que miramos el nombre de la raíz (el padre principal)
+            Transform raiz = obs.transform.root;
+            if (raiz.name.Contains("(Clone)"))
+            {
+                Destroy(raiz.gameObject);
+            }
+        }
+
+        // Eliminar TODAS las gemas antiguas de la pantalla.
+        ColeccionableGema[] gemas = FindObjectsOfType<ColeccionableGema>();
+        foreach (ColeccionableGema gema in gemas)
+        {
+            Transform raiz = gema.transform.root;
+            if (raiz.name.Contains("(Clone)"))
+            {
+                Destroy(raiz.gameObject);
+            }
+        }
     }
 
     /*
@@ -89,11 +165,19 @@ public class GameManager : MonoBehaviour
     {
         if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(false);
 
+        // Mostrar números in-game
+        if (textoGemas != null) textoGemas.gameObject.SetActive(true);
+        if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(true);
+
         // Reiniciar variables
         contadorGemas = 0;
+        puntuacionObstaculos = 0;
         ActualizarTextoPantalla();
         velocidadActual = velocidadInicial;
         temporizador = 0f;
+
+        // Asegurarnos de vaciar todo al empezar la partida por si acaso
+        DestruirElementosJuego();
 
         // Reiniciar posición del jugador
         ControladorJugagor jugador = FindAnyObjectByType<ControladorJugagor>();
@@ -101,6 +185,9 @@ public class GameManager : MonoBehaviour
         {
             jugador.Revivir();
         }
+
+        // Pone la música intensa del juego
+        CambiarMusica(musicaInGame);
 
         //Tiempo = velocidad normal
         Time.timeScale = 1f;
@@ -150,6 +237,16 @@ public class GameManager : MonoBehaviour
     }
 
     /*
+    * Método SumarPunto:
+    * Se encarga de sumar puntos al atravesar obstáculos
+    */
+    public void SumarPunto()
+    {
+        puntuacionObstaculos++;
+        ActualizarTextoPantalla();
+    }
+
+    /*
     * Método ActualizarTextoPantalla():
     * Cambia el texto existente en la pantalla.
     */
@@ -158,6 +255,11 @@ public class GameManager : MonoBehaviour
         if (textoGemas != null) 
         {
             textoGemas.text = ": " + contadorGemas; 
+        }
+
+        if (txtPuntuacionGameplay != null)
+        {
+            txtPuntuacionGameplay.text = puntuacionObstaculos.ToString();
         }
     }
 
@@ -169,6 +271,13 @@ public class GameManager : MonoBehaviour
     {
         // Congela todas las físicas y mvtos del juego
         Time.timeScale = 0f; 
+        
+        // Ocultar los textos en vivo para que el Game Over se vea limpio
+        if (textoGemas != null) textoGemas.gameObject.SetActive(false);
+        if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(false);
+
+        // Vuelve la música del menú al morir
+        CambiarMusica(musicaMenu);
 
         // Gemas guardadas de partidas anteriores
         int gemasGuardadas = PlayerPrefs.GetInt("GemasLocales", 0);
@@ -176,6 +285,54 @@ public class GameManager : MonoBehaviour
         // Suma las gemas de esta partida a las que ya teníamos
         int totalGemas = gemasGuardadas + contadorGemas;
         PlayerPrefs.SetInt("GemasLocales", totalGemas);
+
+        // Manejo del récord con Firebase
+        FirebaseUser usuario = FirebaseAuth.DefaultInstance.CurrentUser;
+        if (usuario != null)
+        {
+            // Pide a Firebase la mejor puntuación asíncronamente
+            DatabaseManager.Instancia.ObtenerMejorPuntuacion(usuario.UserId, (mejorPuntuacionBD) =>
+            {
+                // Si la puntuación de esta partida es mayor al récord histórico...
+                if (puntuacionObstaculos > mejorPuntuacionBD)
+                {
+                    mejorPuntuacionBD = puntuacionObstaculos; // ¡Nuevo récord!
+                    DatabaseManager.Instancia.GuardarMejorPuntuacionEnNube(usuario.UserId, mejorPuntuacionBD);
+                }
+
+                // --- ACTUALIZAR TEXTOS DEL GAME OVER ---
+                if (txtPuntuacionActual_GameOver != null) 
+                    txtPuntuacionActual_GameOver.text = "Puntuacion actual: " + puntuacionObstaculos.ToString();
+
+                if (txtMejorPuntuacion_GameOver != null) 
+                    txtMejorPuntuacion_GameOver.text = "Mejor puntuacion: " + mejorPuntuacionBD.ToString();
+            });
+        }
+        else
+        {
+            // Opcional: Para gente que juegue como "Anónimo" o sin internet
+            int mejorPuntuacion = PlayerPrefs.GetInt("MejorPuntuacion", 0);
+            if (puntuacionObstaculos > mejorPuntuacion)
+            {
+                PlayerPrefs.SetInt("MejorPuntuacion", puntuacionObstaculos);
+                mejorPuntuacion = puntuacionObstaculos;
+            }
+            // --- ACTUALIZAR TEXTOS DEL GAME OVER ---
+            if (txtPuntuacionActual_GameOver != null) 
+                txtPuntuacionActual_GameOver.text = "Puntuacion actual: " + puntuacionObstaculos.ToString();
+
+            if (txtMejorPuntuacion_GameOver != null) 
+                txtMejorPuntuacion_GameOver.text = "Mejor puntuacion: " + mejorPuntuacion.ToString();
+        }
+            
+        //Guarda todos los cambios
+        PlayerPrefs.Save();
+        
+
+        // Guarda el nuevo total en el disco duro del móvil
+        PlayerPrefs.Save(); 
+        
+        Debug.Log("Juego Guardado Localmente. Gemas totales: " + totalGemas);
 
         // Comprueba si es la primera vez que juega
         bool primeraVez = PlayerPrefs.GetInt("PrimeraVez", 1) == 1;
@@ -226,6 +383,10 @@ public class GameManager : MonoBehaviour
         // Oculta el panel de Game Over
         if (panelGameOver != null) panelGameOver.SetActive(false);
 
+        // Volver a encender los textos
+        if (textoGemas != null) textoGemas.gameObject.SetActive(true);
+        if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(true);
+
         // Busca al jugador y lo devuelve a su posición original, reviviéndolo
         ControladorJugagor jugador = FindAnyObjectByType<ControladorJugagor>();
         float xJugador = -7.35f; // Posición X por defecto
@@ -253,6 +414,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        // Vuelve a la música intensa al revivir (continuar)
+        CambiarMusica(musicaInGame);
+
         // Pone el tiempo a su velocidad normal
         Time.timeScale = 1f;
 
@@ -261,10 +425,28 @@ public class GameManager : MonoBehaviour
 
     /*
     * Método VolverMenuPrincipal():
-    * Al pulsar el botón (por ejemplo Rendirse), volvemos a mostrar el menú principal.
+    * Guarda las gemas en la nube si hay usuario logueado, borra localmente
+    * y devuelve al jugador a la pantalla de inicio principal.
     */
     public void VolverMenuPrincipal()
     {
+        // 1. Guardar en Firebase y borrar memoria local si está logueado
+        FirebaseUser usuario = FirebaseAuth.DefaultInstance.CurrentUser;
+        if (usuario != null)
+        {
+            int gemasLocales = PlayerPrefs.GetInt("GemasLocales", 0);
+            if (gemasLocales > 0 && DatabaseManager.Instancia != null)
+            {
+                DatabaseManager.Instancia.GuardarGemasEnNube(usuario.UserId, gemasLocales);
+            }
+            
+            // Borrar de la memoria local para la siguiente partida desde 0
+            PlayerPrefs.SetInt("GemasLocales", 0);
+            PlayerPrefs.Save();
+            Debug.Log("Volviendo al menú: Datos guardados en la nube y memoria local borrada.");
+        }
+
+        // 2. Volvemos al menú sin destrozar la memoria
         MostrarMenuPrincipal();
     }
 }
