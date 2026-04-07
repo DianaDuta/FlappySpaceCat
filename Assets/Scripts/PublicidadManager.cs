@@ -161,12 +161,12 @@ public class PublicidadManager : MonoBehaviour
         Debug.Log("¡Vídeo completado! Entregando 20 gemas...");
 
         // Lee las gemas actuales
-        int gemasActuales = PlayerPrefs.GetInt("GemasLocales", 0);
+        int gemasActuales = SecurePrefs.GetInt("GemasLocales", 0);
         
         // CORRECCIÓN: Sumamos 20 gemas para coincidir con tu configuración en AdMob
         gemasActuales += 20;
-        PlayerPrefs.SetInt("GemasLocales", gemasActuales);
-        PlayerPrefs.Save();
+        SecurePrefs.SetInt("GemasLocales", gemasActuales);
+        SecurePrefs.Save();
 
         // Sube las nuevas gemas a Firebase Firestore
         if (DatabaseManager.Instancia != null && Firebase.Auth.FirebaseAuth.DefaultInstance.CurrentUser != null)

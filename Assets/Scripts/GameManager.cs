@@ -289,11 +289,11 @@ public class GameManager : MonoBehaviour
         CambiarMusica(musicaMenu);
 
         // Gemas guardadas de partidas anteriores
-        int gemasGuardadas = PlayerPrefs.GetInt("GemasLocales", 0);
+        int gemasGuardadas = SecurePrefs.GetInt("GemasLocales", 0);
         
         // Suma las gemas de esta partida a las que ya teníamos
         int totalGemas = gemasGuardadas + contadorGemas;
-        PlayerPrefs.SetInt("GemasLocales", totalGemas);
+        SecurePrefs.SetInt("GemasLocales", totalGemas);
 
         // Manejo del récord con Firebase
         FirebaseUser usuario = FirebaseAuth.DefaultInstance.CurrentUser;
@@ -320,10 +320,10 @@ public class GameManager : MonoBehaviour
         else
         {
             // Opcional: Para gente que juegue como "Anónimo" o sin internet
-            int mejorPuntuacion = PlayerPrefs.GetInt("MejorPuntuacion", 0);
+            int mejorPuntuacion = SecurePrefs.GetInt("MejorPuntuacion", 0);
             if (puntuacionObstaculos > mejorPuntuacion)
             {
-                PlayerPrefs.SetInt("MejorPuntuacion", puntuacionObstaculos);
+                SecurePrefs.SetInt("MejorPuntuacion", puntuacionObstaculos);
                 mejorPuntuacion = puntuacionObstaculos;
             }
             // --- ACTUALIZAR TEXTOS DEL GAME OVER ---
@@ -335,16 +335,16 @@ public class GameManager : MonoBehaviour
         }
             
         //Guarda todos los cambios
-        PlayerPrefs.Save();
+        SecurePrefs.Save();
         
 
         // Guarda el nuevo total en el disco duro del móvil
-        PlayerPrefs.Save(); 
+        SecurePrefs.Save(); 
         
         Debug.Log("Juego Guardado Localmente. Gemas totales: " + totalGemas);
 
         // Comprueba si es la primera vez que juega
-        bool primeraVez = PlayerPrefs.GetInt("PrimeraVez", 1) == 1;
+        bool primeraVez = SecurePrefs.GetInt("PrimeraVez", 1) == 1;
 
         if (primeraVez)
         {
@@ -354,7 +354,7 @@ public class GameManager : MonoBehaviour
                 panelInicioSesion.SetActive(true);
             }
             // Marca que ya no es la primera vez
-            PlayerPrefs.SetInt("PrimeraVez", 0);
+            SecurePrefs.SetInt("PrimeraVez", 0);
         }
         else
         {
@@ -373,11 +373,11 @@ public class GameManager : MonoBehaviour
         }
             
         //Guarda todos los cambios
-        PlayerPrefs.Save();
+        SecurePrefs.Save();
         
 
         // Guarda el nuevo total en el disco duro del móvil
-        PlayerPrefs.Save(); 
+        SecurePrefs.Save(); 
         
         Debug.Log("Juego Guardado Localmente. Gemas totales: " + totalGemas);
     }
@@ -445,15 +445,15 @@ public class GameManager : MonoBehaviour
         FirebaseUser usuario = FirebaseAuth.DefaultInstance.CurrentUser;
         if (usuario != null)
         {
-            int gemasLocales = PlayerPrefs.GetInt("GemasLocales", 0);
+            int gemasLocales = SecurePrefs.GetInt("GemasLocales", 0);
             if (gemasLocales > 0 && DatabaseManager.Instancia != null)
             {
                 DatabaseManager.Instancia.GuardarGemasEnNube(usuario.UserId, gemasLocales);
             }
             
             // Borrar de la memoria local para la siguiente partida desde 0
-            PlayerPrefs.SetInt("GemasLocales", 0);
-            PlayerPrefs.Save();
+            SecurePrefs.SetInt("GemasLocales", 0);
+            SecurePrefs.Save();
             Debug.Log("Volviendo al menú: Datos guardados en la nube y memoria local borrada.");
         }
 

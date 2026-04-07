@@ -55,10 +55,24 @@ public class AuthManager : MonoBehaviour
             return;
         }
 
-        // Firebase exige que la contraseña tenga mínimo 6 carácteres
-        if (password.Length < 6)
+        // Validacion Robusta: Mínimo 8 caracteres, al menos 1 letra y 1 número
+        if (password.Length < 8)
         {
-            if (textoAvisos != null) textoAvisos.text = "Error: La contraseña debe tener 6 o más números/letras.";
+            if (textoAvisos != null) textoAvisos.text = "Error: La contraseña debe tener al menos 8 caracteres.";
+            return;
+        }
+
+        bool tieneLetra = false;
+        bool tieneNumero = false;
+        foreach (char c in password)
+        {
+            if (char.IsLetter(c)) tieneLetra = true;
+            if (char.IsDigit(c)) tieneNumero = true;
+        }
+
+        if (!tieneLetra || !tieneNumero)
+        {
+            if (textoAvisos != null) textoAvisos.text = "Error: La contraseña debe incluir al menos una letra y un número.";
             return;
         }
 
@@ -104,7 +118,7 @@ public class AuthManager : MonoBehaviour
             AnalyticsManager.Instancia.RegistrarEventoSimple("registro_email_exito");
 
             // Guarda las gemas en Firebase
-            int gemasLocales = PlayerPrefs.GetInt("GemasLocales", 0);
+            int gemasLocales = SecurePrefs.GetInt("GemasLocales", 0);
             
             // Saca el ID del User que está dentro del resultado
             string idUnico = resultado.User.UserId; 
@@ -193,7 +207,7 @@ public class AuthManager : MonoBehaviour
                 // FUNNEL REGISTRO
                 AnalyticsManager.Instancia.RegistrarEventoSimple("registro_google_exito");
                 
-                int gemasLocales = PlayerPrefs.GetInt("GemasLocales", 0);
+                int gemasLocales = SecurePrefs.GetInt("GemasLocales", 0);
                 
                 // Saca el ID directo del usuario
                 string idUnico = usuarioGoogle.UserId; 
