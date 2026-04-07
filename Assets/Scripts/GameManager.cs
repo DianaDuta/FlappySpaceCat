@@ -28,6 +28,9 @@ public class GameManager : MonoBehaviour
     private float temporizador = 0f; // El cronómetro interno oculto para los cambios de velocidad
 
     [Header("Interfaz Gráfica (UI)")]
+    [Tooltip("Arrastra aquí el objeto padre (Contador_Gemas) completo del Canvas")]
+    public GameObject contenedorGemas;
+
     [Tooltip("Arrastra aquí el texto de las gemas del Canvas")]
     public TextMeshProUGUI textoGemas;
 
@@ -115,7 +118,9 @@ public class GameManager : MonoBehaviour
         if (panelInicioSesion != null) panelInicioSesion.SetActive(false);
 
         // Ocultar números mientras estamos en el menú
-        if (textoGemas != null) textoGemas.gameObject.SetActive(false);
+        if (contenedorGemas != null) contenedorGemas.SetActive(false);
+        else if (textoGemas != null) textoGemas.gameObject.SetActive(false);
+        
         if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(false);
 
         // Destruir elementos sobrantes (obstáculos y gemas) de partidas anteriores
@@ -166,7 +171,9 @@ public class GameManager : MonoBehaviour
         if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(false);
 
         // Mostrar números in-game
-        if (textoGemas != null) textoGemas.gameObject.SetActive(true);
+        if (contenedorGemas != null) contenedorGemas.SetActive(true);
+        else if (textoGemas != null) textoGemas.gameObject.SetActive(true);
+        
         if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(true);
 
         // Reiniciar variables
@@ -273,7 +280,9 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f; 
         
         // Ocultar los textos en vivo para que el Game Over se vea limpio
-        if (textoGemas != null) textoGemas.gameObject.SetActive(false);
+        if (contenedorGemas != null) contenedorGemas.SetActive(false);
+        else if (textoGemas != null) textoGemas.gameObject.SetActive(false);
+        
         if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(false);
 
         // Vuelve la música del menú al morir
@@ -384,7 +393,9 @@ public class GameManager : MonoBehaviour
         if (panelGameOver != null) panelGameOver.SetActive(false);
 
         // Volver a encender los textos
-        if (textoGemas != null) textoGemas.gameObject.SetActive(true);
+        if (contenedorGemas != null) contenedorGemas.SetActive(true);
+        else if (textoGemas != null) textoGemas.gameObject.SetActive(true);
+        
         if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(true);
 
         // Busca al jugador y lo devuelve a su posición original, reviviéndolo
