@@ -1,10 +1,10 @@
 using UnityEngine;
-/*
-* CLASE GENERADOR MAESTRO:
-* Se encarga de gestionar el ritmo y la posicion donde aparecen los obstáculos.
-* Delega la instanciación a clases hijas de la clase abstracta Generador.
-*/
 
+/// <summary>
+/// Gestiona el bucle algorítmico principal responsable del momento y espacio
+/// en que los obstáculos emergen durante el ciclo de juego, adaptando las secuencias de spawn
+/// proporcionalmente a la dificultad dinámica del sistema central.
+/// </summary>
 public class GeneradorMaestro : MonoBehaviour
 {
     // ----------------------------------------------------------------------
@@ -22,19 +22,24 @@ public class GeneradorMaestro : MonoBehaviour
     private float tiempoParaSiguiente = 0f;
     private float ultimaPosY = 0f;
     private bool esPrimerObstaculo = true;
+    
     // ----------------------------------------------------------------------
     // MÉTODOS
     // ----------------------------------------------------------------------
+    
+    /// <summary>
+    /// Restablece los temporizadores y la bandera del primer obstáculo,
+    /// preparándose para un nuevo ciclo de ejecución en una partida reiniciada.
+    /// </summary>
     public void Reiniciar()
     {
         tiempoParaSiguiente = 0f;
         esPrimerObstaculo = true;
     }
 
-    /*
-    * Método Awake:
-    * Busca el componente GeneradorObstaculo automáticamente para evitar problemas en el Inspector.
-    */
+    /// <summary>
+    /// Asegura el mapeo inicial del objeto generador a su componente específico en la jerarquía.
+    /// </summary>
     void Awake()
     {
         if (genObstaculos == null)
@@ -43,43 +48,37 @@ public class GeneradorMaestro : MonoBehaviour
         }
     }
 
-    /*
-    * Método Update:
-    * Se ejecuta 1 vez por frame.
-    * Actualiza los temporizadores y, si debe, genera un nuevo obstáculo.
-    */
+    /// <summary>
+    /// Calcula el temporizador descendente frame a frame. Determina las coordenadas, 
+    /// restringiendo la variación del eje Y para crear un flujo orgánico y despacha la orden 
+    /// de creación al componente abstracto correspondiente.
+    /// </summary>
     void Update()
     {
-        // Frecuencia base desde tu JSON
         float frecuenciaBase = 3f; 
         if (LectorConfiguracion.Datos != null) frecuenciaBase = LectorConfiguracion.Datos.frecuenciaObstaculos;
 
-        // Ajuste dinámico PROPORCIONAL para mantener SIEMPRE la misma distancia física entre obstáculos
         float frecuencia = frecuenciaBase;
         if (GameManager.Instancia != null)
         {
             float velInicial = GameManager.Instancia.velocidadInicial;
             float velActual = GameManager.Instancia.velocidadActual;
             
-            // Fórmula: NuevoTiempo = (VelocidadVieja * TiempoViejo) / VelocidadNueva
             if (velActual > 0) 
             {
                 frecuencia = (velInicial * frecuenciaBase) / velActual;
             }
         }
 
-        // Asegurar que no bajen de medio segundo para que no sean humanamente imposibles de esquivar
         if (frecuencia < 0.5f) frecuencia = 0.5f;
 
         tiempoParaSiguiente -= Time.deltaTime;
 
         if (tiempoParaSiguiente <= 0)
         {
-            // Calculamos la X fuera de la cámara
             float bordeDerecho = Camera.main.transform.position.x + (Camera.main.orthographicSize * Camera.main.aspect);
             float posX = bordeDerecho + 2f;
             
-            // El Maestro decide la altura del obstáculo de forma "orgánica"
             float posY_Obstaculo;
             if (esPrimerObstaculo)
             {
@@ -94,7 +93,6 @@ public class GeneradorMaestro : MonoBehaviour
             }
             ultimaPosY = posY_Obstaculo;
 
-            // 1. Instanciamos el asteroide en la X y la Y
             if (genObstaculos != null) genObstaculos.Generar(posX, posY_Obstaculo);
             
             tiempoParaSiguiente = frecuencia;

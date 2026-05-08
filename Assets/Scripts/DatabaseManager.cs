@@ -1,18 +1,21 @@
 using UnityEngine;
 using Firebase.Firestore;
 using Firebase.Extensions;
-using System.Collections.Generic; // Para crear "Diccionarios" de datos
+using System.Collections.Generic; 
 
-/**
-* CLASE DATABASE MANAGER:
-* Se encarga de enviar y recibir datos de la bbdd Firestore.
-* Es un Singleton global para poder llamarlo desde cualquier parte.
-*/
+/// <summary>
+/// Gestiona la lectura y escritura asíncrona de documentos en la base de datos Firestore,
+/// implementando un patrón Singleton para acceso global.
+/// </summary>
 public class DatabaseManager : MonoBehaviour
 {
     // -----------------------------------------------------------------------------
     // CAMPOS
     // -----------------------------------------------------------------------------
+    
+    /// <summary>
+    /// Instancia estática global para el acceso a las funciones de base de datos.
+    /// </summary>
     public static DatabaseManager Instancia;
     private FirebaseFirestore db;
 
@@ -20,9 +23,11 @@ public class DatabaseManager : MonoBehaviour
     // MÉTODOS
     // -----------------------------------------------------------------------------
 
+    /// <summary>
+    /// Inicializa la instancia Singleton asegurando la persistencia del objeto entre escenas.
+    /// </summary>
     void Awake()
     {
-        // Patrón Singleton clásico
         if (Instancia == null)
         {
             Instancia = this;
@@ -34,48 +39,48 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Establece la referencia principal a la base de datos Firestore.
+    /// </summary>
     void Start()
     {
-        // Inicializamos la conexión con el archivador de Firestore
         db = FirebaseFirestore.DefaultInstance;
     }
 
-    /*
-    * Método GuardarGemasEnNube():
-    * Crea una carpeta para el jugador y guarda su número de gemas.
-    * @param string idUsuario: El código secreto del jugador que nos da Firebase Auth
-    * @param int cantidadGemas: Las gemas que sacamos del PlayerPrefs
-    */
+    /// <summary>
+    /// Persiste la cantidad actual de gemas en el documento correspondiente al usuario en la nube,
+    /// combinando los datos nuevos con la información preexistente para evitar sobreescritura de otros campos.
+    /// </summary>
+    /// <param name="idUsuario">Identificador único del usuario provisto por Firebase Auth.</param>
+    /// <param name="cantidadGemas">Valor numérico del total de gemas acumuladas.</param>
     public void GuardarGemasEnNube(string idUsuario, int cantidadGemas)
     {
-        // Apunta a la ruta: Cajón "Jugadores" -> Carpeta "idUsuario"
         DocumentReference docRef = db.Collection("Jugadores").Document(idUsuario);
 
-        // Prepara los datos en formato "Diccionario" (Nombre del dato y su valor)
         Dictionary<string, object> datosUsuario = new Dictionary<string, object>
         {
             { "gemasTotales", cantidadGemas },
-            { "ultimaConexion", FieldValue.ServerTimestamp } // Guarda la fecha y hora
+            { "ultimaConexion", FieldValue.ServerTimestamp } 
         };
 
-        // Envía los datos a la nube (Usando SetOptions.MergeAll para no borrar otros datos como la puntuación)
         docRef.SetAsync(datosUsuario, SetOptions.MergeAll).ContinueWithOnMainThread(tarea => 
         {
             if (tarea.IsFaulted)
             {
-                Debug.LogError("Error al guardar en la nube: " + tarea.Exception);
+                Debug.LogError("Fallo durante la transacción de escritura: " + tarea.Exception);
             }
             else if (tarea.IsCompleted)
             {
-                Debug.Log("¡Caja fuerte actualizada en la nube! Gemas aseguradas.");
+                Debug.Log("Sincronización de progreso (gemas) completada correctamente.");
             }
         });
     }
 
-    /*
-    * Método GuardarMejorPuntuacionEnNube():
-    * Guarda el nuevo récord en Firebase sin borrar las gemas.
-    */
+    /// <summary>
+    /// Almacena una nueva marca máxima de puntuación en el documento del usuario en Firestore.
+    /// </summary>
+    /// <param name="idUsuario">Identificador único del usuario autenticado.</param>
+    /// <param name="mejorPuntuacion">El valor numérico del récord alcanzado.</param>
     public void GuardarMejorPuntuacionEnNube(string idUsuario, int mejorPuntuacion)
     {
         DocumentReference docRef = db.Collection("Jugadores").Document(idUsuario);
@@ -87,15 +92,17 @@ public class DatabaseManager : MonoBehaviour
 
         docRef.SetAsync(datosUsuario, SetOptions.MergeAll).ContinueWithOnMainThread(tarea => 
         {
-            if (tarea.IsFaulted) Debug.LogError("Error al guardar récord en la nube: " + tarea.Exception);
-            else if (tarea.IsCompleted) Debug.Log("¡Nuevo Récord guardado en la nube!: " + mejorPuntuacion);
+            if (tarea.IsFaulted) Debug.LogError("Fallo al persistir la puntuación máxima: " + tarea.Exception);
+            else if (tarea.IsCompleted) Debug.Log("Sincronización de registro máximo completada: " + mejorPuntuacion);
         });
     }
 
-    /*
-    * Método ObtenerMejorPuntuacion():
-    * Recupera la mejor puntuación histórica de este usuario desde Firebase
-    */
+    /// <summary>
+    /// Consulta asíncronamente el documento del usuario para extraer la mejor puntuación registrada.
+    /// Ejecuta una acción de retorno (callback) al finalizar la operación.
+    /// </summary>
+    /// <param name="idUsuario">Identificador único del usuario.</param>
+    /// <param name="alCompletar">Delegado ejecutado tras procesar la consulta, retornando el valor numérico (0 si no existe).</param>
     public void ObtenerMejorPuntuacion(string idUsuario, System.Action<int> alCompletar)
     {
         DocumentReference docRef = db.Collection("Jugadores").Document(idUsuario);
@@ -112,7 +119,6 @@ public class DatabaseManager : MonoBehaviour
                     return;
                 }
             }
-            // Si hay error o no existe el campo, devolvemos 0
             alCompletar?.Invoke(0);
         });
     }

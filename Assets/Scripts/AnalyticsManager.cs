@@ -1,26 +1,27 @@
 using UnityEngine;
 using Firebase.Analytics;
 
-/**
-* CLASE ANALYTICS MANAGER:
-* Centraliza el envío de eventos a Firebase Analytics.
-* Utiliza el patrón Singleton para ser accesible desde cualquier script.
-*/
+/// <summary>
+/// Concentra la lógica de despacho de métricas telemétricas hacia los servidores de Firebase Analytics.
+/// </summary>
 public class AnalyticsManager : MonoBehaviour
 {
     // -----------------------------------------------------------------------------
     // CAMPOS
     // -----------------------------------------------------------------------------
+    
+    /// <summary>
+    /// Provisión estática de la clase para ser consumida de manera ubicua a través del sistema.
+    /// </summary>
     public static AnalyticsManager Instancia;
 
     // -----------------------------------------------------------------------------
     // MÉTODOS
     // -----------------------------------------------------------------------------
 
-    /*
-    * Método Awake():
-    * Garantiza que solo exista una instancia y que no se destruya entre escenas.
-    */
+    /// <summary>
+    /// Valida el cumplimiento del diseño Singleton y protege el objeto de descargas prematuras de memoria.
+    /// </summary>
     void Awake()
     {
         if (Instancia == null)
@@ -34,22 +35,20 @@ public class AnalyticsManager : MonoBehaviour
         }
     }
 
-    /*
-    * Método RegistrarEventoSimple():
-    * Envía un evento básico sin parámetros adicionales.
-    * @param string nombreEvento: El nombre que aparecerá en la consola de Firebase.
-    */
+    /// <summary>
+    /// Interfaz para el registro y subida de una interacción puntual carente de metadatos complejos.
+    /// </summary>
+    /// <param name="nombreEvento">Cadena identificativa vinculada a un hito en el diseño del sistema analítico.</param>
     public void RegistrarEventoSimple(string nombreEvento)
     {
         FirebaseAnalytics.LogEvent(nombreEvento);
-        Debug.Log("Analytics: Evento registrado -> " + nombreEvento);
+        Debug.Log("Notificación telemétrica despachada con la firma -> " + nombreEvento);
     }
 
-    /*
-    * Método RegistrarEventoDificultad():
-    * Registra la velocidad en la que el jugador ha muerto.
-    * @param float velocidad: La velocidad actual del GameManager.
-    */
+    /// <summary>
+    /// Envía un registro multidimensional que asocia un fallo en la sesión con el parámetro de velocidad de los algoritmos de dificultad en dicho lapso.
+    /// </summary>
+    /// <param name="velocidad">Módulo actual que describe el desplazamiento vectorial del nivel relativo al actor.</param>
     public void RegistrarEventoDificultad(float velocidad)
     {
         FirebaseAnalytics.LogEvent("muerte_por_velocidad", "velocidad_final", velocidad);

@@ -1,9 +1,9 @@
 using UnityEngine;
 
-/*
- * SE DEBE ADJUNTAR AL PREFAB DEL OBSTÁCULO.
- * Al nacer el obstáculo, crea una gema que coloca en uno de los nodos.
- */
+/// <summary>
+/// Asignado a los obstáculos. Gestiona la probabilidad matemática de generar 
+/// un componente coleccionable hijo en las coordenadas locales correspondientes.
+/// </summary>
 public class GeneradorGemas : MonoBehaviour
 {
     // -----------------------------------------------------------------------------
@@ -12,7 +12,7 @@ public class GeneradorGemas : MonoBehaviour
     [Header("Configuración")]
     public GameObject prefabGema;
     
-    [Tooltip("Probabilidad de que este obstáculo traiga una gema (0-100)")]
+    [Tooltip("Probabilidad de instanciación expresada en porcentaje (0-100).")]
     public float probabilidadAparicion = 100f;
 
     [Header("Nodos")]
@@ -22,24 +22,22 @@ public class GeneradorGemas : MonoBehaviour
     // MÉTODOS
     // -----------------------------------------------------------------------------
 
-    /*
-    * Método Start: Genera una gema aleatoriamente en uno de los nodos del obstáculo
-    */
+    /// <summary>
+    /// Evalúa la curva de probabilidad y, si se supera el umbral, 
+    /// instancia la gema vinculándola a uno de los puntos ancla predefinidos.
+    /// </summary>
     void Start()
     {
-        // Elección si sale gema o no. 
         if (Random.Range(0f, 100f) > probabilidadAparicion) return;
 
-        // Combrobación: gema no sea nulo y que la lista no esté vacía
         if (nodosPosibles.Length > 0 && prefabGema != null)
         {
             int indiceAleatorio = Random.Range(0, nodosPosibles.Length);
             Transform nodoElegido = nodosPosibles[indiceAleatorio];
 
-            // 'nodoElegido' como 4º parámetro, para que Unity pegue la gema al obstáculo.
             Instantiate(prefabGema, nodoElegido.position, Quaternion.identity, nodoElegido);
             
-            Debug.Log("Gema generada y pegada con éxito en el nodo: " + nodoElegido.name);
+            Debug.Log("Objeto coleccionable adherido a nodo principal: " + nodoElegido.name);
         }
     }
 }

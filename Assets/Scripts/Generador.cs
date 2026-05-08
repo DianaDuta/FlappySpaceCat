@@ -1,10 +1,9 @@
 using UnityEngine;
 
-/*
- * CLASE PADRE ABSTRACTA.
- * Define propiedades de cualquier generador
- * Obliga a las clases hijas a definir sus propias reglas de creacion.
- */
+/// <summary>
+/// Clase abstracta base que establece el contrato estandarizado para la creación 
+/// e instanciación de cualquier tipo de elemento dinámico en la escena.
+/// </summary>
 public abstract class Generador : MonoBehaviour
 {
     //------------------------------------------
@@ -17,8 +16,12 @@ public abstract class Generador : MonoBehaviour
     //---------------------------------------------
     // METODOS
     //--------------------------------------------
-    /*
-    * Metodo de creacion del objeto
-    */
+    
+    /// <summary>
+    /// Método abstracto requerido en clases derivadas para definir la lógica 
+    /// de inicialización del objeto en las coordenadas estipuladas.
+    /// </summary>
+    /// <param name="posicionX">Coordenada horizontal de instanciación.</param>
+    /// <param name="posicionY">Coordenada vertical de instanciación.</param>
     public abstract void Generar(float posicionX, float posicionY);
 }

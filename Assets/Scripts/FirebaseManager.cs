@@ -1,18 +1,21 @@
 using UnityEngine;
 using Firebase;
 using Firebase.Analytics;
-using Firebase.Extensions; // Para no congelar el juego
+using Firebase.Extensions; 
 
-/**
-* CLASE FIREBASE MANAGER:
-* Es único y global. No se destruye al cambiar de escena.
-* Se encarga de despertar y conectar Firebase al inicio del juego.
-*/
+/// <summary>
+/// Provee la inicialización central de la instancia de la aplicación Firebase,
+/// resolviendo dependencias de la plataforma en tiempo de ejecución.
+/// </summary>
 public class FirebaseManager : MonoBehaviour
 {
     // -----------------------------------------------------------------------------
     // CAMPOS
     // -----------------------------------------------------------------------------
+    
+    /// <summary>
+    /// Instancia estática global que previene la inicialización múltiple del SDK.
+    /// </summary>
     public static FirebaseManager Instancia;
     
     [Header("Estado de la Conexión")]
@@ -22,17 +25,14 @@ public class FirebaseManager : MonoBehaviour
     // MÉTODOS
     // -----------------------------------------------------------------------------
 
-    /*
-    * Método Awake():
-    * Patrón Singleton: Asegura que solo exista un FirebaseManager en todo el juego
-    * y que sobreviva al viajar entre el Menú y el Juego.
-    */
+    /// <summary>
+    /// Construye el Singleton y marca el objeto para no ser destruido al cambiar de contexto.
+    /// </summary>
     void Awake()
     {
         if (Instancia == null)
         {
             Instancia = this;
-            // Para que el objeto no se destruya al cargar otra escena
             DontDestroyOnLoad(gameObject); 
         }
         else
@@ -41,39 +41,35 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
-    /*
-    * Método Start():
-    * Nada más arrancar la aplicación, llama a Firebase.
-    */
+    /// <summary>
+    /// Llama al proceso de inicialización y verificación de dependencias de Firebase
+    /// al montar el componente.
+    /// </summary>
     void Start()
     {
         DespertarFirebase();
     }
 
-    /*
-    * Método DespertarFirebase():
-    * Comprueba si el móvil del jugador es compatible y conecta con nuestro google-services.json
-    */
+    /// <summary>
+    /// Verifica asíncronamente las dependencias de Google Play Services en el dispositivo,
+    /// inicializa la configuración de la aplicación y habilita la recolección analítica si procede.
+    /// </summary>
     private void DespertarFirebase()
     {
-        Debug.Log("Intentando conectar con los servidores de Firebase.");
+        Debug.Log("Iniciando validación de dependencias del SDK de Firebase.");
 
-        // CheckAndFixDependenciesAsync revisa que el móvil tenga todo lo necesario instalado
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(tarea => 
         {
             if (tarea.Result == DependencyStatus.Available)
             {
-                // Si la respuesta es positiva, encendemos el sistema
                 firebaseListo = true;
-                Debug.Log("Firebase conectado y listo.");
+                Debug.Log("Servicios de Firebase inicializados y operativos.");
 
-                // Analytics: para recopilar datos
                 FirebaseAnalytics.SetAnalyticsCollectionEnabled(true);
             }
             else
             {
-                // Si falla, avisa con el error exacto en la consola
-                Debug.LogError("Fallo al iniciar Firebase: " + tarea.Result);
+                Debug.LogError(string.Format("Se interrumpió la inicialización de Firebase con el siguiente código de estado: {0}", tarea.Result));
             }
         });
     }

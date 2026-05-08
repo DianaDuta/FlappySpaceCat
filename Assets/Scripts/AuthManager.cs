@@ -4,11 +4,10 @@ using Firebase.Auth;
 using Firebase.Extensions;
 using Google;
 
-/**
-* CLASE AUTH MANAGER:
-* Se encarga exclusivamente de la comunicación con Firebase Authentication y Google.
-* Lee los datos de la interfaz y crea los usuarios.
-*/
+/// <summary>
+/// Gestiona la autenticación de usuarios mediante Firebase Authentication,
+/// incluyendo el registro y acceso a través de correo electrónico y Google Sign-In.
+/// </summary>
 public class AuthManager : MonoBehaviour
 {
     // -----------------------------------------------------------------------------
@@ -18,47 +17,43 @@ public class AuthManager : MonoBehaviour
     private FirebaseAuth auth;
 
     [Header("Interfaz Gráfica (UI)")]
-    [Tooltip("Arrastra aquí el Input_Email")]
     public TMP_InputField inputEmail;
-    
-    [Tooltip("Arrastra aquí el Input_Password")]
     public TMP_InputField inputPassword;
-
-    [Tooltip("Arrastra aquí el Txt_Subtitulo (para dar avisos)")]
     public TextMeshProUGUI textoAvisos;
 
     [Header("Google Sign-In")]
-    [Tooltip("Pega aquí el ID de cliente web larguísimo que copiaste de Firebase")]
     public string webClientId = "";
 
     // -----------------------------------------------------------------------------
     // MÉTODOS
     // -----------------------------------------------------------------------------
 
+    /// <summary>
+    /// Inicializa la instancia predeterminada del servicio de autenticación de Firebase.
+    /// </summary>
     void Start()
     {
         auth = FirebaseAuth.DefaultInstance;
     }
 
-    /*
-    * Método RegistrarUsuarioConEmail():
-    * Se ejecuta al pulsar el botón de "Guardar con Email".
-    */
+    /// <summary>
+    /// Intenta registrar o autenticar al usuario utilizando las credenciales de correo electrónico
+    /// ingresadas en la interfaz de usuario, validando previamente los requisitos de formato y seguridad.
+    /// </summary>
     public void RegistrarUsuarioConEmail()
     {
-        string idUsuario = inputEmail.text.Trim(); // Limpia los espacios
+        string idUsuario = inputEmail.text.Trim(); 
         string password = inputPassword.text;
 
         if (string.IsNullOrEmpty(idUsuario) || string.IsNullOrEmpty(password))
         {
-            if (textoAvisos != null) textoAvisos.text = "Por favor, rellena tu ID y contraseña.";
+            if (textoAvisos != null) textoAvisos.text = "Por favor, introduzca un identificador y una contraseña.";
             return;
         }
 
-        // Validacion Robusta: Mínimo 8 caracteres, al menos 1 letra y 1 número
         if (password.Length < 8)
         {
-            if (textoAvisos != null) textoAvisos.text = "Error: La contraseña debe tener al menos 8 caracteres.";
+            if (textoAvisos != null) textoAvisos.text = "Error: La contraseña debe poseer un mínimo de 8 caracteres.";
             return;
         }
 
@@ -72,79 +67,69 @@ public class AuthManager : MonoBehaviour
 
         if (!tieneLetra || !tieneNumero)
         {
-            if (textoAvisos != null) textoAvisos.text = "Error: La contraseña debe incluir al menos una letra y un número.";
+            if (textoAvisos != null) textoAvisos.text = "Error: La contraseña requiere al menos una letra y un dígito.";
             return;
         }
 
-        // TRUCO: Si el usuario escribe solo un nombre ("dianarcado"), Firebase dirá que el formato está mal.
-        // Simulamos un correo invisible añadiendo un dominio para que Firebase lo acepte súper feliz.
         string emailParaFirebase = idUsuario;
         if (!emailParaFirebase.Contains("@"))
         {
             emailParaFirebase = idUsuario + "@flappyspacecat.com";
         }
 
-        if (textoAvisos != null) textoAvisos.text = "Conectando con la base estelar...";
+        if (textoAvisos != null) textoAvisos.text = "Estableciendo conexión...";
 
         auth.CreateUserWithEmailAndPasswordAsync(emailParaFirebase, password).ContinueWithOnMainThread(tarea =>
         {
             if (tarea.IsCanceled)
             {
-                Debug.LogError("El registro fue cancelado.");
+                Debug.LogError("El proceso de registro fue cancelado.");
                 if (textoAvisos != null) textoAvisos.text = "Registro cancelado.";
                 return;
             }
             if (tarea.IsFaulted)
             {
-                Debug.LogError("Error en el registro: " + tarea.Exception);
+                Debug.LogError("Excepción en el registro: " + tarea.Exception);
                 
-                // Intentamos dar un mensaje más claro dependiendo del error de Firebase
-                string mensajeError = "Error al crear la cuenta. Revisa los datos.";
+                string mensajeError = "Error al crear la cuenta. Verifique los datos.";
                 if (tarea.Exception.ToString().Contains("EmailAlreadyInUse"))
                 {
-                    mensajeError = "Ese Nombre (ID) ya está cogido. ¡Elige otro!";
+                    mensajeError = "El identificador proporcionado ya se encuentra registrado.";
                 }
 
                 if (textoAvisos != null) textoAvisos.text = mensajeError;
                 return;
             }
 
-            // Firebase devuelve un AuthResult para el Email
             AuthResult resultado = tarea.Result;
-            Debug.Log("¡Piloto registrado con éxito! ID: " + resultado.User.UserId);
-            if (textoAvisos != null) textoAvisos.text = "¡Cuenta creada con éxito!";
+            Debug.Log("Usuario registrado exitosamente. ID: " + resultado.User.UserId);
+            if (textoAvisos != null) textoAvisos.text = "Cuenta creada exitosamente.";
 
-            // FUNNEL REGISTRO
             AnalyticsManager.Instancia.RegistrarEventoSimple("registro_email_exito");
 
-            // Guarda las gemas en Firebase
             int gemasLocales = SecurePrefs.GetInt("GemasLocales", 0);
-            
-            // Saca el ID del User que está dentro del resultado
             string idUnico = resultado.User.UserId; 
             
             if (DatabaseManager.Instancia != null)
             {
                 DatabaseManager.Instancia.GuardarGemasEnNube(idUnico, gemasLocales);
-                Debug.Log("Gemas guardadas en la nube.");
             }
             else
             {
-                Debug.LogError("No se encontró el DatabaseManager en la escena.");
+                Debug.LogError("Instancia de DatabaseManager no encontrada en la jerarquía.");
             } 
 
-            // Cerrar el panel de inicio de sesión y mostrar el Game Over para que decidan si ver anuncio
             StartCoroutine(TransicionAGameOver());
         });
     }
 
-    /*
-    * Método TransicionAGameOver():
-    * Espera un segundo para que el usuario pueda leer el mensaje de éxito antes de cambiar de pantalla.
-    */
+    /// <summary>
+    /// Retrasa la transición de la interfaz para asegurar que el mensaje informativo sea legible 
+    /// antes de ocultar el panel de inicio de sesión.
+    /// </summary>
     private System.Collections.IEnumerator TransicionAGameOver()
     {
-        yield return new WaitForSecondsRealtime(1.5f); // Usamos Realtime porque Time.timeScale suele ser 0 en menús
+        yield return new WaitForSecondsRealtime(1.5f); 
 
         if (GameManager.Instancia != null)
         {
@@ -156,13 +141,13 @@ public class AuthManager : MonoBehaviour
         }
     }
 
-    /*
-    * Método RegistrarUsuarioConGoogle():
-    * Se ejecuta al pulsar el botón de "Guardar con Google".
-    */
+    /// <summary>
+    /// Inicia el proceso de autenticación federada utilizando los servicios de Google Sign-In,
+    /// obteniendo un token de acceso y validándolo con Firebase Auth.
+    /// </summary>
     public void RegistrarUsuarioConGoogle()
     {
-        if (textoAvisos != null) textoAvisos.text = "Abriendo conexión con Google...";
+        if (textoAvisos != null) textoAvisos.text = "Iniciando servicio de Google...";
 
         GoogleSignIn.Configuration = new GoogleSignInConfiguration
         {
@@ -174,20 +159,20 @@ public class AuthManager : MonoBehaviour
         {
             if (tareaGoogle.IsCanceled)
             {
-                Debug.LogError("Inicio de sesión de Google cancelado.");
+                Debug.LogError("Operación de Google Sign-In cancelada.");
                 if (textoAvisos != null) textoAvisos.text = "Conexión cancelada.";
                 return;
             }
             if (tareaGoogle.IsFaulted)
             {
-                Debug.LogError("Error en Google Sign-In: " + tareaGoogle.Exception);
-                if (textoAvisos != null) textoAvisos.text = "Error al conectar con Google.";
+                Debug.LogError("Fallo en Google Sign-In: " + tareaGoogle.Exception);
+                if (textoAvisos != null) textoAvisos.text = "Error al conectar con los servicios de Google.";
                 return;
             }
 
             string idToken = tareaGoogle.Result.IdToken;
 
-            if (textoAvisos != null) textoAvisos.text = "Autenticando en la base estelar...";
+            if (textoAvisos != null) textoAvisos.text = "Verificando credenciales...";
 
             Credential credencial = GoogleAuthProvider.GetCredential(idToken, null);
 
@@ -195,21 +180,17 @@ public class AuthManager : MonoBehaviour
             {
                 if (tareaFirebase.IsCanceled || tareaFirebase.IsFaulted)
                 {
-                    Debug.LogError("Error al entrar en Firebase con Google.");
-                    if (textoAvisos != null) textoAvisos.text = "Error de conexión con la base.";
+                    Debug.LogError("Error en la validación de credenciales con Firebase.");
+                    if (textoAvisos != null) textoAvisos.text = "Error de conexión con la base de datos.";
                     return;
                 }
 
-                // Firebase devuelve directamente el FirebaseUser para Google
                 FirebaseUser usuarioGoogle = tareaFirebase.Result;
-                Debug.Log("¡Piloto de Google registrado! ID: " + usuarioGoogle.UserId);
+                Debug.Log("Usuario validado mediante Google. ID: " + usuarioGoogle.UserId);
 
-                // FUNNEL REGISTRO
                 AnalyticsManager.Instancia.RegistrarEventoSimple("registro_google_exito");
                 
                 int gemasLocales = SecurePrefs.GetInt("GemasLocales", 0);
-                
-                // Saca el ID directo del usuario
                 string idUnico = usuarioGoogle.UserId; 
                 
                 if (DatabaseManager.Instancia != null)
@@ -217,9 +198,8 @@ public class AuthManager : MonoBehaviour
                     DatabaseManager.Instancia.GuardarGemasEnNube(idUnico, gemasLocales);
                 }
 
-                if (textoAvisos != null) textoAvisos.text = "¡Cuenta de Google conectada con éxito!";
+                if (textoAvisos != null) textoAvisos.text = "Sincronización con Google completada.";
 
-                // Cerrar el panel de inicio de sesión y mostrar el Game Over
                 StartCoroutine(TransicionAGameOver());
             });
         });

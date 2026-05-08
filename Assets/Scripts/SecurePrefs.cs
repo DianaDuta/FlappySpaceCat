@@ -3,22 +3,27 @@ using System.Security.Cryptography;
 using System.Text;
 using System;
 
-/**
- * CLASE SECURE PREFS
- * Protege los datos locales (Gemas, Récords, etc.) encriptándolos 
- * para que los jugadores no puedan modificar el archivo de guardado del móvil haciendo trampas.
- */
+/// <summary>
+/// Proveedor de persistencia local encriptada. Sustituye al PlayerPrefs convencional
+/// integrando ofuscación XOR y firmas de verificación (Hashes SHA-256) para prevenir
+/// alteraciones ilegítimas de los archivos de guardado locales.
+/// </summary>
 public static class SecurePrefs
 {
-    // Clave secreta para encriptar los datos del juego
     private static readonly string secretKey = "fL4pPy_C4t_s3cR3t_k3Y_2026!"; 
     private static readonly byte[] salt = new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 };
 
+    /// <summary>
+    /// Guarda un valor entero encriptado en el sistema de preferencias.
+    /// </summary>
     public static void SetInt(string key, int value)
     {
         SetString(key, value.ToString());
     }
 
+    /// <summary>
+    /// Recupera un valor entero desencriptándolo y verificando su integridad.
+    /// </summary>
     public static int GetInt(string key, int defaultValue = 0)
     {
         string result = GetString(key, "");
@@ -28,6 +33,9 @@ public static class SecurePrefs
         return defaultValue;
     }
 
+    /// <summary>
+    /// Encripta y firma mediante Hash una cadena de texto, y la almacena localmente.
+    /// </summary>
     public static void SetString(string key, string value)
     {
         string encryptedValue = Encrypt(value);
@@ -36,6 +44,9 @@ public static class SecurePrefs
         PlayerPrefs.SetString(key + "_HASH", hash);
     }
 
+    /// <summary>
+    /// Extrae una cadena asegurada, cotejando primero el hash para evitar lecturas de datos manipulados.
+    /// </summary>
     public static string GetString(string key, string defaultValue = "")
     {
         string encryptedValue = PlayerPrefs.GetString(key, "");
@@ -44,10 +55,9 @@ public static class SecurePrefs
         string savedHash = PlayerPrefs.GetString(key + "_HASH", "");
         string expectedHash = GenerateHash(encryptedValue);
 
-        // Si el hash no cuadra, alguien ha modificado el archivo de guardado trampa
         if (savedHash != expectedHash)
         {
-            Debug.LogWarning("SecurePrefs: ¡Alerta de trampas! Datos corruptos o alterados en la clave: " + key);
+            Debug.LogWarning("SecurePrefs: Infracción de integridad detectada. Archivo de guardado corrupto o modificado en la clave: " + key);
             return defaultValue;
         }
 
@@ -58,18 +68,25 @@ public static class SecurePrefs
         }
     }
 
+    /// <summary>
+    /// Elimina una clave protegida y su correspondiente firma hash.
+    /// </summary>
     public static void DeleteKey(string key)
     {
         PlayerPrefs.DeleteKey(key);
         PlayerPrefs.DeleteKey(key + "_HASH");
     }
 
+    /// <summary>
+    /// Fuerza la escritura de los cambios pendientes en el disco físico.
+    /// </summary>
     public static void Save()
     {
         PlayerPrefs.Save();
     }
 
-    // --- MÉTODOS DE ENCRIPTACIÓN (XOR Cifrado Básico + Sal) ---
+    // --- MÉTODOS DE ENCRIPTACIÓN ---
+    
     private static string Encrypt(string plainText)
     {
         byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);

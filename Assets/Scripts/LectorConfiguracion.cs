@@ -1,10 +1,9 @@
 using UnityEngine;
-using System.IO; // Para leer archivos
+using System.IO; 
 
-/*
-* Clase que representa la estructura de los datos de configuración del juego.
-* Los nombres de las variables deben coincidir con los nombres de las propiedades en el archivo JSON para que JsonUtility pueda mapearlos correctamente.
-*/
+/// <summary>
+/// Mapea la estructura serializada de las propiedades procedentes de los archivos remotos o locales.
+/// </summary>
 [System.Serializable]
 public class DatosJuego
 {
@@ -12,40 +11,37 @@ public class DatosJuego
     public float frecuenciaObstaculos;
     public float gravedadJugador;
 }
-/*
-* Este script se encarga de leer la configuración del juego desde un archivo JSON.
-* El archivo JSON debe estar ubicado en la carpeta "StreamingAssets" del proyecto de Unity.
-* La clase DatosJuego define la estructura de los datos que se esperan en el JSON.
-* La instancia estática "Datos" permite acceder a estos valores desde cualquier otro script.
-*/
+
+/// <summary>
+/// Se encarga de deserializar la configuración JSON localizada en el entorno del dispositivo, 
+/// brindando variables globales preconfiguradas y previniendo errores por archivos faltantes.
+/// </summary>
 public class LectorConfiguracion : MonoBehaviour
 {
-    // Instancia estática para poder acceder a los datos desde cualquier otro script
+    /// <summary>
+    /// Repositorio de parámetros globales al que pueden suscribirse los demás módulos.
+    /// </summary>
     public static DatosJuego Datos = new DatosJuego { velocidadJuego = 4f, frecuenciaObstaculos = 2f, gravedadJugador = 1.5f };
 
-/*
-* Método Awake, se construye la ruta al archivo JSON y se verifica si existe.
-* Si el archivo existe, se lee su contenido y se parsea a un objeto de tipo DatosJuego utilizando JsonUtility.
-* Si el archivo no se encuentra, se asignan valores por defecto a la instancia de DatosJuego y se muestra un mensaje de error en la consola.
-*/
+    /// <summary>
+    /// Localiza el archivo JSON alojado en StreamingAssets y parsea la cadena a un objeto C#.
+    /// Asigna parámetros de contingencia en caso de presentarse una excepción I/O.
+    /// </summary>
     void Awake()
     {
-        // Construye la ruta al archivo JSON simulando que es una respuesta de servidor
         string rutaArchivo = Path.Combine(Application.streamingAssetsPath, "configuracion.json");
 
         if (File.Exists(rutaArchivo))
         {
-            // Lee el texto del archivo
             string contenidoJson = File.ReadAllText(rutaArchivo);
             
-            // Parsea el texto a un objeto de Unity
             Datos = JsonUtility.FromJson<DatosJuego>(contenidoJson);
             
-            Debug.Log("Configuración cargada. Velocidad: " + Datos.velocidadJuego);
+            Debug.Log("Archivo de inicialización parseado correctamente. Constante de velocidad cargada: " + Datos.velocidadJuego);
         }
         else
         {
-            Debug.LogError("No se encontró el archivo de configuración. Usando valores por defecto.");
+            Debug.LogError("Excepción I/O: Archivo de configuración inexistente. Activando perfil de contingencia.");
             Datos = new DatosJuego {
                 velocidadJuego = 4f,
                 frecuenciaObstaculos = 2f,

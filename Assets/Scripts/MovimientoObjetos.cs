@@ -1,27 +1,29 @@
 using UnityEngine;
 
-/*
-* Controla el movimiento de los obstáculos en el juego.
-* Los obstáculos se mueven hacia la izquierda a una velocidad progresiva en tiempo real desde el GameManager.
-* Cuando un obstáculo se pasa del límite izquierdo de la pantalla, se destruye automáticamente para liberar memoria.
-*/
+/// <summary>
+/// Controla la translación espacial de los elementos generados en la escena, 
+/// su autodestrucción por fuera de cámara y la lógica de puntuación pasiva.
+/// </summary>
 public class MovimientoObjetos : MonoBehaviour
 {
     //--------------------------------
     // CAMPOS
     //--------------------------------
-    // Límite X donde el objeto se destruye. 
-    // Jugador está en -7.35, lo pone en -12  para asegurar que salga totalmente de la pantalla.
+    
+    [Tooltip("Coordenada X en la cual el objeto será destruido para liberar memoria.")]
     public float limiteIzquierda = -12f; 
 
     private bool haPuntuado = false;
     private bool esObstaculoPuntuable = false;
     private ControladorJugagor jugador;
 
+    /// <summary>
+    /// Captura la referencia del jugador y determina si este objeto cuenta como obstáculo puntuable.
+    /// </summary>
     void Start()
     {
         jugador = FindAnyObjectByType<ControladorJugagor>();
-        // Solo comprobamos la puntuación si este objeto es un Obstáculo (y no una Gema u otro adorno)
+        
         if (gameObject.name.Contains("Obstaculo"))
         {
             esObstaculoPuntuable = true;
@@ -31,27 +33,24 @@ public class MovimientoObjetos : MonoBehaviour
     //--------------------------------
     // MÉTODOS
     //--------------------------------
-    /*
-    * Método Update, se obtiene la velocidad del juego desde el JSON y se mueve el obstáculo hacia la izquierda.
-    * Si el obstáculo se pasa del límite izquierdo, se destruye para liberar memoria.
-    */
+    
+    /// <summary>
+    /// Traslada el objeto a la izquierda, basándose en la velocidad asíncrona del gestor principal.
+    /// Detecta pasivamente cuando se ha sobrepasado al jugador para sumar puntos, 
+    /// y destruye el componente al rebasar el límite izquierdo.
+    /// </summary>
     void Update()
     {
-        // OBTENER VELOCIDAD
-        // Lee la velocidad del JSON. Si no existe, usa 3 por defecto.
         float velocidad = 3f;
         if (GameManager.Instancia != null)
         {
             velocidad = GameManager.Instancia.velocidadActual;
         }
 
-        // MUEVE HACIA LA IZQUIERDA: Multiplica por Time.deltaTime para que el movimiento sea suave y constante
         transform.Translate(Vector3.left * velocidad * Time.deltaTime, Space.World);
 
-        // PUNTUACIÓN AUTOMÁTICA POR POSICIÓN (Sin necesidad de colliders)
         if (esObstaculoPuntuable && !haPuntuado && jugador != null)
         {
-            // Si la coordenada X del obstáculo ha sobrepasado la del jugador... ¡Punto!
             if (transform.position.x < jugador.transform.position.x)
             {
                 haPuntuado = true;
@@ -59,7 +58,6 @@ public class MovimientoObjetos : MonoBehaviour
             }
         }
 
-        // AUTODESTRUCCIÓN: Si el objeto se pasa del límite izquierdo, se borra de la memoria
         if (transform.position.x < limiteIzquierda)
         {
             Destroy(gameObject);
