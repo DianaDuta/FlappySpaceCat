@@ -674,8 +674,8 @@ Transform:
   m_GameObject: {fileID: 7926036725598542294}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.78, y: 0.12, z: 0}
-  m_LocalScale: {x: -0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: -18.78, y: 0, z: 0}
+  m_LocalScale: {x: -0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1210428913109750340}
@@ -815,7 +815,7 @@ Animator:
   m_GameObject: {fileID: 7926036725598542294}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8086b8bf8694a8e46b98c0bfdaf0b5a6, type: 2}
+  m_Controller: {fileID: 9100000, guid: 6b4b541c5cc7c124885c9102ce4ad714, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -877,10 +877,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControladorJugagor
   fuerzaSalto: 5
+  animacionNormal: {fileID: 7400000, guid: 2aee80ca7a90d2d4c8af855c65e0e43c, type: 2}
+  animacionSalto: {fileID: 7400000, guid: 5499f35db215b6c42ba172b40bc211c2, type: 2}
   sonidoSalto: {fileID: 8300000, guid: 524197d5b488e5845a96652f994fb502, type: 3}
   sonidoMuerte: {fileID: 8300000, guid: ea9111a038aad4f4b96a1621eae1b7a3, type: 3}
   faceRenderer: {fileID: 4715977509046684807}
   caraMuerte: {fileID: 21300016, guid: 95c507b80d29a4fcb9f9e818b123bf5e, type: 3}
+  nombrePuntoAparicion: Punto_Aparicion_Jugador
   limiteArriba: 4.5
   limiteAbajo: -6.5
 --- !u!1 &9199201455637889971

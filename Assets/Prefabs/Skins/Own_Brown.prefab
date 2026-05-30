@@ -394,8 +394,8 @@ Transform:
   m_GameObject: {fileID: 3864935115976659831}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.03, z: 0}
-  m_LocalScale: {x: -0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: -0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4951613336822584678}
@@ -535,7 +535,7 @@ Animator:
   m_GameObject: {fileID: 3864935115976659831}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 232848451f94cb44993b0dd97817f7f5, type: 2}
+  m_Controller: {fileID: 9100000, guid: cbc1ebe9326c53340b8387c0af302f12, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -601,6 +601,7 @@ MonoBehaviour:
   sonidoMuerte: {fileID: 8300000, guid: 89b3a717b09e8f540bff9d815203833b, type: 3}
   faceRenderer: {fileID: 1607395517437790152}
   caraMuerte: {fileID: 21300018, guid: 82eb0d846fefc4a5d9018feed09d59c3, type: 3}
+  nombrePuntoAparicion: Punto_Aparicion_Jugador
   limiteArriba: 4.5
   limiteAbajo: -6.5
 --- !u!1 &4569630777685509410
@@ -720,16 +721,16 @@ Transform:
   m_GameObject: {fileID: 5214307037080293991}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7345477747674107603}
   - {fileID: 6565166104732969212}
   - {fileID: 5965152981840465777}
   - {fileID: 5105977915461087652}
   - {fileID: 931935650763344265}
   - {fileID: 2080411171690694974}
-  - {fileID: 7345477747674107603}
   m_Father: {fileID: 2104919968601400858}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8760151349468234946
@@ -870,7 +871,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300010, guid: 82eb0d846fefc4a5d9018feed09d59c3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

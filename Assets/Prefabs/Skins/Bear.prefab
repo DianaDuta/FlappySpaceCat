@@ -79,7 +79,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300008, guid: 7f61f0b9af8a7458581e517a958321d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -121,8 +121,8 @@ Transform:
   m_GameObject: {fileID: 3236756983523647450}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.736, y: -0.436, z: 0}
-  m_LocalScale: {x: -0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: -7.736, y: 0, z: 0}
+  m_LocalScale: {x: -0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2386588993559064524}
@@ -262,7 +262,7 @@ Animator:
   m_GameObject: {fileID: 3236756983523647450}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d01a825aec12da242831d574f5e5890d, type: 2}
+  m_Controller: {fileID: 9100000, guid: 39af348ba0bc34a4ba33d3a0f7cdf658, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -328,6 +328,7 @@ MonoBehaviour:
   sonidoMuerte: {fileID: 8300000, guid: 524197d5b488e5845a96652f994fb502, type: 3}
   faceRenderer: {fileID: 1756700620242269691}
   caraMuerte: {fileID: 21300018, guid: 7f61f0b9af8a7458581e517a958321d0, type: 3}
+  nombrePuntoAparicion: Punto_Aparicion_Jugador
   limiteArriba: 4.5
   limiteAbajo: -6.5
 --- !u!1 &3476525246266111855
@@ -356,7 +357,7 @@ Transform:
   m_GameObject: {fileID: 3476525246266111855}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.51, y: -0.67, z: 0}
+  m_LocalPosition: {x: -0.513, y: -0.637, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -501,7 +502,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 7f61f0b9af8a7458581e517a958321d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -683,7 +684,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 3
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300014, guid: 7f61f0b9af8a7458581e517a958321d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -779,7 +780,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300002, guid: 7f61f0b9af8a7458581e517a958321d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

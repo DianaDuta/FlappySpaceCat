@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6cf45926a7542a44b8f3a36c7235656e
+guid: d031a941bf30fd5459a89cb326898fc1
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -142,10 +142,10 @@ TextureImporter:
       name: Cat_Grey_0
       rect:
         serializedVersion: 2
-        x: 10
-        y: 2
-        width: 216
-        height: 255
+        x: 34
+        y: 18
+        width: 228
+        height: 269
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

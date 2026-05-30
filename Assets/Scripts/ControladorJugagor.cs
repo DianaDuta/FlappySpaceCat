@@ -15,6 +15,7 @@ public class ControladorJugagor : MonoBehaviour
     private bool estaVivo = true;
     private Vector3 posicionOriginal;
     
+
     [Header("Efectos de Sonido")]
     public AudioClip sonidoSalto; 
     public AudioClip sonidoMuerte; 
@@ -25,6 +26,11 @@ public class ControladorJugagor : MonoBehaviour
     public Sprite caraMuerte;           
     private Sprite caraOriginal;        
 
+    [Header("Posicionamiento Responsivo")]
+    [Tooltip("Nombre del GameObject en la escena que define el punto de generación absoluto.")]
+    public string nombrePuntoAparicion = "Punto_Aparicion_Jugador";
+
+    [Header("Límites de Vuelo")]
     public float limiteArriba = 4.5f; 
     public float limiteAbajo = -6.5f; 
 
@@ -42,16 +48,42 @@ public class ControladorJugagor : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
 
+        Vector3 posInicial = transform.position;
+
+        // Búsqueda automática del punto de generación por nombre en la escena activa
+        GameObject puntoReferencia = GameObject.Find(nombrePuntoAparicion);
+
+        if (puntoReferencia != null)
+        {
+            // Se fuerza al punto de referencia a actualizar su posición responsiva
+            // para asegurar que las coordenadas estén calculadas en base a la pantalla real de Start().
+            PosicionadorPorViewport posicionador = puntoReferencia.GetComponent<PosicionadorPorViewport>();
+            if (posicionador != null)
+            {
+                posicionador.ActualizarPosicion();
+            }
+
+            // Asignación de coordenadas estáticas a partir de la referencia de generación encontrada.
+            transform.position = new Vector3(puntoReferencia.transform.position.x, puntoReferencia.transform.position.y, transform.position.z);
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ [DEBUG_PLAYER] No se encontró el objeto de referencia: " + nombrePuntoAparicion + ". El personaje iniciará en su posición de diseño por defecto.");
+        }
+
+        // 2. Calculamos el límite inferior de muerte en base al borde de la cámara
         if (Camera.main != null)
         {
             float distanciaZ = transform.position.z - Camera.main.transform.position.z;
-            Vector3 posicionViewport = new Vector3(0.05f, 0f, distanciaZ);
-            Vector3 posicionMundo = Camera.main.ViewportToWorldPoint(posicionViewport);
-            
-            transform.position = new Vector3(posicionMundo.x, transform.position.y, transform.position.z);
+            Vector3 limiteInferiorViewport = new Vector3(0f, 0f, distanciaZ);
+            limiteAbajo = Camera.main.ViewportToWorldPoint(limiteInferiorViewport).y - 0.5f;
         }
 
         posicionOriginal = transform.position;
+
+        Debug.Log("[DEBUG_PLAYER] Player Start. GameObject: " + gameObject.name + 
+                  ", Posicion Inicial: " + posInicial + 
+                  ", Posicion Final: " + transform.position);
 
         if (LectorConfiguracion.Datos != null)
         {
@@ -77,7 +109,7 @@ public class ControladorJugagor : MonoBehaviour
             
             if (animator != null)
             {
-                animator.Play("Player_Salto");
+                animator.SetTrigger("Jump");
             }
 
             if (audioSource != null && sonidoSalto != null)
@@ -86,11 +118,18 @@ public class ControladorJugagor : MonoBehaviour
             }
         }
 
-        if (estaVivo && animator != null && rb.linearVelocity.y < 0)
+        if (estaVivo && animator != null)
         {
-            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Player_Normal"))
+            // Se aplica un umbral de tolerancia (-0.5f) para evitar que las fluctuaciones físicas
+            // o colisiones con el suelo en el primer fotograma cancelen instantáneamente la animación de salto.
+            bool cayendo = rb.linearVelocity.y < -0.5f;
+            animator.SetBool("IsFalling", cayendo);
+
+            if (cayendo)
             {
-                animator.Play("Player_Normal");
+                // Limpia cualquier trigger de salto acumulado (doble clic) para evitar que 
+                // se reproduzca un salto fantasma al volver al estado normal.
+                animator.ResetTrigger("Jump");
             }
         }
 
@@ -138,7 +177,8 @@ public class ControladorJugagor : MonoBehaviour
     /// <param name="colision">Los datos de la colisión capturada por el motor físico.</param>
     void OnCollisionEnter2D(Collision2D colision)
     {
-        if (colision.gameObject.CompareTag("Obstaculo") && estaVivo)
+        // En este tipo de juego, tocar cualquier objeto físico (Obstáculo o Suelo) es letal.
+        if (estaVivo)
         {
             estaVivo = false;
 
@@ -185,7 +225,8 @@ public class ControladorJugagor : MonoBehaviour
         if (animator != null)
         {
             animator.enabled = true; 
-            animator.Play("Player_Normal");
+            animator.SetBool("IsFalling", false);
+            animator.Rebind(); // Reinicia el Animator a su estado por defecto
         }
         if (faceRenderer != null && caraOriginal != null)
         {

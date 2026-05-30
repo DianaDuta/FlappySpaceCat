@@ -122,4 +122,30 @@ public class DatabaseManager : MonoBehaviour
             alCompletar?.Invoke(0);
         });
     }
+
+    /// <summary>
+    /// Consulta asíncronamente el documento del usuario para extraer el total de gemas registradas en la nube.
+    /// Ejecuta una acción de retorno (callback) al finalizar la operación.
+    /// </summary>
+    /// <param name="idUsuario">Identificador único del usuario.</param>
+    /// <param name="alCompletar">Delegado ejecutado tras procesar la consulta, retornando el valor numérico (0 si no existe).</param>
+    public void ObtenerGemasTotales(string idUsuario, System.Action<int> alCompletar)
+    {
+        DocumentReference docRef = db.Collection("Jugadores").Document(idUsuario);
+        
+        docRef.GetSnapshotAsync().ContinueWithOnMainThread(tarea =>
+        {
+            if (tarea.IsCompleted && !tarea.IsFaulted)
+            {
+                DocumentSnapshot snap = tarea.Result;
+                if (snap.Exists && snap.ContainsField("gemasTotales"))
+                {
+                    int gemas = snap.GetValue<int>("gemasTotales");
+                    alCompletar?.Invoke(gemas);
+                    return;
+                }
+            }
+            alCompletar?.Invoke(0);
+        });
+    }
 }

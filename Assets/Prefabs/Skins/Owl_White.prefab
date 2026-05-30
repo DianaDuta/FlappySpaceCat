@@ -395,8 +395,8 @@ Transform:
   m_GameObject: {fileID: 3872132501471871878}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.74, y: 0.09, z: 0}
-  m_LocalScale: {x: -0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: -7.74, y: 0, z: 0}
+  m_LocalScale: {x: -0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4113702871252970037}
@@ -536,7 +536,7 @@ Animator:
   m_GameObject: {fileID: 3872132501471871878}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 232848451f94cb44993b0dd97817f7f5, type: 2}
+  m_Controller: {fileID: 9100000, guid: cbc1ebe9326c53340b8387c0af302f12, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -602,6 +602,7 @@ MonoBehaviour:
   sonidoMuerte: {fileID: 8300000, guid: 89b3a717b09e8f540bff9d815203833b, type: 3}
   faceRenderer: {fileID: 8282577403501007}
   caraMuerte: {fileID: 21300018, guid: b6363655a8d174853868ee184df775f3, type: 3}
+  nombrePuntoAparicion: Punto_Aparicion_Jugador
   limiteArriba: 4.5
   limiteAbajo: -6.5
 --- !u!1 &5601941491043051813
@@ -634,9 +635,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8818847170575895339}
   - {fileID: 8447593636266864397}
   - {fileID: 4568344047341140039}
-  - {fileID: 8818847170575895339}
   - {fileID: 1467833314581172858}
   - {fileID: 1542654094885403984}
   - {fileID: 1595104095455510658}
@@ -780,7 +781,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300010, guid: b6363655a8d174853868ee184df775f3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

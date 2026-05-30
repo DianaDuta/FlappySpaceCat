@@ -11,5 +11,6 @@ public class TarjetaSkinUI : MonoBehaviour
     public Image iconoGato;
     public TextMeshProUGUI txtNombre;
     public TextMeshProUGUI txtPrecio;
+    public Image iconoGema; // Imagen pequeña de la gema junto al precio
     public Button botonAccion; 
 }

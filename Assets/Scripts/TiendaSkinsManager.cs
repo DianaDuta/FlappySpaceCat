@@ -33,6 +33,11 @@ public class TiendaSkinsManager : MonoBehaviour
     public Transform contenidoScroll;
     public GameObject prefabTarjetaSkin; 
 
+    [Header("Sprites de Botones")]
+    public Sprite spriteBotonEquipado;
+    public Sprite spriteBotonComprar;
+    public Sprite spriteBotonDesbloqueado;
+
     /// <summary>
     /// Inicializa la interfaz de la tienda y actualiza el botón de perfil con la skin equipada actualmente.
     /// </summary>
@@ -75,6 +80,13 @@ public class TiendaSkinsManager : MonoBehaviour
     public void ActualizarBotonPerfil()
     {
         int skinActiva = SecurePrefs.GetInt("SkinEquipada", 0);
+
+        // Notifica de inmediato al PerfilManager para actualizar los prefabs animados en el menú y perfil
+        if (PerfilManager.Instancia != null)
+        {
+            PerfilManager.Instancia.ActualizarIconoSkin(skinActiva);
+        }
+
         if (todasLasSkins != null && todasLasSkins.Length > 0 && skinActiva < todasLasSkins.Length)
         {
             if (imagenBotonPerfil != null) imagenBotonPerfil.sprite = todasLasSkins[skinActiva].icono;
@@ -107,18 +119,39 @@ public class TiendaSkinsManager : MonoBehaviour
 
                 if (desbloqueada)
                 {
+                    // Como no hay precio que mostrar, se desactiva el icono de la gema
+                    if (scriptTarjeta.iconoGema != null) scriptTarjeta.iconoGema.gameObject.SetActive(false);
+
                     if (skinActiva == indiceSkin)
                     {
                         scriptTarjeta.txtPrecio.text = "EQUIPADO";
+                        if (scriptTarjeta.botonAccion.image != null && spriteBotonEquipado != null) 
+                        {
+                            scriptTarjeta.botonAccion.image.sprite = spriteBotonEquipado;
+                            scriptTarjeta.botonAccion.image.color = Color.white; // Evita que se tiña el sprite
+                        }
                     }
                     else
                     {
                         scriptTarjeta.txtPrecio.text = "SELECCIONAR";
+                        if (scriptTarjeta.botonAccion.image != null && spriteBotonDesbloqueado != null) 
+                        {
+                            scriptTarjeta.botonAccion.image.sprite = spriteBotonDesbloqueado;
+                            scriptTarjeta.botonAccion.image.color = Color.white;
+                        }
                     }
                 }
                 else
                 {
-                    scriptTarjeta.txtPrecio.text = todasLasSkins[i].precioGemas.ToString() + " G";
+                    // Como cuesta dinero, se muestra solo el número y se activa el icono de la gema
+                    scriptTarjeta.txtPrecio.text = todasLasSkins[i].precioGemas.ToString();
+                    if (scriptTarjeta.iconoGema != null) scriptTarjeta.iconoGema.gameObject.SetActive(true);
+                    
+                    if (scriptTarjeta.botonAccion.image != null && spriteBotonComprar != null) 
+                    {
+                        scriptTarjeta.botonAccion.image.sprite = spriteBotonComprar;
+                        scriptTarjeta.botonAccion.image.color = Color.white;
+                    }
                 }
 
                 scriptTarjeta.botonAccion.onClick.RemoveAllListeners();
@@ -144,6 +177,9 @@ public class TiendaSkinsManager : MonoBehaviour
             SecurePrefs.SetInt("SkinEquipada", indice);
             ActualizarBotonPerfil();
             GenerarBotonesSkins(); 
+            
+            // Se actualiza el avatar 3D/2D del menú de fondo en tiempo real
+            if (GameManager.Instancia != null) GameManager.Instancia.GenerarJugadorConSkin();
         }
         else
         {
@@ -170,11 +206,46 @@ public class TiendaSkinsManager : MonoBehaviour
 
                 ActualizarBotonPerfil();
                 GenerarBotonesSkins(); 
+
+                // Se actualiza el avatar 3D/2D del menú de fondo en tiempo real
+                if (GameManager.Instancia != null) GameManager.Instancia.GenerarJugadorConSkin();
+
+                // Se registran los logros de la tienda
+                if (LogrosManager.Instancia != null)
+                {
+                    LogrosManager.Instancia.DesbloquearLogro(TipoLogro.CambioLook);
+                    ComprobarLogroColeccionista();
+                }
             }
             else
             {
                 Debug.LogWarning("Saldo insuficiente para adquirir: " + todasLasSkins[indice].nombrePersonaje);
             }
+        }
+    }
+
+    /// <summary>
+    /// Comprueba si el usuario ha desbloqueado todas las skins disponibles
+    /// para otorgarle el logro correspondiente.
+    /// </summary>
+    private void ComprobarLogroColeccionista()
+    {
+        if (todasLasSkins == null || todasLasSkins.Length == 0) return;
+
+        bool todasDesbloqueadas = true;
+        // Se empieza desde 1 porque la skin 0 siempre es gratis/por defecto
+        for (int i = 1; i < todasLasSkins.Length; i++)
+        {
+            if (SecurePrefs.GetInt("SkinDesbloqueada_" + i, 0) == 0)
+            {
+                todasDesbloqueadas = false;
+                break;
+            }
+        }
+
+        if (todasDesbloqueadas)
+        {
+            LogrosManager.Instancia.DesbloquearLogro(TipoLogro.Coleccionista);
         }
     }
 }

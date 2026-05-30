@@ -38,27 +38,43 @@ public class GameManager : MonoBehaviour
     public float tiempoParaAumentar = 10f; 
     
     private float temporizador = 0f;
+    private int aumentosVelocidadPartida = 0; // Se utiliza para el logro VelocidadLuz
+
+    [Header("Registro de tiempo")]
+    public float tiempoUltimaGema = -1f; // Se utiliza para el logro AvaroDespistado
 
     [Header("Interfaz Gráfica (UI)")]
     public GameObject contenedorGemas;
     public TextMeshProUGUI textoGemas;
     public TextMeshProUGUI txtPuntuacionGameplay;
-    
+    public GameObject botonPausa;
+
     [Header("Textos Pantalla Game Over")]
     public TextMeshProUGUI txtPuntuacionActual_GameOver;
     public TextMeshProUGUI txtMejorPuntuacion_GameOver;
 
+    [Header("Paneles")]
     public GameObject panelGameOver;
     public GameObject panelInicioSesion;
     public GameObject panelMenuPrincipal;
-    public GameObject panelPausa;
-    public GameObject botonPausa;
+    public GameObject panelPausa; 
+
+    [Header("UI: Variantes de Inicio de Sesión")]
+    public TextMeshProUGUI txtTituloInicio;
+    public TextMeshProUGUI txtSubtitulo;
+    public GameObject bocadilloCowsmo;
+    public GameObject textoCowsmo; 
 
     [Header("Música Ambiental")]
     public UnityEngine.Audio.AudioMixerGroup grupoMusica;
     public AudioClip musicaInGame;
     public AudioClip musicaMenu;
     private AudioSource audioSourceMusica;
+
+    [Header("Sistema de Skins")]
+    public GameObject[] prefabsSkinsJugador; 
+    public Transform puntoAparicionJugador; 
+    private ControladorJugagor jugadorActivo;
 
     // -----------------------------------------------------------------------------
     // MÉTODOS
@@ -74,6 +90,14 @@ public class GameManager : MonoBehaviour
         {
             Instancia = this;
             
+            // Registrar la primera vez que el jugador abre el juego para calcular las 24 horas de recompensa
+            string fechaInicio = SecurePrefs.GetString("FechaPrimeraApertura", "");
+            if (string.IsNullOrEmpty(fechaInicio))
+            {
+                SecurePrefs.SetString("FechaPrimeraApertura", System.DateTime.Now.ToString("O"));
+                SecurePrefs.Save();
+            }
+
             // Se crea un AudioSource de forma dinámica para reproducir la música de fondo
             audioSourceMusica = gameObject.AddComponent<AudioSource>();
             audioSourceMusica.loop = true;
@@ -96,6 +120,42 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         MostrarMenuPrincipal();
+    }
+
+    /// <summary>
+    /// Se lee la memoria local, se destruye el avatar actual y se instancia el prefab de la skin equipada.
+    /// </summary>
+    public void GenerarJugadorConSkin()
+    {
+        int indiceSkin = SecurePrefs.GetInt("SkinEquipada", 0);
+
+        // Seguridad: Si el índice es mayor que la cantidad de prefabs disponibles, se restablece a 0
+        if (prefabsSkinsJugador == null || prefabsSkinsJugador.Length == 0) return;
+        if (indiceSkin >= prefabsSkinsJugador.Length) indiceSkin = 0;
+
+        // Si ya existe un jugador activo en escena, se procede a su destrucción
+        if (jugadorActivo != null)
+        {
+            Destroy(jugadorActivo.gameObject);
+        }
+        else
+        {
+            // Se elimina cualquier instancia residual colocada manualmente en la jerarquía
+            ControladorJugagor gatoEnEscena = FindAnyObjectByType<ControladorJugagor>();
+            if (gatoEnEscena != null) Destroy(gatoEnEscena.gameObject);
+        }
+
+        // Se instancia el nuevo avatar en las coordenadas establecidas
+        Vector3 posicionNacimiento = puntoAparicionJugador != null ? puntoAparicionJugador.position : new Vector3(-7.35f, 0f, 0f);
+        
+        Debug.Log("[DEBUG_SPAWN] Generando jugador. SkinEquipada index: " + indiceSkin + 
+                  ", Prefab Name: " + prefabsSkinsJugador[indiceSkin].name + 
+                  ", puntoAparicionJugador assigned: " + (puntoAparicionJugador != null) + 
+                  ", Spawn Position: " + posicionNacimiento);
+
+        GameObject nuevoGato = Instantiate(prefabsSkinsJugador[indiceSkin], posicionNacimiento, Quaternion.identity);
+        
+        jugadorActivo = nuevoGato.GetComponent<ControladorJugagor>();
     }
 
     /// <summary>
@@ -131,6 +191,9 @@ public class GameManager : MonoBehaviour
         
         if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(false);
 
+        // Se genera el avatar con la skin equipada para su previsualización en el menú
+        GenerarJugadorConSkin();
+
         DestruirElementosJuego();
 
         GeneradorMaestro genMaestro = FindAnyObjectByType<GeneradorMaestro>();
@@ -152,7 +215,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        ColeccionableGema[] gemas = FindObjectsOfType<ColeccionableGema>();
+        ColeccionableGema[] gemas = FindObjectsByType<ColeccionableGema>(FindObjectsSortMode.None);
         foreach (ColeccionableGema gema in gemas)
         {
             Transform raiz = gema.transform.root;
@@ -179,16 +242,19 @@ public class GameManager : MonoBehaviour
 
         contadorGemas = 0;
         puntuacionObstaculos = 0;
+        aumentosVelocidadPartida = 0;
+        tiempoUltimaGema = -1f;
         ActualizarTextoPantalla();
         velocidadActual = velocidadInicial;
         temporizador = 0f;
 
         DestruirElementosJuego();
 
-        ControladorJugagor jugador = FindAnyObjectByType<ControladorJugagor>();
-        if (jugador != null)
+        // Se asegura de instanciar la skin correcta al iniciar la partida
+        GenerarJugadorConSkin();
+        if (jugadorActivo != null)
         {
-            jugador.Revivir();
+            jugadorActivo.Revivir();
         }
 
         CambiarMusica(musicaInGame);
@@ -196,6 +262,19 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         AnalyticsManager.Instancia.RegistrarEventoSimple("inicio_juego");
+
+        // Se registra la partida jugada para el sistema de logros
+        if (LogrosManager.Instancia != null)
+        {
+            LogrosManager.Instancia.SumarPartidaJugada();
+
+            int skinActiva = SecurePrefs.GetInt("SkinEquipada", 0);
+            // Vaca (Cowsmo) = 4
+            if (skinActiva == 4) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.MuuuyAlto);
+            
+            // Oso (Orion) = 3
+            if (skinActiva == 3) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.OsoOrbital);
+        }
     }
 
     /// <summary>
@@ -212,6 +291,13 @@ public class GameManager : MonoBehaviour
             {
                 velocidadActual += cantidadAumento;
                 temporizador = 0f;
+                aumentosVelocidadPartida++;
+                
+                if (LogrosManager.Instancia != null && aumentosVelocidadPartida >= 3)
+                {
+                    LogrosManager.Instancia.DesbloquearLogro(TipoLogro.VelocidadLuz);
+                }
+                
                 Debug.Log("Incremento de dificultad. Nueva velocidad: " + velocidadActual);
             }
         }
@@ -224,6 +310,14 @@ public class GameManager : MonoBehaviour
     public void SumarGema(int cantidad)
     {
         contadorGemas += cantidad;
+        tiempoUltimaGema = Time.time; // Se guarda el tiempo para comprobar el logro de morir al coger gema
+
+        if (LogrosManager.Instancia != null)
+        {
+            if (contadorGemas >= 10) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.RachaCodiciosa);
+            if (contadorGemas >= 100) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.FiebreCristal);
+        }
+
         Debug.Log("Gemas totales en la sesión: " + contadorGemas);
         ActualizarTextoPantalla();
     }
@@ -234,6 +328,16 @@ public class GameManager : MonoBehaviour
     public void SumarPunto()
     {
         puntuacionObstaculos++;
+        
+        if (LogrosManager.Instancia != null)
+        {
+            if (puntuacionObstaculos == 1) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.PrimerosPasos);
+            if (puntuacionObstaculos == 10) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.PilotoNovato);
+            if (puntuacionObstaculos == 50) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.AstronautaHabil);
+            if (puntuacionObstaculos == 100) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.CapitanEstelar);
+            if (puntuacionObstaculos == 250) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.LeyendaCosmos);
+        }
+
         ActualizarTextoPantalla();
     }
 
@@ -272,6 +376,21 @@ public class GameManager : MonoBehaviour
         int gemasGuardadas = SecurePrefs.GetInt("GemasLocales", 0);
         int totalGemas = gemasGuardadas + contadorGemas;
         SecurePrefs.SetInt("GemasLocales", totalGemas);
+
+        if (LogrosManager.Instancia != null)
+        {
+            LogrosManager.Instancia.SumarMuerte();
+            
+            if (puntuacionObstaculos == 0) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.VueloCorto);
+            if (totalGemas >= 100) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.BolsillosLlenos);
+            if (totalGemas >= 5000) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.MagnateGalaxia);
+            
+            // Si muere en un lapso menor a 0.2 segundos desde que cogió una gema
+            if (tiempoUltimaGema > 0f && (Time.time - tiempoUltimaGema) <= 0.2f)
+            {
+                LogrosManager.Instancia.DesbloquearLogro(TipoLogro.AvaroDespistado);
+            }
+        }
 
         FirebaseUser usuario = FirebaseAuth.DefaultInstance.CurrentUser;
         if (usuario != null)
@@ -325,24 +444,23 @@ public class GameManager : MonoBehaviour
 
         bool primeraVez = SecurePrefs.GetInt("PrimeraVez", 1) == 1;
 
-        if (primeraVez)
+        if (panelGameOver != null)
         {
-            if (panelInicioSesion != null)
-            {
-                panelInicioSesion.SetActive(true);
-            }
-            SecurePrefs.SetInt("PrimeraVez", 0);
-        }
-        else
-        {
-            if (panelGameOver != null)
-            {
-                panelGameOver.SetActive(true);
+            panelGameOver.SetActive(true);
 
-                AnalyticsManager.Instancia.RegistrarEventoSimple("jugador_muere");
-                AnalyticsManager.Instancia.RegistrarEventoDificultad(velocidadActual);
+            if (primeraVez)
+            {
+                if (panelInicioSesion != null)
+                {
+                    panelInicioSesion.SetActive(true);
+                }
+                SecurePrefs.SetInt("PrimeraVez", 0);  
             }
+
+            AnalyticsManager.Instancia.RegistrarEventoSimple("jugador_muere");
+            AnalyticsManager.Instancia.RegistrarEventoDificultad(velocidadActual);
         }
+        
             
         SecurePrefs.Save(); 
     }
@@ -361,12 +479,11 @@ public class GameManager : MonoBehaviour
         if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(true);
         if (botonPausa != null) botonPausa.SetActive(true);
 
-        ControladorJugagor jugador = FindAnyObjectByType<ControladorJugagor>();
-        float xJugador = -7.35f; 
-        if (jugador != null)
+        float xJugador = puntoAparicionJugador != null ? puntoAparicionJugador.position.x : -7.35f; 
+        if (jugadorActivo != null)
         {
-            jugador.Revivir();
-            xJugador = jugador.transform.position.x;
+            jugadorActivo.Revivir();
+            xJugador = jugadorActivo.transform.position.x;
         }
 
         GameObject[] obstaculos = GameObject.FindGameObjectsWithTag("Obstaculo");
@@ -385,6 +502,11 @@ public class GameManager : MonoBehaviour
 
         CambiarMusica(musicaInGame);
         Time.timeScale = 1f;
+
+        if (LogrosManager.Instancia != null)
+        {
+            LogrosManager.Instancia.DesbloquearLogro(TipoLogro.Persistencia);
+        }
 
         Debug.Log("Partida reanudada. Obstáculos adyacentes despejados.");
     }
@@ -459,7 +581,91 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void SalirSinGuardar()
     {
+        Time.timeScale = 0f;
         if (audioSourceMusica != null) audioSourceMusica.UnPause(); 
+
+        // Fuerza el reseteo de la sesión actual para evitar que continúe
+        contadorGemas = 0;
+        puntuacionObstaculos = 0;
+        ActualizarTextoPantalla();
+        
+        // Destruye explícitamente antes de volver al menú por seguridad extra
+        DestruirElementosJuego();
+
         MostrarMenuPrincipal(); 
+    }
+
+    // -----------------------------------------------------------------------------
+    // SISTEMA DE INICIO DE SESIÓN DESDE PERFIL
+    // -----------------------------------------------------------------------------
+
+    /// <summary>
+    /// Ajusta y abre el panel de inicio de sesión cuando se invoca desde el perfil.
+    /// </summary>
+    public void AbrirInicioSesionDesdePerfil()
+    {
+        Debug.Log("GameManager: AbrirInicioSesionDesdePerfil ha sido llamado.");
+        ConfigurarPanelInicioSesion();
+        if (panelInicioSesion != null)
+        {
+            panelInicioSesion.SetActive(true);
+            panelInicioSesion.transform.SetAsLastSibling(); // Para asegurarnos de que se dibuja por encima de los demás paneles
+            Debug.Log("GameManager: panelInicioSesion ha sido activado y puesto al frente.");
+
+            if (panelInicioSesion.transform.parent != null && !panelInicioSesion.transform.parent.gameObject.activeInHierarchy)
+            {
+                Debug.LogWarning("GameManager: ¡ATENCIÓN! El panel padre de panelInicioSesion está INACTIVO. El panel de inicio de sesión no será visible hasta que su padre se active.");
+            }
+        }
+        else
+        {
+            Debug.LogError("GameManager: panelInicioSesion no está asignado en el Inspector.");
+        }
+    }
+
+    /// <summary>
+    /// Ajusta los textos y elementos del panel de inicio de sesión según si 
+    /// han pasado o no 24 horas desde que el usuario abrió la app por primera vez.
+    /// </summary>
+    private void ConfigurarPanelInicioSesion()
+    {
+        string fechaString = SecurePrefs.GetString("FechaPrimeraApertura", "");
+        bool pasadas24Horas = false;
+
+        if (!string.IsNullOrEmpty(fechaString))
+        {
+            if (System.DateTime.TryParse(fechaString, null, System.Globalization.DateTimeStyles.RoundtripKind, out System.DateTime fechaPrimeraApertura))
+            {
+                System.TimeSpan tiempoTranscurrido = System.DateTime.Now - fechaPrimeraApertura;
+                if (tiempoTranscurrido.TotalHours > 24)
+                {
+                    pasadas24Horas = true;
+                }
+            }
+        }
+
+        // Caso 2 y 3: El título cambia a "Inicio de sesion"
+        if (txtTituloInicio != null) 
+        {
+            txtTituloInicio.text = "Inicio de sesion";
+        }
+
+        if (pasadas24Horas)
+        {
+            // Caso 3: Pasadas las 24 horas
+            if (txtSubtitulo != null) 
+            {
+                txtSubtitulo.text = "¡Guarda tu progreso para conocer a más amigos espaciales!";
+            }
+            
+            if (bocadilloCowsmo != null) bocadilloCowsmo.SetActive(false);
+            if (textoCowsmo != null) textoCowsmo.SetActive(false);
+        }
+        else
+        {
+            // Caso 2: Primeras 24 horas
+            if (bocadilloCowsmo != null) bocadilloCowsmo.SetActive(true);
+            if (textoCowsmo != null) textoCowsmo.SetActive(true);
+        }
     }
 }

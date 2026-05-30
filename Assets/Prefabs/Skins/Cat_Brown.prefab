@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8127888048858940666}
   - component: {fileID: 4401301221453034365}
   m_Layer: 0
-  m_Name: ArmL
+  m_Name: ArmR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,9 +77,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingLayerID: -1234945383
+  m_SortingLayer: 2
+  m_SortingOrder: 4
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300008, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -174,9 +174,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingLayerID: -1234945383
+  m_SortingLayer: 2
+  m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300002, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -266,9 +266,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingLayerID: -1234945383
+  m_SortingLayer: 2
+  m_SortingOrder: 4
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -357,9 +357,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingLayerID: -1234945383
+  m_SortingLayer: 2
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300014, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -452,6 +452,7 @@ MonoBehaviour:
   sonidoMuerte: {fileID: 8300000, guid: 9be0d74a75fd20440a81da982294e882, type: 3}
   faceRenderer: {fileID: 4360920357882560000}
   caraMuerte: {fileID: 21300018, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
+  nombrePuntoAparicion: Punto_Aparicion_Jugador
   limiteArriba: 3.8
   limiteAbajo: -6.5
 --- !u!82 &3835207151160050358
@@ -561,7 +562,7 @@ Animator:
   m_GameObject: {fileID: 5899091592575035404}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 77fcd6b6046a4824ca0ed0b596c34fad, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7d1d676881e1049449bf264cca8b8d67, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -621,7 +622,7 @@ GameObject:
   - component: {fileID: 4260899121190991278}
   - component: {fileID: 677391546458416972}
   m_Layer: 0
-  m_Name: ArmR
+  m_Name: ArmL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -687,9 +688,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingLayerID: -1234945383
+  m_SortingLayer: 2
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300010, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -778,9 +779,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingLayerID: -1234945383
+  m_SortingLayer: 2
+  m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300012, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -803,7 +804,7 @@ GameObject:
   - component: {fileID: 4980763469745573332}
   - component: {fileID: 2041200139360488801}
   m_Layer: 0
-  m_Name: LegL
+  m_Name: LegR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -869,9 +870,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingLayerID: -1234945383
+  m_SortingLayer: 2
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300006, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -894,7 +895,7 @@ GameObject:
   - component: {fileID: 2212099378559768152}
   - component: {fileID: 4759655977958899048}
   m_Layer: 0
-  m_Name: LegR
+  m_Name: LegL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -960,9 +961,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingLayerID: -1234945383
+  m_SortingLayer: 2
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300004, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

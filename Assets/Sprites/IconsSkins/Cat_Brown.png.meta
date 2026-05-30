@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b0a19176c5b6fe74bb11e4db20d50c3f
+guid: 5a55a34c5fe6b3e4691cdcfc0119455c
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -142,10 +142,10 @@ TextureImporter:
       name: Cat_Brown_0
       rect:
         serializedVersion: 2
-        x: 6
+        x: 17
         y: 6
-        width: 185
-        height: 198
+        width: 190
+        height: 215
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

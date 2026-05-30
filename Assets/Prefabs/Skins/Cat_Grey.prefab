@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2273168861116434772}
   - component: {fileID: 2837314154773605738}
   m_Layer: 0
-  m_Name: LegL
+  m_Name: LegR
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300006, guid: d2ce3fcbb3d51412681ff7fcd75518c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 7740883738523091888}
   - component: {fileID: 1430182280406866119}
   m_Layer: 0
-  m_Name: ArmL
+  m_Name: ArmR
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -170,7 +170,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingOrder: 4
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300008, guid: d2ce3fcbb3d51412681ff7fcd75518c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -259,9 +259,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1234945383
+  m_SortingLayer: 2
+  m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300012, guid: d2ce3fcbb3d51412681ff7fcd75518c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -284,7 +284,7 @@ GameObject:
   - component: {fileID: 6404769379706170744}
   - component: {fileID: 8680757668062458512}
   m_Layer: 0
-  m_Name: ArmR
+  m_Name: ArmL
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -352,7 +352,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300010, guid: d2ce3fcbb3d51412681ff7fcd75518c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -445,6 +445,7 @@ MonoBehaviour:
   sonidoMuerte: {fileID: 8300000, guid: 378f2026398728f4a986f88fb9ef9056, type: 3}
   faceRenderer: {fileID: 6185731523461598520}
   caraMuerte: {fileID: 21300018, guid: d2ce3fcbb3d51412681ff7fcd75518c9, type: 3}
+  nombrePuntoAparicion: Punto_Aparicion_Jugador
   limiteArriba: 4.5
   limiteAbajo: -6.5
 --- !u!95 &5888907770123603768
@@ -457,7 +458,7 @@ Animator:
   m_GameObject: {fileID: 3585038728824299028}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 77fcd6b6046a4824ca0ed0b596c34fad, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7d1d676881e1049449bf264cca8b8d67, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -688,7 +689,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300002, guid: d2ce3fcbb3d51412681ff7fcd75518c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -779,7 +780,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300014, guid: d2ce3fcbb3d51412681ff7fcd75518c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -802,7 +803,7 @@ GameObject:
   - component: {fileID: 5977895410474752269}
   - component: {fileID: 335909490898435851}
   m_Layer: 0
-  m_Name: LegR
+  m_Name: LegL
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -870,7 +871,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300004, guid: d2ce3fcbb3d51412681ff7fcd75518c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -962,7 +963,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1234945383
   m_SortingLayer: 2
-  m_SortingOrder: 1
+  m_SortingOrder: 4
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: d2ce3fcbb3d51412681ff7fcd75518c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

@@ -17,6 +17,11 @@ public class PublicidadManager : MonoBehaviour
     /// </summary>
     public static PublicidadManager Instancia;
 
+    /// <summary>
+    /// Evento estático que se dispara al visualizar completamente un anuncio recompensado y recibir la recompensa.
+    /// </summary>
+    public static event Action OnAnuncioRecompensadoCompletado;
+
     [Header("IDs de Prueba de AdMob")]
     private string idIntersticial = "ca-app-pub-3940256099942544/1033173712";
     private string idRecompensado = "ca-app-pub-3940256099942544/5224354917";
@@ -24,6 +29,7 @@ public class PublicidadManager : MonoBehaviour
     private InterstitialAd anuncioIntersticial;
     private RewardedAd anuncioRecompensado;
     private bool reanudarJuego = false;
+    private bool volverAlMenu = false;
 
     // -----------------------------------------------------------------------------
     // MÉTODOS DE INICIALIZACIÓN
@@ -65,6 +71,15 @@ public class PublicidadManager : MonoBehaviour
             if (GameManager.Instancia != null) 
             {
                 GameManager.Instancia.ContinuarPartida();
+            }
+        }
+
+        if (volverAlMenu)
+        {
+            volverAlMenu = false;
+            if (GameManager.Instancia != null)
+            {
+                GameManager.Instancia.MostrarMenuPrincipal();
             }
         }
     }
@@ -133,7 +148,10 @@ public class PublicidadManager : MonoBehaviour
             anuncioRecompensado = anuncio;
             Debug.Log("Bloque de video bonificado cacheado en memoria.");
             
-            anuncioRecompensado.OnAdFullScreenContentClosed += () => { CargarAnuncioRecompensado(); };
+            anuncioRecompensado.OnAdFullScreenContentClosed += () => { 
+                CargarAnuncioRecompensado(); 
+                volverAlMenu = true; // Se procesará en el hilo principal (Update)
+            };
         });
     }
 
@@ -174,8 +192,16 @@ public class PublicidadManager : MonoBehaviour
             DatabaseManager.Instancia.GuardarGemasEnNube(idUsuario, gemasActuales);
         }
 
-        if(AnalyticsManager.Instancia != null) AnalyticsManager.Instancia.RegistrarEventoSimple("recompensa_20gemas_completada");
+        if (AnalyticsManager.Instancia != null) AnalyticsManager.Instancia.RegistrarEventoSimple("recompensa_20gemas_completada");
+
+        if (LogrosManager.Instancia != null)
+        {
+            LogrosManager.Instancia.DesbloquearLogro(TipoLogro.Patrocinador);
+        }
 
         Debug.Log("Balance de activos virtuales modificado. Crédito vigente: " + gemasActuales);
+
+        // Notifica a los scripts interesados (como el temporizador del botón)
+        OnAnuncioRecompensadoCompletado?.Invoke();
     }
 }
