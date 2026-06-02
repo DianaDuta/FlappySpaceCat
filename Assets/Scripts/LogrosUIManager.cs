@@ -95,24 +95,21 @@ public class LogrosUIManager : MonoBehaviour
                     estaConseguido = LogrosManager.Instancia.EstaDesbloqueado(datos.tipo);
                 }
 
-                // Aplicar estilos según el estado
-                if (estaConseguido)
+                // Aplicar estilos según el estado del logro
+                if (scriptUI.iconoEstado != null)
                 {
-                    // Al estar desbloqueado
-                    if (scriptUI.iconoEstado != null)
+                    if (estaConseguido)
                     {
-                        // Se requiere que el candado desaparezca para ver la imagen de abajo
-                        // Se puede usar color transparente o desactivarlo
-                        scriptUI.iconoEstado.color = Color.clear; 
+                        // Si está conseguido, el candado se vuelve transparente y se desactiva
+                        scriptUI.iconoEstado.color = Color.clear;
+                        scriptUI.iconoEstado.enabled = false;
                     }
-                }
-                else
-                {
-                    // Al estar bloqueado
-                    if (scriptUI.iconoEstado != null)
+                    else
                     {
-                        scriptUI.iconoEstado.color = Color.white; 
-                        
+                        // Si está bloqueado, se asegura de activar la imagen, mostrar el sprite del candado y color opaco
+                        scriptUI.iconoEstado.gameObject.SetActive(true);
+                        scriptUI.iconoEstado.enabled = true;
+                        scriptUI.iconoEstado.color = Color.white;
                         if (spriteCandado != null)
                         {
                             scriptUI.iconoEstado.sprite = spriteCandado;

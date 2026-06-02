@@ -23,9 +23,11 @@ public class PublicidadManager : MonoBehaviour
     public static event Action OnAnuncioRecompensadoCompletado;
 
     [Header("IDs de Prueba de AdMob")]
+    private string idBanner = "ca-app-pub-3940256099942544/6300978111";
     private string idIntersticial = "ca-app-pub-3940256099942544/1033173712";
     private string idRecompensado = "ca-app-pub-3940256099942544/5224354917";
 
+    private BannerView anuncioBanner;
     private InterstitialAd anuncioIntersticial;
     private RewardedAd anuncioRecompensado;
     private bool reanudarJuego = false;
@@ -53,6 +55,7 @@ public class PublicidadManager : MonoBehaviour
         MobileAds.Initialize((InitializationStatus estado) => {
             Debug.Log("SDK de Google Mobile Ads inicializado exitosamente.");
             
+            CargarBanner();
             CargarIntersticial();
             CargarAnuncioRecompensado();
         });
@@ -203,5 +206,68 @@ public class PublicidadManager : MonoBehaviour
 
         // Notifica a los scripts interesados (como el temporizador del botón)
         OnAnuncioRecompensadoCompletado?.Invoke();
+    }
+
+    // -----------------------------------------------------------------------------
+    // MÉTODOS DEL ANUNCIO BANNER (ESTÁTICO)
+    // -----------------------------------------------------------------------------
+
+    /// <summary>
+    /// Crea y carga un banner publicitario en la parte superior central de la pantalla.
+    /// Se configura por defecto para mostrarse de inmediato tras la carga inicial.
+    /// </summary>
+    private void CargarBanner()
+    {
+        if (anuncioBanner != null) { anuncioBanner.Destroy(); anuncioBanner = null; }
+
+        // Creamos el banner en la posición Top (superior centro) que es ideal para landscape
+        anuncioBanner = new BannerView(idBanner, AdSize.Banner, AdPosition.Top);
+
+        AdRequest peticion = new AdRequest();
+        anuncioBanner.LoadAd(peticion);
+        
+        Debug.Log("Banner de AdMob solicitado y cargando...");
+    }
+
+    /// <summary>
+    /// Hace visible el banner en la pantalla.
+    /// </summary>
+    public void MostrarBanner()
+    {
+        if (anuncioBanner != null)
+        {
+            anuncioBanner.Show();
+            Debug.Log("Banner publicitario desplegado en pantalla.");
+        }
+    }
+
+    /// <summary>
+    /// Oculta el banner de la pantalla para evitar colisiones visuales o interrupciones.
+    /// </summary>
+    public void OcultarBanner()
+    {
+        if (anuncioBanner != null)
+        {
+            anuncioBanner.Hide();
+            Debug.Log("Banner publicitario ocultado de la pantalla.");
+        }
+    }
+
+    /// <summary>
+    /// Destruye el banner para liberar los recursos de memoria.
+    /// </summary>
+    public void DestruirBanner()
+    {
+        if (anuncioBanner != null)
+        {
+            anuncioBanner.Destroy();
+            anuncioBanner = null;
+            Debug.Log("Banner publicitario destruido de memoria.");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        DestruirBanner();
     }
 }

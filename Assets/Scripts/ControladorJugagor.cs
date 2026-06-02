@@ -68,31 +68,54 @@ public class ControladorJugagor : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("⚠️ [DEBUG_PLAYER] No se encontró el objeto de referencia: " + nombrePuntoAparicion + ". El personaje iniciará en su posición de diseño por defecto.");
+            Debug.LogWarning("[ControladorJugador] No se encontro el objeto de referencia: " + nombrePuntoAparicion + ". El personaje iniciara en su posicion de diseno por defecto.");
         }
 
-        // 2. Calculamos el límite inferior de muerte en base al borde de la cámara
+        // 2. Cálculo del límite inferior de muerte en base al borde de la cámara y al tamaño del personaje
         if (Camera.main != null)
         {
             float distanciaZ = transform.position.z - Camera.main.transform.position.z;
             Vector3 limiteInferiorViewport = new Vector3(0f, 0f, distanciaZ);
-            limiteAbajo = Camera.main.ViewportToWorldPoint(limiteInferiorViewport).y - 0.5f;
+            float bordeInferiorCamara = Camera.main.ViewportToWorldPoint(limiteInferiorViewport).y;
+            
+            // Intento de obtención del tamaño real del SpriteRenderer del personaje para calcular la invisibilidad de forma exacta
+            float altoGato = 1.0f; // Valor de seguridad por defecto
+            SpriteRenderer rendererGato = GetComponentInChildren<SpriteRenderer>();
+            if (rendererGato != null)
+            {
+                altoGato = rendererGato.bounds.size.y;
+            }
+            
+            // El personaje es declarado muerto cuando su posición física (pivote) cae por debajo del borde inferior de la cámara. 
+            // Se aplica un margen de seguridad de 2.0 unidades para asegurar que, al congelarse el flujo de tiempo tras el Game Over 
+            // (Time.timeScale = 0), el avatar se encuentre completamente fuera de la pantalla y resulte invisible para el usuario.
+            limiteAbajo = bordeInferiorCamara - altoGato - 2.0f;
         }
 
         posicionOriginal = transform.position;
-
-        Debug.Log("[DEBUG_PLAYER] Player Start. GameObject: " + gameObject.name + 
-                  ", Posicion Inicial: " + posInicial + 
-                  ", Posicion Final: " + transform.position);
 
         if (LectorConfiguracion.Datos != null)
         {
             rb.gravityScale = LectorConfiguracion.Datos.gravedadJugador;
         }
 
+        // Búsqueda del SpriteRenderer de la cara dentro de la jerarquía de la instancia local.
+        // Esto evita depender de referencias del Inspector que apunten incorrectamente al archivo de la carpeta de Assets, previniendo alteraciones accidentales del prefab en memoria.
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
+        foreach (SpriteRenderer r in renderers)
+        {
+            if (r.gameObject.name == "Face")
+            {
+                faceRenderer = r;
+                break;
+            }
+        }
+
         if (faceRenderer != null)
         {
             caraOriginal = faceRenderer.sprite;
+            // Se asegura de restablecer la cara al estado original por defecto al inicializarse en escena
+            faceRenderer.sprite = caraOriginal;
         }
     }
 

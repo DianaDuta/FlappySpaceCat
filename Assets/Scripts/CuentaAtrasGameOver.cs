@@ -28,16 +28,45 @@ public class CuentaAtrasGameOver : MonoBehaviour
     private float segundosRestantes;
     private bool haRespondido = false;
 
-    private void OnEnable()
+    /// <summary>
+    /// Restablece el estado de respuesta, la cuenta atrás y la interactividad 
+    /// y visibilidad del botón continuar a sus valores iniciales predeterminados.
+    /// </summary>
+    public void RestablecerBoton()
     {
-        // Reiniciar banderas e iniciar cuenta atrás cuando se muestra el panel
         haRespondido = false;
         segundosRestantes = duracionTotal;
 
         if (botonContinuar != null)
         {
+            botonContinuar.gameObject.SetActive(true);
             botonContinuar.interactable = true;
-            // Aseguramos que el botón escuche cuando se pulsa para detener la cuenta regresiva
+        }
+
+        if (textoBotonContinuar != null)
+        {
+            textoBotonContinuar.text = string.Format("{0} ({1})", textoBotonOriginal, duracionTotal);
+        }
+    }
+
+    private void OnEnable()
+    {
+        // Si ya se usó la opción de continuar en la partida en curso, se desactiva y oculta por completo
+        if (GameManager.Instancia != null && GameManager.Instancia.haContinuadoEnPartida)
+        {
+            if (botonContinuar != null)
+            {
+                botonContinuar.interactable = false;
+                botonContinuar.gameObject.SetActive(false);
+            }
+            return;
+        }
+
+        RestablecerBoton();
+
+        if (botonContinuar != null)
+        {
+            // Asegura que el botón escuche cuando se pulsa para detener la cuenta regresiva
             botonContinuar.onClick.RemoveListener(AlPulsarContinuar);
             botonContinuar.onClick.AddListener(AlPulsarContinuar);
         }
@@ -138,24 +167,16 @@ public class CuentaAtrasGameOver : MonoBehaviour
 
     /// <summary>
     /// Acción ejecutada cuando el temporizador llega a cero.
+    /// Desactiva y oculta el botón de continuar para impedir interacciones futuras.
     /// </summary>
     private void AlExpirarTiempo()
     {
-        Debug.Log("Cuenta atrás de GameOver finalizada. Retornando al menú principal...");
+        Debug.Log("Cuenta atrás de GameOver finalizada. Desactivando opción de continuar.");
 
         if (botonContinuar != null)
         {
             botonContinuar.interactable = false;
-        }
-
-        // Se devuelve al jugador de forma automática al menú principal
-        if (GameManager.Instancia != null)
-        {
-            GameManager.Instancia.VolverMenuPrincipal();
-        }
-        else
-        {
-            Debug.LogWarning("No se encontró la instancia de GameManager para volver al menú principal.");
+            botonContinuar.gameObject.SetActive(false); // Oculta y desactiva el botón del panel
         }
     }
 }

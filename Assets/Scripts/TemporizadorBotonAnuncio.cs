@@ -30,6 +30,11 @@ public class TemporizadorBotonAnuncio : MonoBehaviour
     private DateTime fechaFinCooldown;
     private bool estaEnCooldown = false;
 
+    /// <summary>
+    /// Indica si el botón se encuentra actualmente en tiempo de espera (cooldown).
+    /// </summary>
+    public bool EstaEnCooldown => estaEnCooldown;
+
     private void Awake()
     {
         boton = GetComponent<Button>();

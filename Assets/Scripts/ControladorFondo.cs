@@ -16,6 +16,8 @@ public class ControladorFondo : MonoBehaviour
 
     public float anchoImagen; 
 
+    private Vector3 posicionOriginal;
+
     //--------------------------------
     // MÉTODOS
     //--------------------------------
@@ -26,6 +28,8 @@ public class ControladorFondo : MonoBehaviour
     /// </summary>
     void Start()
     {
+        posicionOriginal = transform.position;
+
         if (anchoImagen <= 0)
         {
             SpriteRenderer sprite = GetComponent<SpriteRenderer>();
@@ -34,6 +38,14 @@ public class ControladorFondo : MonoBehaviour
                 anchoImagen = sprite.bounds.size.x;
             }
         }
+    }
+
+    /// <summary>
+    /// Restablece la posición de la imagen de fondo a sus coordenadas de diseño originales.
+    /// </summary>
+    public void Restablecer()
+    {
+        transform.position = posicionOriginal;
     }
 
     /// <summary>

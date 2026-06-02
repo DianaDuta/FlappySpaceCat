@@ -475,8 +475,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControladorJugagor
   fuerzaSalto: 5
-  sonidoSalto: {fileID: 8300000, guid: b4911432a6a045b4ca643c271161eaed, type: 3}
-  sonidoMuerte: {fileID: 8300000, guid: 9be0d74a75fd20440a81da982294e882, type: 3}
+  sonidoSalto: {fileID: 8300000, guid: 9451e659d0ab00a48b12c7d2bbac5566, type: 3}
+  sonidoMuerte: {fileID: 8300000, guid: 378f2026398728f4a986f88fb9ef9056, type: 3}
   faceRenderer: {fileID: 2481708482143119777}
   caraMuerte: {fileID: 21300018, guid: 05b2542dab0f04124b7a7e522de96ac5, type: 3}
   nombrePuntoAparicion: Punto_Aparicion_Jugador

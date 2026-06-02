@@ -55,6 +55,19 @@ public class HerramientasPrueba : MonoBehaviour
         SecurePrefs.SetInt("GemasLocales", 0);
         SecurePrefs.SetInt("MejorPuntuacion", 0);
 
+        // Borrar logros y estadísticas acumulativas
+        SecurePrefs.DeleteKey("Progreso_PartidasJugadas");
+        SecurePrefs.DeleteKey("Progreso_MuertesTotales");
+        foreach (TipoLogro logro in System.Enum.GetValues(typeof(TipoLogro)))
+        {
+            SecurePrefs.DeleteKey("Logro_" + logro.ToString());
+        }
+
+        // Restablecer la fecha al momento actual y borrar la bandera de recompensa
+        // para permitir probar de forma limpia el flujo de las 24 horas y el desbloqueo
+        SecurePrefs.SetString("FechaPrimeraApertura", System.DateTime.Now.ToString("O"));
+        SecurePrefs.DeleteKey("RecompensaCowEntregada");
+
         // Reactivar el flag para que salga el panel de "Guardar Progreso" al morir
         SecurePrefs.SetInt("PrimeraVez", 1);
         

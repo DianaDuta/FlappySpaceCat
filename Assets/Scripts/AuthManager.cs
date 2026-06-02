@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using Firebase;
 using Firebase.Auth;
@@ -32,33 +33,89 @@ public class AuthManager : MonoBehaviour
     void Start()
     {
         auth = FirebaseAuth.DefaultInstance;
+        AsegurarReferenciasYConfiguracion(true);
+    }
 
-        // Se asegura de que la caja de la contraseña empiece enmascarada (con asteriscos) por defecto
+    void OnEnable()
+    {
+        AsegurarReferenciasYConfiguracion(true);
+    }
+
+    /// <summary>
+    /// Realiza de forma robusta la búsqueda y configuración de las referencias a los campos de entrada,
+    /// asegurando que la contraseña comience enmascarada y que el botón de visibilidad esté enlazado.
+    /// </summary>
+    public void AsegurarReferenciasYConfiguracion(bool forzarEnmascarado = false)
+    {
+        // Si las referencias del Inspector están vacías, se realiza una búsqueda profunda (incluyendo objetos inactivos)
+        // a partir del contenedor del panel de inicio de sesión registrado en el GameManager.
+        if ((inputEmail == null || inputPassword == null) && GameManager.Instancia != null && GameManager.Instancia.panelInicioSesion != null)
+        {
+            TMP_InputField[] inputFields = GameManager.Instancia.panelInicioSesion.GetComponentsInChildren<TMP_InputField>(true);
+            foreach (TMP_InputField field in inputFields)
+            {
+                if (field.gameObject.name == "Username_Input")
+                {
+                    inputEmail = field;
+                }
+                else if (field.gameObject.name == "Password_Input")
+                {
+                    inputPassword = field;
+                }
+            }
+        }
+
+        // Se asegura de que la caja de la contraseña empiece enmascarada (con asteriscos) por defecto.
         if (inputPassword != null)
         {
-            inputPassword.contentType = TMP_InputField.ContentType.Password;
-            inputPassword.ForceLabelUpdate();
+            // Se fuerza el enmascarado inicial como contraseña si se solicita de forma explícita.
+            if (forzarEnmascarado)
+            {
+                inputPassword.contentType = TMP_InputField.ContentType.Password;
+                inputPassword.inputType = TMP_InputField.InputType.Password;
+                inputPassword.ForceLabelUpdate();
+            }
+
+            // Vinculación programática del evento Click del botón de visibilidad mediante una búsqueda recursiva.
+            Button btnVisibilidad = null;
+            foreach (Button btn in inputPassword.GetComponentsInChildren<Button>(true))
+            {
+                if (btn.gameObject.name == "Btn_Visibilidad")
+                {
+                    btnVisibilidad = btn;
+                    break;
+                }
+            }
+
+            if (btnVisibilidad != null)
+            {
+                btnVisibilidad.onClick.RemoveAllListeners();
+                btnVisibilidad.onClick.AddListener(AlternarVisibilidadPassword);
+            }
         }
     }
 
     /// <summary>
     /// Alterna la visualización de la contraseña entre asteriscos (*) y texto legible.
-    /// Puede enlazarse directamente al OnClick() de un botón de visibilidad de contraseña (icono de ojo).
+    /// Puede enlazarse directamente al OnClick() de un botón de visibilidad de contraseña (icono de ojo o espiral).
     /// </summary>
     public void AlternarVisibilidadPassword()
     {
+        AsegurarReferenciasYConfiguracion(false);
         if (inputPassword == null) return;
 
         if (inputPassword.contentType == TMP_InputField.ContentType.Password)
         {
             inputPassword.contentType = TMP_InputField.ContentType.Standard;
+            inputPassword.inputType = TMP_InputField.InputType.Standard;
         }
         else
         {
             inputPassword.contentType = TMP_InputField.ContentType.Password;
+            inputPassword.inputType = TMP_InputField.InputType.Password;
         }
 
-        // Fuerza a TextMeshPro a actualizar y redibujar el texto visible inmediatamente
+        // Fuerza a TextMeshPro a actualizar y redibujar el texto visible inmediatamente.
         inputPassword.ForceLabelUpdate();
     }
 
@@ -309,25 +366,40 @@ public class AuthManager : MonoBehaviour
         if (SecurePrefs.GetInt("RecompensaCowEntregada", 0) == 1) return;
 
         string fechaString = SecurePrefs.GetString("FechaPrimeraApertura", "");
-        if (!string.IsNullOrEmpty(fechaString))
+        
+        // Fallback: Si no hay fecha registrada por seguridad extra, se establece ahora mismo
+        if (string.IsNullOrEmpty(fechaString))
         {
-            System.DateTime fechaPrimeraApertura;
-            if (System.DateTime.TryParse(fechaString, null, System.Globalization.DateTimeStyles.RoundtripKind, out fechaPrimeraApertura))
+            fechaString = System.DateTime.Now.ToString("O");
+            SecurePrefs.SetString("FechaPrimeraApertura", fechaString);
+            SecurePrefs.Save();
+        }
+
+        System.DateTime fechaPrimeraApertura;
+        // Usamos TryParse genérico para evitar cualquier fallo de formato de fecha regional (cultura)
+        if (System.DateTime.TryParse(fechaString, out fechaPrimeraApertura))
+        {
+            System.TimeSpan tiempoTranscurrido = System.DateTime.Now - fechaPrimeraApertura;
+            
+            // Si han pasado 24 horas o menos
+            if (tiempoTranscurrido.TotalHours <= 24)
             {
-                System.TimeSpan tiempoTranscurrido = System.DateTime.Now - fechaPrimeraApertura;
+                // Skin de Cow (Cowsmo) en la lista de skins = 4
+                int indiceSkinCow = 4; 
                 
-                // Si han pasado 24 horas o menos
-                if (tiempoTranscurrido.TotalHours <= 24)
+                SecurePrefs.SetInt("SkinDesbloqueada_" + indiceSkinCow, 1);
+                SecurePrefs.SetInt("RecompensaCowEntregada", 1);
+                SecurePrefs.Save();
+                
+                Debug.Log("¡Recompensa de registro entregada! Skin de Cow desbloqueada.");
+                if (textoAvisos != null) 
+                    textoAvisos.text = "¡Felicidades! Has recibido la skin Cow por registrarte hoy.";
+
+                // IMPORTANTE: Notificar de inmediato a la tienda y actualizar la UI para que se visualice
+                TiendaSkinsManager tienda = FindAnyObjectByType<TiendaSkinsManager>();
+                if (tienda != null)
                 {
-                    // Skin de Cow en la lista de skins = 4
-                    int indiceSkinCow = 4; 
-                    
-                    SecurePrefs.SetInt("SkinDesbloqueada_" + indiceSkinCow, 1);
-                    SecurePrefs.SetInt("RecompensaCowEntregada", 1);
-                    SecurePrefs.Save();
-                    
-                    Debug.Log("¡Recompensa de registro entregada! Skin de Cow desbloqueada.");
-                    if (textoAvisos != null) textoAvisos.text = "¡Felicidades! Has recibido la skin Cow por registrarte hoy.";
+                    tienda.RefrescarTiendaCompleta();
                 }
             }
         }

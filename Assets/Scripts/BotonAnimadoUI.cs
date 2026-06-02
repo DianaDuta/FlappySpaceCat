@@ -11,7 +11,7 @@ using System.Collections;
 public class BotonAnimadoUI : MonoBehaviour
 {
     [Header("Configuración del Retraso")]
-    [Tooltip("Tiempo en segundos que esperará antes de ejecutar la acción (0.15 a 0.2 suele verse muy bien).")]
+    [Tooltip("Tiempo en segundos que se esperará antes de ejecutar la acción (entre 0.15 y 0.2 segundos es recomendable para una transición fluida).")]
     public float tiempoEspera = 0.15f;
 
     [Header("Acciones aquí en lugar de en OnClick")]
@@ -29,7 +29,7 @@ public class BotonAnimadoUI : MonoBehaviour
 
     private void IniciarRetraso()
     {
-        // Desactiva el botón temporalmente para que no hagan doble clic mientras hace la animación
+        // Desactiva el botón temporalmente para evitar interacciones múltiples durante la reproducción de la animación
         boton.interactable = false;
         
         StartCoroutine(EsperarYEjecutar());
@@ -40,10 +40,10 @@ public class BotonAnimadoUI : MonoBehaviour
         // WaitForSecondsRealtime asegura que funcione aunque el juego esté pausado (Time.timeScale = 0)
         yield return new WaitForSecondsRealtime(tiempoEspera);
         
-        // Ejecuta la acción que has puesto en el Inspector
+        // Ejecuta la acción configurada en el componente del Inspector
         AccionReal.Invoke();
         
-        // Vuelve a activar el botón
+        // Restablece la interactividad del botón
         boton.interactable = true;
     }
 }

@@ -402,7 +402,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.006, y: -0.863, z: 0}
-  m_LocalScale: {x: -0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: -0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5269921336359782535}
@@ -448,8 +448,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fuerzaSalto: 5
-  sonidoSalto: {fileID: 8300000, guid: b4911432a6a045b4ca643c271161eaed, type: 3}
-  sonidoMuerte: {fileID: 8300000, guid: 9be0d74a75fd20440a81da982294e882, type: 3}
+  sonidoSalto: {fileID: 8300000, guid: 9451e659d0ab00a48b12c7d2bbac5566, type: 3}
+  sonidoMuerte: {fileID: 8300000, guid: 378f2026398728f4a986f88fb9ef9056, type: 3}
   faceRenderer: {fileID: 4360920357882560000}
   caraMuerte: {fileID: 21300018, guid: b46c86a9720b8412782490cd7cdf9280, type: 3}
   nombrePuntoAparicion: Punto_Aparicion_Jugador

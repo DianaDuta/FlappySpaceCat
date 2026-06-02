@@ -95,6 +95,15 @@ public class TiendaSkinsManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Actualiza tanto el icono del perfil como la lista de tarjetas de la tienda en tiempo real.
+    /// </summary>
+    public void RefrescarTiendaCompleta()
+    {
+        ActualizarBotonPerfil();
+        GenerarBotonesSkins();
+    }
+
+    /// <summary>
     /// Elimina las tarjetas existentes en el contenedor UI y genera una nueva lista completa
     /// asignando eventos, datos visuales y verificando el estado de desbloqueo.
     /// </summary>
@@ -113,6 +122,18 @@ public class TiendaSkinsManager : MonoBehaviour
             {
                 scriptTarjeta.iconoGato.sprite = todasLasSkins[i].icono;
                 scriptTarjeta.txtNombre.text = todasLasSkins[i].nombrePersonaje;
+
+                // Si el personaje es el oso (Bear), su sprite de origen está orientado en sentido opuesto
+                // Se invierte la escala horizontal para homogeneizar la vista en las tarjetas de la tienda
+                string nombreMin = todasLasSkins[i].nombrePersonaje.ToLower();
+                if (nombreMin.Contains("bear") || nombreMin.Contains("oso"))
+                {
+                    scriptTarjeta.iconoGato.rectTransform.localScale = new Vector3(-1f, 1f, 1f);
+                }
+                else
+                {
+                    scriptTarjeta.iconoGato.rectTransform.localScale = new Vector3(1f, 1f, 1f);
+                }
 
                 int indiceSkin = i;
                 bool desbloqueada = (indiceSkin == 0) || (SecurePrefs.GetInt("SkinDesbloqueada_" + indiceSkin, 0) == 1);

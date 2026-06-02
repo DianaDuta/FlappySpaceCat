@@ -36,8 +36,6 @@ public class GeneradorGemas : MonoBehaviour
             Transform nodoElegido = nodosPosibles[indiceAleatorio];
 
             Instantiate(prefabGema, nodoElegido.position, Quaternion.identity, nodoElegido);
-            
-            Debug.Log("Objeto coleccionable adherido a nodo principal: " + nodoElegido.name);
         }
     }
 }

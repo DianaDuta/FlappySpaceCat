@@ -25,6 +25,11 @@ public class GameManager : MonoBehaviour
     /// Contador actual de gemas recolectadas en la partida en curso.
     /// </summary>
     public int contadorGemas = 0;
+
+    /// <summary>
+    /// Indica si el jugador ya ha utilizado la opción de continuar en la partida en curso.
+    /// </summary>
+    public bool haContinuadoEnPartida = false;
     
     /// <summary>
     /// Puntuación actual basada en la cantidad de obstáculos superados.
@@ -147,11 +152,6 @@ public class GameManager : MonoBehaviour
 
         // Se instancia el nuevo avatar en las coordenadas establecidas
         Vector3 posicionNacimiento = puntoAparicionJugador != null ? puntoAparicionJugador.position : new Vector3(-7.35f, 0f, 0f);
-        
-        Debug.Log("[DEBUG_SPAWN] Generando jugador. SkinEquipada index: " + indiceSkin + 
-                  ", Prefab Name: " + prefabsSkinsJugador[indiceSkin].name + 
-                  ", puntoAparicionJugador assigned: " + (puntoAparicionJugador != null) + 
-                  ", Spawn Position: " + posicionNacimiento);
 
         GameObject nuevoGato = Instantiate(prefabsSkinsJugador[indiceSkin], posicionNacimiento, Quaternion.identity);
         
@@ -177,6 +177,7 @@ public class GameManager : MonoBehaviour
     public void MostrarMenuPrincipal()
     {
         Time.timeScale = 0f;
+        haContinuadoEnPartida = false;
         
         CambiarMusica(musicaMenu);
 
@@ -196,8 +197,18 @@ public class GameManager : MonoBehaviour
 
         DestruirElementosJuego();
 
+        if (panelGameOver != null)
+        {
+            CuentaAtrasGameOver cuentaAtras = panelGameOver.GetComponentInChildren<CuentaAtrasGameOver>(true);
+            if (cuentaAtras != null)
+            {
+                cuentaAtras.RestablecerBoton();
+            }
+        }
+
         GeneradorMaestro genMaestro = FindAnyObjectByType<GeneradorMaestro>();
         if (genMaestro != null) genMaestro.Reiniciar();
+
     }
 
     /// <summary>
@@ -205,6 +216,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void DestruirElementosJuego()
     {
+        // 1. Destruye todos los obstáculos clonados en la escena
         GameObject[] obstaculos = GameObject.FindGameObjectsWithTag("Obstaculo");
         foreach (GameObject obs in obstaculos)
         {
@@ -215,6 +227,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        // 2. Destruye todas las gemas coleccionables clonadas en la escena
         ColeccionableGema[] gemas = FindObjectsByType<ColeccionableGema>(FindObjectsSortMode.None);
         foreach (ColeccionableGema gema in gemas)
         {
@@ -222,6 +235,23 @@ public class GameManager : MonoBehaviour
             if (raiz.name.Contains("(Clone)"))
             {
                 Destroy(raiz.gameObject);
+            }
+        }
+
+        // 3. Restablece de forma impersonal la posición inicial de los fondos parallax
+        ControladorFondo[] fondos = FindObjectsByType<ControladorFondo>(FindObjectsSortMode.None);
+        foreach (ControladorFondo fondo in fondos)
+        {
+            fondo.Restablecer();
+        }
+
+        // 4. Elimina físicamente todas las estelas de estrellas fugaces activas en la escena
+        ControladorEstrella3D controladorEstrella = FindAnyObjectByType<ControladorEstrella3D>();
+        if (controladorEstrella != null)
+        {
+            foreach (Transform hijo in controladorEstrella.transform)
+            {
+                Destroy(hijo.gameObject);
             }
         }
     }
@@ -232,6 +262,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void IniciarJuego()
     {
+
         if (panelMenuPrincipal != null) panelMenuPrincipal.SetActive(false);
         if (botonPausa != null) botonPausa.SetActive(true);
 
@@ -241,6 +272,7 @@ public class GameManager : MonoBehaviour
         if (txtPuntuacionGameplay != null) txtPuntuacionGameplay.gameObject.SetActive(true);
 
         contadorGemas = 0;
+        haContinuadoEnPartida = false;
         puntuacionObstaculos = 0;
         aumentosVelocidadPartida = 0;
         tiempoUltimaGema = -1f;
@@ -249,6 +281,15 @@ public class GameManager : MonoBehaviour
         temporizador = 0f;
 
         DestruirElementosJuego();
+
+        if (panelGameOver != null)
+        {
+            CuentaAtrasGameOver cuentaAtras = panelGameOver.GetComponentInChildren<CuentaAtrasGameOver>(true);
+            if (cuentaAtras != null)
+            {
+                cuentaAtras.RestablecerBoton();
+            }
+        }
 
         // Se asegura de instanciar la skin correcta al iniciar la partida
         GenerarJugadorConSkin();
@@ -471,6 +512,8 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ContinuarPartida()
     {
+
+        haContinuadoEnPartida = true;
         if (panelGameOver != null) panelGameOver.SetActive(false);
 
         if (contenedorGemas != null) contenedorGemas.SetActive(true);
@@ -562,6 +605,7 @@ public class GameManager : MonoBehaviour
         if (audioSourceMusica != null) audioSourceMusica.Pause(); 
         if (panelPausa != null) panelPausa.SetActive(true); 
         if (botonPausa != null) botonPausa.SetActive(false); 
+
     }
 
     /// <summary>
@@ -569,6 +613,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void ContinuarJuegoDesdePausa()
     {
+
         Time.timeScale = 1f; 
         if (audioSourceMusica != null) audioSourceMusica.UnPause(); 
         if (panelPausa != null) panelPausa.SetActive(false); 
@@ -667,5 +712,26 @@ public class GameManager : MonoBehaviour
             if (bocadilloCowsmo != null) bocadilloCowsmo.SetActive(true);
             if (textoCowsmo != null) textoCowsmo.SetActive(true);
         }
+
+        // Se configuran de forma robusta las referencias y eventos del panel de inicio de sesión en el gestor de autenticación.
+        AuthManager authMgr = GetComponent<AuthManager>();
+        if (authMgr != null)
+        {
+            authMgr.AsegurarReferenciasYConfiguracion(true);
+        }
+    }
+    /// <summary>
+    /// Cierra la aplicación de forma inmediata.
+    /// Si se ejecuta en el Editor de Unity, detiene la simulación del modo Play.
+    /// </summary>
+    public void SalirDelJuego()
+    {
+        Debug.Log("GameManager: Cerrando la aplicación.");
+        
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #else
+        Application.Quit();
+        #endif
     }
 }

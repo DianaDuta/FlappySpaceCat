@@ -7,6 +7,8 @@ using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 #endif
 
+#pragma warning disable 0618 // Desactivar advertencia de obsolescencia de UnityEngine.SocialPlatforms.Social para Unity 6
+
 /// <summary>
 /// Listado de logros oficiales del videojuego.
 /// Define las equivalencias numéricas asociadas a cada tipo de logro.
@@ -67,6 +69,11 @@ public class LogrosManager : MonoBehaviour
     public MapeoLogroGPGS[] mapeoLogrosGPGS;
 
     private bool autenticadoEnGooglePlay = false;
+
+    /// <summary>
+    /// Indica si el jugador se encuentra autenticado en los servicios de Google Play Games.
+    /// </summary>
+    public bool AutenticadoEnGooglePlay => autenticadoEnGooglePlay;
 
     void Awake()
     {
