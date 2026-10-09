@@ -69,11 +69,24 @@ public class TextoTraducible : MonoBehaviour
         if (textoLegacy == null) textoLegacy = GetComponent<Text>();
         if (textoLegacy == null) textoLegacy = GetComponentInChildren<Text>();
 
-        if (string.IsNullOrEmpty(claveTraduccion) && LocalizationManager.Instancia != null)
+        if (LocalizationManager.Instancia != null)
         {
             string currentTxt = textoTMP != null ? textoTMP.text : (textoLegacy != null ? textoLegacy.text : "");
             string parentName = transform.parent != null ? transform.parent.name : "";
-            claveTraduccion = LocalizationManager.Instancia.ObtenerClavePorNombre(gameObject.name, parentName, currentTxt);
+            
+            // Si la clave es opciones_calificar pero el objeto fue duplicado para Privacidad, Términos o Feedback, corregirla
+            if (claveTraduccion == "opciones_calificar" || string.IsNullOrEmpty(claveTraduccion))
+            {
+                string inferida = LocalizationManager.Instancia.ObtenerClavePorNombre(gameObject.name, parentName, currentTxt);
+                if (!string.IsNullOrEmpty(inferida) && inferida != "opciones_calificar")
+                {
+                    claveTraduccion = inferida;
+                }
+                else if (string.IsNullOrEmpty(claveTraduccion))
+                {
+                    claveTraduccion = inferida;
+                }
+            }
         }
 
         if (string.IsNullOrEmpty(claveTraduccion)) return;

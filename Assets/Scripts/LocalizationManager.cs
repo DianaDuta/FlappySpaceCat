@@ -318,8 +318,23 @@ public class LocalizationManager : MonoBehaviour
         if (goName == "Txt_Efectos" || parentName == "Efectos" || txtLimpio == "Efectos" || txtLimpio == "Sound FX" || txtLimpio == "Effets Sonores" || txtLimpio == "Soundeffekte" || txtLimpio == "Effetti" || txtLimpio == "Efeitos" || txtLimpio == "Efecte") return "opciones_efectos";
         if (goName == "Txt_Idiomas" || parentName == "Idiomas" || txtLimpio == "Idioma" || txtLimpio == "Language" || txtLimpio == "Langue" || txtLimpio == "Sprache" || txtLimpio == "Lingua" || txtLimpio == "Limbă") return "opciones_idioma";
         if (goName == "Toggle_Vibracion" || parentName == "Toggle_Vibracion" || txtLimpio == "Vibracion" || txtLimpio == "Vibration" || txtLimpio == "Vibrazione" || txtLimpio == "Vibração" || txtLimpio == "Vibrație") return "opciones_vibracion";
-        if (goName == "Btn_Calificar" || parentName == "Btn_Calificar" || txtLimpio == "Calificar" || txtLimpio == "Rate Us" || txtLimpio == "Noter" || txtLimpio == "Bewerten" || txtLimpio == "Valuta" || txtLimpio == "Avaliar" || txtLimpio == "Evaluează") return "opciones_calificar";
-        if (goName == "Btn_Privacidad" || parentName == "Btn_Privacidad" || txtLimpio == "Privacidad" || txtLimpio == "Privacy" || txtLimpio == "Confidentialité" || txtLimpio == "Datenschutz" || txtLimpio == "Confidențialitate") return "opciones_privacidad";
+
+        // Botones de Opciones (Privacidad, Términos, Feedback, Calificar)
+        string gLow = goName.ToLower();
+        string pLow = parentName.ToLower();
+        string tLow = txtLimpio.ToLower();
+
+        if (gLow.Contains("privacidad") || pLow.Contains("privacidad") || gLow.Contains("privacy") || pLow.Contains("privacy") || tLow.Contains("privacidad") || tLow.Contains("privacy") || tLow.Contains("confidentialit") || tLow.Contains("datenschutz")) 
+            return "opciones_privacidad";
+
+        if (gLow.Contains("termino") || pLow.Contains("termino") || gLow.Contains("term") || pLow.Contains("term") || tLow.Contains("términos") || tLow.Contains("terminos") || tLow.Contains("terms") || tLow.Contains("condition") || tLow.Contains("agb") || tLow.Contains("nutzungsbed")) 
+            return "opciones_terminos";
+
+        if (gLow.Contains("feedback") || pLow.Contains("feedback") || gLow.Contains("soporte") || pLow.Contains("soporte") || gLow.Contains("comentario") || pLow.Contains("comentario") || tLow.Contains("comentario") || tLow.Contains("feedback") || tLow.Contains("soporte") || tLow.Contains("support")) 
+            return "opciones_feedback";
+
+        if (gLow.Contains("calificar") || pLow.Contains("calificar") || gLow.Contains("rate") || pLow.Contains("rate") || tLow == "calificar" || tLow == "rate us" || tLow == "noter" || tLow == "bewerten" || tLow == "valuta" || tLow == "avaliar" || tLow == "evaluează") 
+            return "opciones_calificar";
 
         // Menú Principal
         if (goName == "Btn_Jugar" || parentName == "Btn_Jugar" || txtLimpio == "Jugar" || txtLimpio == "Play" || txtLimpio == "Jouer" || txtLimpio == "Spielen" || txtLimpio == "Gioca" || txtLimpio == "Jogar" || txtLimpio == "Joacă") return "menu_jugar";

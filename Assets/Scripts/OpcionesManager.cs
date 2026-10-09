@@ -128,44 +128,8 @@ public class OpcionesManager : MonoBehaviour
             toggleVibracion.onValueChanged.AddListener(ToggleVibracion);
         }
 
-        // Vinculación automática de botones de Privacidad, Términos y Feedback si existen en el panel
-        if (panelOpciones != null)
-        {
-            Transform tPriv = BuscarTransformRecursivo(panelOpciones.transform, "Btn_Privacidad");
-            if (tPriv != null)
-            {
-                Button btnPriv = tPriv.GetComponent<Button>();
-                if (btnPriv != null)
-                {
-                    btnPriv.onClick.RemoveListener(VerPrivacidad);
-                    btnPriv.onClick.AddListener(VerPrivacidad);
-                }
-            }
-
-            Transform tTerm = BuscarTransformRecursivo(panelOpciones.transform, "Btn_Terminos");
-            if (tTerm == null) tTerm = BuscarTransformRecursivo(panelOpciones.transform, "Btn_Terms");
-            if (tTerm != null)
-            {
-                Button btnTerm = tTerm.GetComponent<Button>();
-                if (btnTerm != null)
-                {
-                    btnTerm.onClick.RemoveListener(VerTerminosServicio);
-                    btnTerm.onClick.AddListener(VerTerminosServicio);
-                }
-            }
-
-            Transform tFeed = BuscarTransformRecursivo(panelOpciones.transform, "Btn_Feedback");
-            if (tFeed == null) tFeed = BuscarTransformRecursivo(panelOpciones.transform, "Btn_Soporte");
-            if (tFeed != null)
-            {
-                Button btnFeed = tFeed.GetComponent<Button>();
-                if (btnFeed != null)
-                {
-                    btnFeed.onClick.RemoveListener(EnviarFeedback);
-                    btnFeed.onClick.AddListener(EnviarFeedback);
-                }
-            }
-        }
+        // Vinculación y traducción robusta de todos los botones en el panel de opciones
+        ConfigurarYTraducirBotonesOpciones();
     }
 
     /// <summary>
@@ -296,12 +260,65 @@ public class OpcionesManager : MonoBehaviour
         TraducirTextoEnHijo(panelOpciones.transform, "Txt_Efectos", "opciones_efectos");
         TraducirTextoEnHijo(panelOpciones.transform, "Txt_Idiomas", "opciones_idioma");
         TraducirTextoEnHijo(panelOpciones.transform, "Toggle_Vibracion", "opciones_vibracion");
-        TraducirTextoEnHijo(panelOpciones.transform, "Btn_Calificar", "opciones_calificar");
-        TraducirTextoEnHijo(panelOpciones.transform, "Btn_Privacidad", "opciones_privacidad");
-        TraducirTextoEnHijo(panelOpciones.transform, "Btn_Terminos", "opciones_terminos");
-        TraducirTextoEnHijo(panelOpciones.transform, "Btn_Terms", "opciones_terminos");
-        TraducirTextoEnHijo(panelOpciones.transform, "Btn_Feedback", "opciones_feedback");
-        TraducirTextoEnHijo(panelOpciones.transform, "Btn_Soporte", "opciones_feedback");
+
+        ConfigurarYTraducirBotonesOpciones();
+    }
+
+    /// <summary>
+    /// Identifica dinámicamente cada botón en el panel de opciones por su nombre o contenido,
+    /// asignándole su listener de clic y su traducción correcta en el idioma activo.
+    /// </summary>
+    public void ConfigurarYTraducirBotonesOpciones()
+    {
+        if (panelOpciones == null || LocalizationManager.Instancia == null) return;
+
+        Button[] botones = panelOpciones.GetComponentsInChildren<Button>(true);
+        foreach (Button btn in botones)
+        {
+            string bName = btn.gameObject.name.ToLower();
+            if (bName.Contains("cerrar") || bName.Contains("close") || bName == "btn_x" || bName.Contains("back")) continue;
+
+            TextMeshProUGUI tmp = btn.GetComponentInChildren<TextMeshProUGUI>(true);
+            TextoTraducible tt = btn.GetComponentInChildren<TextoTraducible>(true);
+            string txtActual = tmp != null ? tmp.text.ToLower().Trim() : "";
+
+            // 1. Botón de Privacidad
+            if (bName.Contains("privacidad") || bName.Contains("privacy") || bName.Contains("politica") || 
+                txtActual.Contains("privacidad") || txtActual.Contains("privacy") || txtActual.Contains("confidentialit") || txtActual.Contains("datenschutz"))
+            {
+                btn.onClick.RemoveListener(VerPrivacidad);
+                btn.onClick.AddListener(VerPrivacidad);
+                if (tt != null) tt.claveTraduccion = "opciones_privacidad";
+                if (tmp != null) tmp.text = LocalizationManager.Instancia.ObtenerTexto("opciones_privacidad", "Privacidad");
+            }
+            // 2. Botón de Términos
+            else if (bName.Contains("termino") || bName.Contains("term") || bName.Contains("condicion") || 
+                     txtActual.Contains("términos") || txtActual.Contains("terminos") || txtActual.Contains("terms") || txtActual.Contains("condition") || txtActual.Contains("agb") || txtActual.Contains("nutzungsbed"))
+            {
+                btn.onClick.RemoveListener(VerTerminosServicio);
+                btn.onClick.AddListener(VerTerminosServicio);
+                if (tt != null) tt.claveTraduccion = "opciones_terminos";
+                if (tmp != null) tmp.text = LocalizationManager.Instancia.ObtenerTexto("opciones_terminos", "Términos");
+            }
+            // 3. Botón de Feedback / Soporte
+            else if (bName.Contains("feedback") || bName.Contains("soporte") || bName.Contains("comentario") || bName.Contains("support") || 
+                     txtActual.Contains("comentarios") || txtActual.Contains("feedback") || txtActual.Contains("soporte") || txtActual.Contains("support"))
+            {
+                btn.onClick.RemoveListener(EnviarFeedback);
+                btn.onClick.AddListener(EnviarFeedback);
+                if (tt != null) tt.claveTraduccion = "opciones_feedback";
+                if (tmp != null) tmp.text = LocalizationManager.Instancia.ObtenerTexto("opciones_feedback", "Feedback");
+            }
+            // 4. Botón de Calificar
+            else if (bName.Contains("calificar") || bName.Contains("rate") || 
+                     txtActual.Contains("calificar") || txtActual.Contains("rate us") || txtActual.Contains("noter") || txtActual.Contains("bewerten") || txtActual.Contains("valuta") || txtActual.Contains("avaliar") || txtActual.Contains("evaluează"))
+            {
+                btn.onClick.RemoveListener(CalificarJuego);
+                btn.onClick.AddListener(CalificarJuego);
+                if (tt != null) tt.claveTraduccion = "opciones_calificar";
+                if (tmp != null) tmp.text = LocalizationManager.Instancia.ObtenerTexto("opciones_calificar", "Calificar");
+            }
+        }
     }
 
     private void TraducirTextoEnHijo(Transform raiz, string nombreObjeto, string clave)
@@ -552,7 +569,13 @@ public class OpcionesManager : MonoBehaviour
     public void VerPrivacidad()
     {
         if (SonidosUIManager.Instancia != null) SonidosUIManager.Instancia.ReproducirSonidoBoton();
-        Application.OpenURL(urlPrivacidad);
+        string url = urlPrivacidad;
+        if (string.IsNullOrEmpty(url) || url.Contains("tupagina.com") || url.Contains("dianarcado.github.io"))
+        {
+            url = "https://dianaduta.github.io/FlappySpaceCat/Legal/privacy.html";
+            urlPrivacidad = url;
+        }
+        Application.OpenURL(url);
     }
 
     /// <summary>
@@ -561,7 +584,13 @@ public class OpcionesManager : MonoBehaviour
     public void VerTerminosServicio()
     {
         if (SonidosUIManager.Instancia != null) SonidosUIManager.Instancia.ReproducirSonidoBoton();
-        Application.OpenURL(urlTerminos);
+        string url = urlTerminos;
+        if (string.IsNullOrEmpty(url) || url.Contains("tupagina.com") || url.Contains("dianarcado.github.io"))
+        {
+            url = "https://dianaduta.github.io/FlappySpaceCat/Legal/terms.html";
+            urlTerminos = url;
+        }
+        Application.OpenURL(url);
     }
 
     /// <summary>
@@ -571,6 +600,7 @@ public class OpcionesManager : MonoBehaviour
     {
         if (SonidosUIManager.Instancia != null) SonidosUIManager.Instancia.ReproducirSonidoBoton();
 
+        string correo = string.IsNullOrEmpty(emailSoporte) || emailSoporte.Contains("diana.soporte.dev") ? "flappyspacecat@gmail.com" : emailSoporte;
         string asunto = System.Uri.EscapeDataString("Flappy Space Cat - Feedback & Soporte");
         string cuerpo = System.Uri.EscapeDataString(
             "\n\n--- Información del Dispositivo ---\n" +
@@ -578,7 +608,7 @@ public class OpcionesManager : MonoBehaviour
             $"Dispositivo: {SystemInfo.deviceModel}\n" +
             $"Sistema Operativo: {SystemInfo.operatingSystem}\n"
         );
-        string mailtoUri = $"mailto:{emailSoporte}?subject={asunto}&body={cuerpo}";
+        string mailtoUri = $"mailto:{correo}?subject={asunto}&body={cuerpo}";
         Application.OpenURL(mailtoUri);
     }
 }
