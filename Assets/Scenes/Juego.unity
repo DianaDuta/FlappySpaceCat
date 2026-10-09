@@ -1767,9 +1767,9 @@ MonoBehaviour:
   dropdownIdiomasTMP: {fileID: 2004775041}
   dropdownIdiomasLegacy: {fileID: 0}
   txtIdiomaActual: {fileID: 0}
-  urlPrivacidad: https://tupagina.com/privacidad
-  urlTerminos: https://dianarcado.github.io/FlappySpaceCat/terms.html
-  emailSoporte: diana.soporte.dev@gmail.com
+  urlPrivacidad: https://dianaduta.github.io/FlappySpaceCat/Legal/privacy.html
+  urlTerminos: https://dianaduta.github.io/FlappySpaceCat/Legal/terms.html
+  emailSoporte: flappyspacecat@gmail.com
 --- !u!114 &473187938
 MonoBehaviour:
   m_ObjectHideFlags: 0

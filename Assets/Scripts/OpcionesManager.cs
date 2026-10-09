@@ -44,7 +44,7 @@ public class OpcionesManager : MonoBehaviour
     public string urlTerminos = "https://dianaduta.github.io/FlappySpaceCat/Legal/terms.html";
 
     [Tooltip("Correo de contacto para soporte y feedback de jugadores.")]
-    public string emailSoporte = "diana.soporte.dev@gmail.com";
+    public string emailSoporte = "flappyspacecat@gmail.com";
 
     private void OnEnable()
     {

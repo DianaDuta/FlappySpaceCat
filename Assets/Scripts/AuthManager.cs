@@ -525,12 +525,12 @@ public class AuthManager : MonoBehaviour
 
     /// <summary>
     /// Comprueba si el usuario se ha registrado dentro de las primeras 24 horas 
-    /// desde que abrió el juego por primera vez para regalarle la skin de Cowsmo y otorgar el logro.
+    /// desde que abrió el juego por primera vez para regalarle la skin de Cowsmo (índice 5) y otorgar el logro.
     /// </summary>
     private void ComprobarRecompensaRegistro()
     {
-        // Se comprueba si ya se le ha entregado la recompensa antes para no dársela dos veces
-        if (SecurePrefs.GetInt("RecompensaCowEntregada", 0) == 1 || SecurePrefs.GetInt("SkinDesbloqueada_5", 0) == 1 || SecurePrefs.GetInt("SkinDesbloqueada_4", 0) == 1)
+        // Se comprueba si ya se le ha entregado la skin de Cowsmo (índice 5) para no repetir
+        if (SecurePrefs.GetInt("RecompensaCowEntregada", 0) == 1 && SecurePrefs.GetInt("SkinDesbloqueada_5", 0) == 1)
         {
             if (LogrosManager.Instancia != null)
             {
@@ -565,9 +565,15 @@ public class AuthManager : MonoBehaviour
                 SecurePrefs.SetInt("RecompensaCowEntregada", 1);
                 SecurePrefs.Save();
                 
-                Debug.Log("¡Recompensa de registro entregada! Skin de Cow desbloqueada.");
+                Debug.Log("¡Recompensa de registro entregada! Skin de Cowsmo (índice 5) desbloqueada.");
                 if (textoAvisos != null) 
-                    textoAvisos.text = "¡Felicidades! Has recibido la skin Cow por registrarte hoy.";
+                    textoAvisos.text = "¡Felicidades! Has recibido la skin Cowsmo por registrarte hoy.";
+
+                // Guardar también en la base de datos Firestore si el usuario está autenticado
+                if (auth != null && auth.CurrentUser != null && DatabaseManager.Instancia != null)
+                {
+                    DatabaseManager.Instancia.GuardarSkinsDesbloqueadas(auth.CurrentUser.UserId, indiceSkinCow);
+                }
 
                 // Desbloquear también el logro de Cowsmo
                 if (LogrosManager.Instancia != null)
@@ -584,4 +590,4 @@ public class AuthManager : MonoBehaviour
             }
         }
     }
-}
+}
