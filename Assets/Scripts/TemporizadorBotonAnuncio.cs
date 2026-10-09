@@ -7,6 +7,7 @@ using System.Collections;
 /// <summary>
 /// Gestiona un temporizador de enfriamiento (cooldown) persistente en el botón de anuncios del menú.
 /// Utiliza SecurePrefs para garantizar que el cooldown sobreviva al cierre o reinicio del juego.
+/// Desactiva automáticamente el Animator mientras esté bloqueado y lo reactiva únicamente cuando esté disponible.
 /// </summary>
 [RequireComponent(typeof(Button))]
 public class TemporizadorBotonAnuncio : MonoBehaviour
@@ -25,6 +26,10 @@ public class TemporizadorBotonAnuncio : MonoBehaviour
     [Tooltip("Texto que se mostrará en el botón cuando el temporizador no esté activo.")]
     public string textoListo = "Ver Anuncio";
 
+    [Header("Animación")]
+    [Tooltip("Animator del botón (se desactivará mientras esté en cooldown).")]
+    public Animator animadorBoton;
+
     private Button boton;
     private Coroutine coroutineTimer;
     private DateTime fechaFinCooldown;
@@ -38,6 +43,8 @@ public class TemporizadorBotonAnuncio : MonoBehaviour
     private void Awake()
     {
         boton = GetComponent<Button>();
+        if (animadorBoton == null) animadorBoton = GetComponent<Animator>();
+        if (animadorBoton == null) animadorBoton = GetComponentInChildren<Animator>();
     }
 
     private void OnEnable()
@@ -101,25 +108,38 @@ public class TemporizadorBotonAnuncio : MonoBehaviour
     }
 
     /// <summary>
-    /// Bloquea el botón y arranca la coroutine para mostrar la cuenta atrás.
+    /// Bloquea el botón, desactiva la animación y arranca la coroutine para mostrar la cuenta atrás.
     /// </summary>
     private void ActivarCooldown(DateTime finCooldown)
     {
         estaEnCooldown = true;
         if (boton != null) boton.interactable = false;
 
+        // Desactivar Animator y restablecer la escala del botón
+        if (animadorBoton != null)
+        {
+            animadorBoton.enabled = false;
+            animadorBoton.transform.localScale = Vector3.one;
+        }
+
         if (coroutineTimer != null) StopCoroutine(coroutineTimer);
         coroutineTimer = StartCoroutine(ActualizarTemporizadorCooldown());
     }
 
     /// <summary>
-    /// Habilita de nuevo el botón y borra el registro del cooldown.
+    /// Habilita de nuevo el botón, reactiva la animación y borra el registro del cooldown.
     /// </summary>
     private void DesactivarCooldown()
     {
         estaEnCooldown = false;
         if (boton != null) boton.interactable = true;
         if (textoBoton != null) textoBoton.text = textoListo;
+
+        // Reactivar Animator para que vuelva a animarse el botón listo
+        if (animadorBoton != null)
+        {
+            animadorBoton.enabled = true;
+        }
 
         // Limpiar de SecurePrefs para indicar que está listo
         SecurePrefs.SetString(clavePersistencia, "");
@@ -143,14 +163,14 @@ public class TemporizadorBotonAnuncio : MonoBehaviour
             
             if (textoBoton != null)
             {
-                // Formatear en MM:SS
-                textoBoton.text = string.Format("Listo en: {0:D2}:{1:D2}", (int)restante.TotalMinutes, restante.Seconds);
+                // Formato MM:SS
+                textoBoton.text = string.Format("{0:D2}:{1:D2}", restante.Minutes, restante.Seconds);
             }
-            
-            // WaitForSecondsRealtime nos asegura un conteo preciso sin importar el Time.timeScale (pausa)
+
             yield return new WaitForSecondsRealtime(1f);
         }
 
+        // El tiempo se ha cumplido
         DesactivarCooldown();
     }
 }

@@ -1,0 +1,1363 @@
+{
+  "idiomasDisponibles": [
+    { "codigo": "es", "nombre": "Castellano" },
+    { "codigo": "en", "nombre": "English" },
+    { "codigo": "fr", "nombre": "Français" },
+    { "codigo": "de", "nombre": "Deutsch" },
+    { "codigo": "it", "nombre": "Italiano" },
+    { "codigo": "pt", "nombre": "Português" },
+    { "codigo": "ro", "nombre": "Română" }
+  ],
+  "traducciones": {
+    "menu_jugar": {
+      "es": "Jugar",
+      "en": "Play",
+      "fr": "Jouer",
+      "de": "Spielen",
+      "it": "Gioca",
+      "pt": "Jogar",
+      "ro": "Joacă"
+    },
+    "menu_tienda": {
+      "es": "Tienda",
+      "en": "Shop",
+      "fr": "Boutique",
+      "de": "Shop",
+      "it": "Negozio",
+      "pt": "Loja",
+      "ro": "Magazin"
+    },
+    "menu_perfil": {
+      "es": "Perfil",
+      "en": "Profile",
+      "fr": "Profil",
+      "de": "Profil",
+      "it": "Profilo",
+      "pt": "Perfil",
+      "ro": "Profil"
+    },
+    "menu_logros": {
+      "es": "Logros",
+      "en": "Achievements",
+      "fr": "Succès",
+      "de": "Erfolge",
+      "it": "Obiettivi",
+      "pt": "Conquistas",
+      "ro": "Realizări"
+    },
+    "menu_salir_app": {
+      "es": "Salir del juego",
+      "en": "Exit game",
+      "fr": "Quitter le jeu",
+      "de": "Spiel beenden",
+      "it": "Esci dal juego",
+      "pt": "Sair do jogo",
+      "ro": "Ieșire din joc"
+    },
+    "opciones_titulo": {
+      "es": "Ajustes",
+      "en": "Settings",
+      "fr": "Paramètres",
+      "de": "Einstellungen",
+      "it": "Impostazioni",
+      "pt": "Ajustes",
+      "ro": "Setări"
+    },
+    "opciones_musica": {
+      "es": "Musica",
+      "en": "Music",
+      "fr": "Musique",
+      "de": "Musik",
+      "it": "Musica",
+      "pt": "Música",
+      "ro": "Muzică"
+    },
+    "opciones_efectos": {
+      "es": "Efectos",
+      "en": "Sound FX",
+      "fr": "Effets Sonores",
+      "de": "Soundeffekte",
+      "it": "Effetti",
+      "pt": "Efeitos",
+      "ro": "Efecte"
+    },
+    "opciones_vibracion": {
+      "es": "Vibracion",
+      "en": "Vibration",
+      "fr": "Vibration",
+      "de": "Vibration",
+      "it": "Vibrazione",
+      "pt": "Vibração",
+      "ro": "Vibrație"
+    },
+    "opciones_idioma": {
+      "es": "Idioma",
+      "en": "Language",
+      "fr": "Langue",
+      "de": "Sprache",
+      "it": "Lingua",
+      "pt": "Idioma",
+      "ro": "Limbă"
+    },
+    "opciones_calificar": {
+      "es": "Calificar",
+      "en": "Rate Us",
+      "fr": "Noter",
+      "de": "Bewerten",
+      "it": "Valuta",
+      "pt": "Avaliar",
+      "ro": "Evaluează"
+    },
+    "opciones_privacidad": {
+      "es": "Privacidad",
+      "en": "Privacy",
+      "fr": "Confidentialité",
+      "de": "Datenschutz",
+      "it": "Privacy",
+      "pt": "Privacidade",
+      "ro": "Confidențialitate"
+    },
+    "opciones_terminos": {
+      "es": "Términos",
+      "en": "Terms",
+      "fr": "Conditions",
+      "de": "AGB",
+      "it": "Termini",
+      "pt": "Termos",
+      "ro": "Termeni"
+    },
+    "opciones_feedback": {
+      "es": "Feedback",
+      "en": "Feedback",
+      "fr": "Support",
+      "de": "Feedback",
+      "it": "Feedback",
+      "pt": "Feedback",
+      "ro": "Feedback"
+    },
+    "login_titulo": {
+      "es": "¡Gemas espaciales\nen peligro!",
+      "en": "Space Gems\nin Danger!",
+      "fr": "Gemmes spatiales\nen danger!",
+      "de": "Weltraum-Edelsteine\nin Gefahr!",
+      "it": "Gemme spaziali\nin pericolo!",
+      "pt": "Gemas espaciais\nem perigo!",
+      "ro": "Pietre spațiale\nîn pericol!"
+    },
+    "login_subtitulo": {
+      "es": "Inicia sesion para guardar tu progreso.",
+      "en": "Log in to save your progress.",
+      "fr": "Connectez-vous pour sauvegarder vos progrès.",
+      "de": "Melde dich an, um deinen Fortschritt zu speichern.",
+      "it": "Accedi per salvare i tuoi progressi.",
+      "pt": "Inicie sessão para guardar o seu progresso.",
+      "ro": "Conectează-te pentru a-ți salva progresul."
+    },
+    "login_cowsmo": {
+      "es": "¡Registrate en las primeras 24h para conseguir a Cowsmo gratis!",
+      "en": "Register within 24h to get Cowsmo for free!",
+      "fr": "Inscrivez-vous dans les 24h pour obtenir Cowsmo gratuitement!",
+      "de": "Registriere dich in den ersten 24h für ein kostenloses Cowsmo!",
+      "it": "Registrati nelle prime 24 ore per ottenere Cowsmo gratis!",
+      "pt": "Registe-se nas primeiras 24h para ganhar o Cowsmo grátis!",
+      "ro": "Înregistrează-te în primele 24h pentru a-l primi pe Cowsmo gratis!"
+    },
+    "login_placeholder_user": {
+      "es": "User Name",
+      "en": "User Name",
+      "fr": "Nom d'utilisateur",
+      "de": "Benutzername",
+      "it": "Nome Utente",
+      "pt": "Nome de Usuário",
+      "ro": "Nume Utilizator"
+    },
+    "login_placeholder_pass": {
+      "es": "Password",
+      "en": "Password",
+      "fr": "Mot de passe",
+      "de": "Passwort",
+      "it": "Password",
+      "pt": "Senha",
+      "ro": "Parolă"
+    },
+    "login_btn_google": {
+      "es": "Crear con Google",
+      "en": "Sign in with Google",
+      "fr": "Créer avec Google",
+      "de": "Mit Google anmelden",
+      "it": "Crea con Google",
+      "pt": "Criar com Google",
+      "ro": "Creează cu Google"
+    },
+    "login_btn_id": {
+      "es": "Crear ID",
+      "en": "Create ID",
+      "fr": "Créer ID",
+      "de": "ID Erstellen",
+      "it": "Crea ID",
+      "pt": "Criar ID",
+      "ro": "Creează ID"
+    },
+    "login_btn_if": {
+      "es": "Crear ID",
+      "en": "Create ID",
+      "fr": "Créer ID",
+      "de": "ID Erstellen",
+      "it": "Crea ID",
+      "pt": "Criar ID",
+      "ro": "Creează ID"
+    },
+    "login_btn_saltar": {
+      "es": "SALTAR",
+      "en": "SKIP",
+      "fr": "PASSER",
+      "de": "ÜBERSPRINGEN",
+      "it": "SALTA",
+      "pt": "PULAR",
+      "ro": "OMITE"
+    },
+    "menu_ver_anuncio": {
+      "es": "+50",
+      "en": "+50",
+      "fr": "+50",
+      "de": "+50",
+      "it": "+50",
+      "pt": "+50",
+      "ro": "+50"
+    },
+    "menu_reclamar": {
+      "es": "+20",
+      "en": "+20",
+      "fr": "+20",
+      "de": "+20",
+      "it": "+20",
+      "pt": "+20",
+      "ro": "+20"
+    },
+    "perfil_titulo": {
+      "es": "PERFIL",
+      "en": "PROFILE",
+      "fr": "PROFIL",
+      "de": "PROFIL",
+      "it": "PROFILO",
+      "pt": "PERFIL",
+      "ro": "PROFIL"
+    },
+    "perfil_record": {
+      "es": "Mejor puntuacion",
+      "en": "High Score",
+      "fr": "Meilleur score",
+      "de": "Bester Punktestand",
+      "it": "Miglior punteggio",
+      "pt": "Melhor pontuação",
+      "ro": "Cel mai bun scor"
+    },
+    "perfil_gemas": {
+      "es": "Gemas",
+      "en": "Gems",
+      "fr": "Gemmes",
+      "de": "Edelsteine",
+      "it": "Gemme",
+      "pt": "Gemas",
+      "ro": "Pietre"
+    },
+    "perfil_iniciar_sesion": {
+      "es": "Iniciar sesion",
+      "en": "Log In",
+      "fr": "Se connecter",
+      "de": "Anmelden",
+      "it": "Accedi",
+      "pt": "Iniciar sessão",
+      "ro": "Autentificare"
+    },
+    "gameover_titulo": {
+      "es": "GAME OVER",
+      "en": "GAME OVER",
+      "fr": "GAME OVER",
+      "de": "GAME OVER",
+      "it": "GAME OVER",
+      "pt": "GAME OVER",
+      "ro": "JOC TERMINAT"
+    },
+    "gameover_puntuacion": {
+      "es": "Puntuacion actual:",
+      "en": "Current score:",
+      "fr": "Score actuel:",
+      "de": "Aktuelle Punktzahl:",
+      "it": "Punteggio attuale:",
+      "pt": "Pontuação actual:",
+      "ro": "Scor curent:"
+    },
+    "gameover_record": {
+      "es": "Mejor puntuacion: ",
+      "en": "High score: ",
+      "fr": "Meilleur score: ",
+      "de": "Bester Punktestand: ",
+      "it": "Miglior punteggio: ",
+      "pt": "Melhor pontuação: ",
+      "ro": "Cel mai bun scor: "
+    },
+    "gameover_continuar": {
+      "es": "Continuar",
+      "en": "Continue",
+      "fr": "Continuer",
+      "de": "Weiterspielen",
+      "it": "Continua",
+      "pt": "Continuar",
+      "ro": "Continuă"
+    },
+    "gameover_continuar_jugando": {
+      "es": "Continuar jugando",
+      "en": "Continue playing",
+      "fr": "Continuer à jouer",
+      "de": "Weiterspielen",
+      "it": "Continua a giocare",
+      "pt": "Continuar a jogar",
+      "ro": "Continuă jocul"
+    },
+    "gameover_tiempo_expirado": {
+      "es": "Tiempo Expirado",
+      "en": "Time Expired",
+      "fr": "Temps Écoulé",
+      "de": "Zeit Abgelaufen",
+      "it": "Tempo Scaduto",
+      "pt": "Tempo Expirado",
+      "ro": "Timp Expirat"
+    },
+    "gameover_volver_menu": {
+      "es": "Volver al menu",
+      "en": "Back to menu",
+      "fr": "Retour au menu",
+      "de": "Zurück zum Menü",
+      "it": "Torna al menu",
+      "pt": "Voltar ao menu",
+      "ro": "Înapoi la meniu"
+    },
+    "pausa_titulo": {
+      "es": "PAUSA",
+      "en": "PAUSE",
+      "fr": "PAUSE",
+      "de": "PAUSE",
+      "it": "PAUSA",
+      "pt": "PAUSA",
+      "ro": "PAUZĂ"
+    },
+    "pausa_continuar": {
+      "es": "Continuar",
+      "en": "Continue",
+      "fr": "Continuer",
+      "de": "Fortsetzen",
+      "it": "Continua",
+      "pt": "Continuar",
+      "ro": "Continuă"
+    },
+    "pausa_salir": {
+      "es": "Salir",
+      "en": "Exit",
+      "fr": "Quitter",
+      "de": "Beenden",
+      "it": "Esci",
+      "pt": "Sair",
+      "ro": "Ieșire"
+    },
+    "salir_pregunta": {
+      "es": "¿Desea salir del juego?",
+      "en": "Do you want to quit the game?",
+      "fr": "Voulez-vous quitter le jeu?",
+      "de": "Möchtest du das Spiel beenden?",
+      "it": "Vuoi uscire dal gioco?",
+      "pt": "Deseja sair do jogo?",
+      "ro": "Doriți să ieșiți din joc?"
+    },
+    "salir_si": {
+      "es": "Si",
+      "en": "Yes",
+      "fr": "Oui",
+      "de": "Ja",
+      "it": "Sì",
+      "pt": "Sim",
+      "ro": "Da"
+    },
+    "salir_no": {
+      "es": "No",
+      "en": "No",
+      "fr": "Non",
+      "de": "Nein",
+      "it": "No",
+      "pt": "Não",
+      "ro": "Nu"
+    },
+    "calificar_titulo": {
+      "es": "CALIFICAR",
+      "en": "RATE US",
+      "fr": "NOTER",
+      "de": "BEWERTEN",
+      "it": "VALUTA",
+      "pt": "AVALIAR",
+      "ro": "EVALUEAZĂ"
+    },
+    "agradecimiento_mensaje": {
+      "es": "¡Gracias por tu colaboracion!\n\nAquí tienes unas cuantas gemas...",
+      "en": "Thank you for your feedback!\n\nHere are some gems...",
+      "fr": "Merci pour vos retours!\n\nVoici quelques gemmes...",
+      "de": "Danke für dein Feedback!\n\nHier sind ein paar Edelsteine...",
+      "it": "Grazie per il tuo feedback!\n\nEcco alcune gemme...",
+      "pt": "Obrigado pela sua avaliação!\n\nAqui estão algumas gemas...",
+      "ro": "Mulțumim pentru feedback!\n\nIată câteva pietre prețioase..."
+    },
+    "tablon_titulo": {
+      "es": "¡Vuelo diario!",
+      "en": "Daily Flight!",
+      "fr": "Vol Quotidien!",
+      "de": "Täglicher Flug!",
+      "it": "Volo Giornaliero!",
+      "pt": "Voo Diário!",
+      "ro": "Zbor Zilnic!"
+    },
+    "logros_titulo": {
+      "es": "Logros interestelares",
+      "en": "Interstellar Achievements",
+      "fr": "Succès Interstellaires",
+      "de": "Interstellare Erfolge",
+      "it": "Obiettivi Interstellari",
+      "pt": "Conquistas Interestelares",
+      "ro": "Realizări Interstelare"
+    },
+    "logros_notificacion": {
+      "es": "¡Logro conseguido!",
+      "en": "Achievement Unlocked!",
+      "fr": "Succès Débloqué!",
+      "de": "Erfolg Freigeschaltet!",
+      "it": "Obiettivo Sbloccato!",
+      "pt": "Conquista Desbloqueada!",
+      "ro": "Realizare Deblocată!"
+    },
+    "tienda_titulo": {
+      "es": "Amigos espaciales",
+      "en": "Space Friends",
+      "fr": "Amis de l'espace",
+      "de": "Weltraumfreunde",
+      "it": "Amici spaziali",
+      "pt": "Amigos espaciais",
+      "ro": "Prieteni spațiali"
+    },
+    "tienda_seleccionar": {
+      "es": "SELECCIONAR",
+      "en": "SELECT",
+      "fr": "SÉLECTIONNER",
+      "de": "WÄHLEN",
+      "it": "SELEZIONA",
+      "pt": "SELECIONAR",
+      "ro": "SELECTEAZĂ"
+    },
+    "tienda_equipado": {
+      "es": "EQUIPADO",
+      "en": "EQUIPPED",
+      "fr": "ÉQUIPÉ",
+      "de": "AUSGERÜSTET",
+      "it": "EQUIPAGGIATO",
+      "pt": "EQUIPADO",
+      "ro": "ECHIPAT"
+    },
+    "calificacion_enviar": {
+      "es": "Enviar",
+      "en": "Submit",
+      "fr": "Envoyer",
+      "de": "Senden",
+      "it": "Invia",
+      "pt": "Enviar",
+      "ro": "Trimite"
+    },
+    "calificacion_aviso_estrella": {
+      "es": "Por favor, seleccione alguna estrella.",
+      "en": "Please select a star rating.",
+      "fr": "Veuillez sélectionner une étoile.",
+      "de": "Bitte wähle eine Sternebewertung.",
+      "it": "Per favore, seleziona una stella.",
+      "pt": "Por favor, selecione uma estrela.",
+      "ro": "Vă rugăm să selectați o stea."
+    },
+    "reto_completado": {
+      "es": "¡Completado!",
+      "en": "Completed!",
+      "fr": "Terminé!",
+      "de": "Abgeschlossen!",
+      "it": "Completato!",
+      "pt": "Concluído!",
+      "ro": "Completat!"
+    },
+    "reto_listo_reclamar": {
+      "es": "¡Listo para reclamar!",
+      "en": "Ready to claim!",
+      "fr": "Prêt à réclamer!",
+      "de": "Bereit zum Einfordern!",
+      "it": "Pronto da riscattare!",
+      "pt": "Pronto para resgatar!",
+      "ro": "Gata de revendicat!"
+    },
+    "reto_1_desc": {
+      "es": "Supera 3 obstáculos en una partida",
+      "en": "Pass 3 obstacles in a single game",
+      "fr": "Franchissez 3 obstacles en une partie",
+      "de": "Überwinde 3 Hindernisse in einem Spiel",
+      "it": "Supera 3 ostacoli in una partita",
+      "pt": "Supere 3 obstáculos em uma partida",
+      "ro": "Depășește 3 obstacole într-un joc"
+    },
+    "reto_2_desc": {
+      "es": "Recoge 10 gemas en total",
+      "en": "Collect 10 total gems",
+      "fr": "Collectez 10 gemmes au total",
+      "de": "Sammle insgesamt 10 Edelsteine",
+      "it": "Raccogli 10 gemme in totale",
+      "pt": "Colete 10 gemas no total",
+      "ro": "Colectează 10 pietre în total"
+    },
+    "reto_3_desc": {
+      "es": "Juega 2 partidas",
+      "en": "Play 2 games",
+      "fr": "Jouez 2 parties",
+      "de": "Spiele 2 Spiele",
+      "it": "Gioca 2 partite",
+      "pt": "Jogue 2 partidas",
+      "ro": "Joacă 2 jocuri"
+    },
+    "reto_4_desc": {
+      "es": "Supera 5 obstáculos en una partida",
+      "en": "Pass 5 obstacles in a single game",
+      "fr": "Franchissez 5 obstacles en une partie",
+      "de": "Überwinde 5 Hindernisse in einem Spiel",
+      "it": "Supera 5 ostacoli in una partida",
+      "pt": "Supere 5 obstáculos em uma partida",
+      "ro": "Depășește 5 obstacole într-un joc"
+    },
+    "reto_5_desc": {
+      "es": "Recoge 5 gemas en una partida",
+      "en": "Collect 5 gems in a single game",
+      "fr": "Collectez 5 gemmes en une partie",
+      "de": "Sammle 5 Edelsteine in einem Spiel",
+      "it": "Raccogli 5 gemme in una partita",
+      "pt": "Colete 5 gemas em uma partida",
+      "ro": "Colectează 5 pietre într-un joc"
+    },
+    "reto_6_desc": {
+      "es": "Usa la opción Continuar 1 vez",
+      "en": "Use the Continue option 1 time",
+      "fr": "Utilisez l'option Continuer 1 fois",
+      "de": "Nutze die Option Weiterspielen 1 Mal",
+      "it": "Usa l'opzione Continua 1 volta",
+      "pt": "Use a opção Continuar 1 vez",
+      "ro": "Folosește opțiunea Continuă o dată"
+    },
+    "reto_7_desc": {
+      "es": "Equipa o cambia de skin en la tienda",
+      "en": "Equip or change skin in the shop",
+      "fr": "Équipez ou changez de skin dans la boutique",
+      "de": "Rüste einen Skin im Shop aus oder wechsle ihn",
+      "it": "Equipaggia o cambia skin nel negozio",
+      "pt": "Equipe ou troque de skin na loja",
+      "ro": "Echipează sau schimbă skinul din magazin"
+    },
+    "reto_8_desc": {
+      "es": "Supera 7 obstáculos en una partida",
+      "en": "Pass 7 obstacles in a single game",
+      "fr": "Franchissez 7 obstacles en une partie",
+      "de": "Überwinde 7 Hindernisse in einem Spiel",
+      "it": "Supera 7 ostacoli in una partida",
+      "pt": "Supere 7 obstáculos em uma partida",
+      "ro": "Depășește 7 obstacole într-un joc"
+    },
+    "reto_9_desc": {
+      "es": "Recoge 15 gemas en total",
+      "en": "Collect 15 total gems",
+      "fr": "Collectez 15 gemmes au total",
+      "de": "Sammle insgesamt 15 Edelsteine",
+      "it": "Raccogli 15 gemme in totale",
+      "pt": "Colete 15 gemas no total",
+      "ro": "Colectează 15 pietre în total"
+    },
+    "reto_10_desc": {
+      "es": "Alcanza 10 puntos en una partida",
+      "en": "Reach 10 points in a single game",
+      "fr": "Atteignez 10 points en une partie",
+      "de": "Erreiche 10 Punkte in einem Spiel",
+      "it": "Raggiungi 10 punti in una partida",
+      "pt": "Alcance 10 pontos em uma partida",
+      "ro": "Atinge 10 puncte într-un joc"
+    },
+    "reto_11_desc": {
+      "es": "Juega 3 partidas",
+      "en": "Play 3 games",
+      "fr": "Jouez 3 parties",
+      "de": "Spiele 3 Spiele",
+      "it": "Gioca 3 partite",
+      "pt": "Jogue 3 partidas",
+      "ro": "Joacă 3 jocuri"
+    },
+    "reto_12_desc": {
+      "es": "Supera 4 obstáculos en una partida",
+      "en": "Pass 4 obstacles in a single game",
+      "fr": "Franchissez 4 obstacles en une partie",
+      "de": "Überwinde 4 Hindernisse in einem Spiel",
+      "it": "Supera 4 ostacoli in una partida",
+      "pt": "Supere 4 obstáculos em uma partida",
+      "ro": "Depășește 4 obstacole într-un joc"
+    },
+    "reto_13_desc": {
+      "es": "Recoge 8 gemas en una partida",
+      "en": "Collect 8 gems in a single game",
+      "fr": "Collectez 8 gemmes en une partie",
+      "de": "Sammle 8 Edelsteine in einem Spiel",
+      "it": "Raccogli 8 gemme in una partida",
+      "pt": "Colete 8 gemas em uma partida",
+      "ro": "Colectează 8 pietre într-un joc"
+    },
+    "reto_14_desc": {
+      "es": "Acumula 15 puntos en total",
+      "en": "Accumulate 15 total points",
+      "fr": "Accumulez 15 points au total",
+      "de": "Sammle insgesamt 15 Punkte",
+      "it": "Accumula 15 punti in totale",
+      "pt": "Acumule 15 pontos no total",
+      "ro": "Acumulează 15 puncte în total"
+    },
+    "reto_15_desc": {
+      "es": "Mira 1 anuncio para obtener recompensa",
+      "en": "Watch 1 rewarded ad",
+      "fr": "Regardez 1 pub récompensée",
+      "de": "Sieh dir 1 Belohnungswerbung an",
+      "it": "Guarda 1 annuncio con ricompensa",
+      "pt": "Veja 1 anúncio premiado",
+      "ro": "Urmărește 1 reclamă cu recompensă"
+    },
+    "reto_16_desc": {
+      "es": "Supera 6 obstáculos en una partida",
+      "en": "Pass 6 obstacles in a single game",
+      "fr": "Franchissez 6 obstacles en une partie",
+      "de": "Überwinde 6 Hindernisse in einem Spiel",
+      "it": "Supera 6 ostacoli in una partida",
+      "pt": "Supere 6 obstáculos em una partida",
+      "ro": "Depășește 6 obstacole într-un joc"
+    },
+    "reto_17_desc": {
+      "es": "Recoge 20 gemas en total",
+      "en": "Collect 20 total gems",
+      "fr": "Collectez 20 gemmes au total",
+      "de": "Sammle insgesamt 20 Edelsteine",
+      "it": "Raccogli 20 gemme in totale",
+      "pt": "Colete 20 gemas no total",
+      "ro": "Colectează 20 de pietre în total"
+    },
+    "reto_18_desc": {
+      "es": "Juega 1 partida",
+      "en": "Play 1 game",
+      "fr": "Jouez 1 partie",
+      "de": "Spiele 1 Spiel",
+      "it": "Gioca 1 partita",
+      "pt": "Jogue 1 partida",
+      "ro": "Joacă 1 joc"
+    },
+    "reto_19_desc": {
+      "es": "Supera 8 obstáculos en una partida",
+      "en": "Pass 8 obstacles in a single game",
+      "fr": "Franchissez 8 obstacles en une partie",
+      "de": "Überwinde 8 Hindernisse in einem Spiel",
+      "it": "Supera 8 ostacoli in una partida",
+      "pt": "Supere 8 obstáculos em uma partida",
+      "ro": "Depășește 8 obstacole într-un joc"
+    },
+    "reto_20_desc": {
+      "es": "Acumula 25 puntos en total",
+      "en": "Accumulate 25 total points",
+      "fr": "Accumulez 25 points au total",
+      "de": "Sammle insgesamt 25 Punkte",
+      "it": "Accumula 25 punti in totale",
+      "pt": "Acumule 25 pontos no total",
+      "ro": "Acumulează 25 de puncte în total"
+    },
+    "logro_0_tit": {
+      "es": "¡Primeros Pasos!",
+      "en": "First Steps!",
+      "fr": "Premiers Pas!",
+      "de": "Erste Schritte!",
+      "it": "Primi Passi!",
+      "pt": "Primeiros Passos!",
+      "ro": "Primii Pași!"
+    },
+    "logro_0_desc": {
+      "es": "Comienza tu viaje superando tu primer obstáculo.",
+      "en": "Begin your journey by passing your first obstacle.",
+      "fr": "Commencez votre voyage en franchissant votre premier obstacle.",
+      "de": "Beginne deine Reise, indem du dein erstes Hindernis überwindest.",
+      "it": "Inizia il tuo viaggio superando il tuo primo ostacolo.",
+      "pt": "Comece sua jornada superando seu primeiro obstáculo.",
+      "ro": "Începe-ți călătoria depășind primul tău obstacol."
+    },
+    "logro_1_tit": {
+      "es": "Piloto Novato",
+      "en": "Rookie Pilot",
+      "fr": "Pilote Novice",
+      "de": "Nachwuchspilot",
+      "it": "Pilota Novizio",
+      "pt": "Piloto Novato",
+      "ro": "Pilot Începător"
+    },
+    "logro_1_desc": {
+      "es": "Alcanza 10 de puntuación en una sola partida.",
+      "en": "Reach a score of 10 in a single game.",
+      "fr": "Atteignez un score de 10 en une seule partie.",
+      "de": "Erreiche 10 Punkte in einem einzigen Spiel.",
+      "it": "Raggiungi 10 punti in una singola partida.",
+      "pt": "Alcance 10 pontos em uma única partida.",
+      "ro": "Atinge 10 puncte într-un singur joc."
+    },
+    "logro_2_tit": {
+      "es": "Astronauta Hábil",
+      "en": "Skilled Astronaut",
+      "fr": "Astronaute Habile",
+      "de": "Geschickter Astronaut",
+      "it": "Astronauta Abile",
+      "pt": "Astronauta Habilidoso",
+      "ro": "Astronaut Abil"
+    },
+    "logro_2_desc": {
+      "es": "Alcanza 50 puntos en una sola partida.",
+      "en": "Reach 50 points in a single game.",
+      "fr": "Atteignez 50 points en une seule partie.",
+      "de": "Erreiche 50 Punkte in einem einzigen Spiel.",
+      "it": "Raggiungi 50 punti in una singola partida.",
+      "pt": "Alcance 50 pontos em una única partida.",
+      "ro": "Atinge 50 de puncte într-un singur joc."
+    },
+    "logro_3_tit": {
+      "es": "Capitán Estelar",
+      "en": "Star Captain",
+      "fr": "Capitaine Stellaire",
+      "de": "Sternenkapitän",
+      "it": "Capitano Stellare",
+      "pt": "Capitão Estelar",
+      "ro": "Căpitan Stelară"
+    },
+    "logro_3_desc": {
+      "es": "Alcanza 100 puntos en una sola partida.",
+      "en": "Reach 100 points in a single game.",
+      "fr": "Atteignez 100 points en une seule partie.",
+      "de": "Erreiche 100 Punkte in einem einzigen Spiel.",
+      "it": "Raggiungi 100 punti in una singola partida.",
+      "pt": "Alcance 100 pontos em uma única partida.",
+      "ro": "Atinge 100 de puncte într-un singur joc."
+    },
+    "logro_4_tit": {
+      "es": "Leyenda del Cosmos",
+      "en": "Legend of the Cosmos",
+      "fr": "Légende du Cosmos",
+      "de": "Legende des Kosmos",
+      "it": "Leggenda del Cosmo",
+      "pt": "Lenda do Cosmos",
+      "ro": "Legenda Cosmosului"
+    },
+    "logro_4_desc": {
+      "es": "Alcanza 250 puntos en una sola partida.",
+      "en": "Reach 250 points in a single game.",
+      "fr": "Atteignez 250 points en une seule partie.",
+      "de": "Erreiche 250 Punkte in einem einzigen Spiel.",
+      "it": "Raggiungi 250 punti in una singola partida.",
+      "pt": "Alcance 250 pontos em uma única partida.",
+      "ro": "Atinge 250 de puncte într-un singur joc."
+    },
+    "logro_5_tit": {
+      "es": "Agujero Negro",
+      "en": "Black Hole",
+      "fr": "Trou Noir",
+      "de": "Schwarzes Loch",
+      "it": "Buco Nero",
+      "pt": "Buraco Negro",
+      "ro": "Gaură Neagră"
+    },
+    "logro_5_desc": {
+      "es": "La gravedad te atrae hasta jugar 50 partidas en total.",
+      "en": "Gravity pulls you in to play 50 total games.",
+      "fr": "La gravité vous attire pour jouer 50 parties au total.",
+      "de": "Die Schwerkraft zieht dich an, insgesamt 50 Spiele zu spielen.",
+      "it": "La gravità ti attira a giocare 50 partite in totale.",
+      "pt": "A gravidade atrai você até jogar 50 partidas no total.",
+      "ro": "Gravitația te atrage să joci 50 de jocuri în total."
+    },
+    "logro_6_tit": {
+      "es": "A la velocidad de la luz",
+      "en": "Speed of Light",
+      "fr": "À la vitesse de la lumière",
+      "de": "Mit Lichtgeschwindigkeit",
+      "it": "Alla velocità della luce",
+      "pt": "À velocidade da luz",
+      "ro": "La viteza luminii"
+    },
+    "logro_6_desc": {
+      "es": "Aumenta la velocidad de la partida 3 veces consecutivas.",
+      "en": "Survive 3 consecutive game speed increases.",
+      "fr": "Survivez à 3 augmentations consécutives de vitesse de jeu.",
+      "de": "Überlebe 3 aufeinanderfolgende Geschwindigkeitssteigerungen.",
+      "it": "Sopravvivi a 3 aumenti consecutivi di velocità di gioco.",
+      "pt": "Sobreviva a 3 aumentos consecutivos de velocidade do jogo.",
+      "ro": "Supraviețuiește la 3 creșteri consecutive de viteză."
+    },
+    "logro_7_tit": {
+      "es": "Con los bolsillos llenos",
+      "en": "Pockets Full",
+      "fr": "Les poches pleines",
+      "de": "Volle Taschen",
+      "it": "Tasche Piene",
+      "pt": "Bolsos Cheios",
+      "ro": "Buzunare Pline"
+    },
+    "logro_7_desc": {
+      "es": "Acumula 100 gemas en total.",
+      "en": "Accumulate 100 total gems.",
+      "fr": "Accumulez 100 gemmes au total.",
+      "de": "Sammle insgesamt 100 Edelsteine.",
+      "it": "Accumula 100 gemme in totale.",
+      "pt": "Acumule 100 gemas no total.",
+      "ro": "Acumulează 100 de pietre prețioase în total."
+    },
+    "logro_8_tit": {
+      "es": "Magnate de la galaxia",
+      "en": "Galaxy Tycoon",
+      "fr": "Magnat de la galaxie",
+      "de": "Galaxie-Tycoon",
+      "it": "Magnate della galassia",
+      "pt": "Magnata da galáxia",
+      "ro": "Magnat al Galaxiei"
+    },
+    "logro_8_desc": {
+      "es": "Acumula 5000 gemas en total.",
+      "en": "Accumulate 5,000 total gems.",
+      "fr": "Accumulez 5000 gemmes au total.",
+      "de": "Sammle insgesamt 5.000 Edelsteine.",
+      "it": "Accumula 5.000 gemme in totale.",
+      "pt": "Acumule 5000 gemas no total.",
+      "ro": "Acumulează 5000 de pietre prețioase în total."
+    },
+    "logro_9_tit": {
+      "es": "Una racha codiciosa",
+      "en": "Greedy Streak",
+      "fr": "Série Gourmande",
+      "de": "Gierige Serie",
+      "it": "Striscia Avida",
+      "pt": "Sequência Gananciosa",
+      "ro": "Serie Lacomă"
+    },
+    "logro_9_desc": {
+      "es": "Recoge 10 gemas en una sola partida.",
+      "en": "Collect 10 gems in a single game.",
+      "fr": "Collectez 10 gemmes en une seule partie.",
+      "de": "Sammle 10 Edelsteine in einem einzigen Spiel.",
+      "it": "Raccogli 10 gemme in una singola partida.",
+      "pt": "Colete 10 gemas em uma única partida.",
+      "ro": "Colectează 10 pietre prețioase într-un singur joc."
+    },
+    "logro_10_tit": {
+      "es": "Fiebre de cristal",
+      "en": "Crystal Fever",
+      "fr": "Fièvre de cristal",
+      "de": "Kristallfieber",
+      "it": "Febbre di cristallo",
+      "pt": "Febre de cristal",
+      "ro": "Febra Cristalelor"
+    },
+    "logro_10_desc": {
+      "es": "Recoge 100 gemas en una sola partida.",
+      "en": "Collect 100 gems in a single game.",
+      "fr": "Collectez 100 gemmes en une seule partie.",
+      "de": "Sammle 100 Edelsteine in einem einzigen Spiel.",
+      "it": "Raccogli 100 gemme in una singola partida.",
+      "pt": "Colete 100 gemas em uma única partida.",
+      "ro": "Colectează 100 de pietre prețioase într-un singur joc."
+    },
+    "logro_11_tit": {
+      "es": "Avaro despistado",
+      "en": "Clueless Miser",
+      "fr": "Avare étourdi",
+      "de": "Ahnungsloser Geizhals",
+      "it": "Avaro sbadato",
+      "pt": "Avarento distraído",
+      "ro": "Avar Distrat"
+    },
+    "logro_11_desc": {
+      "es": "Muere en el mismo segundo en el que recoges una gema.",
+      "en": "Die in the exact same second you collect a gem.",
+      "fr": "Mourez à la seconde exacte où vous ramassez une gemme.",
+      "de": "Stirb genau in der Sekunde, in der du einen Edelstein sammelst.",
+      "it": "Muori nello stesso secondo in cui raccogli una gemma.",
+      "pt": "Morra no mesmo segundo em que coletar uma gema.",
+      "ro": "Mori în aceeași secundă în care colectezi o piatră prețioasă."
+    },
+    "logro_12_tit": {
+      "es": "Un cambio de look",
+      "en": "A New Look",
+      "fr": "Un nouveau look",
+      "de": "Ein neuer Look",
+      "it": "Un nuovo look",
+      "pt": "Um novo visual",
+      "ro": "Un nou look"
+    },
+    "logro_12_desc": {
+      "es": "Compra una skin de un amigo espacial de la tienda.",
+      "en": "Buy a space friend skin from the shop.",
+      "fr": "Achetez un skin d'ami de l'espace dans la boutique.",
+      "de": "Kaufe einen Weltraumfreund-Skin im Shop.",
+      "it": "Acquista una skin di un amico spaziale nel negozio.",
+      "pt": "Compre uma skin de um amigo espacial na loja.",
+      "ro": "Cumpără un skin de prieten spațial din magazin."
+    },
+    "logro_13_tit": {
+      "es": "Coleccionista de la moda",
+      "en": "Fashion Collector",
+      "fr": "Collectionneur de mode",
+      "de": "Mode-Sammler",
+      "it": "Collezionista di moda",
+      "pt": "Colecionador de moda",
+      "ro": "Colecționar de Modă"
+    },
+    "logro_13_desc": {
+      "es": "Desbloquea todas las skins de la tienda.",
+      "en": "Unlock all skins in the shop.",
+      "fr": "Débloquez tous les skins de la boutique.",
+      "de": "Schalte alle Skins im Shop frei.",
+      "it": "Sblocca tutte le skin nel negozio.",
+      "pt": "Desbloqueie todas as skins da loja.",
+      "ro": "Deblochează toate skinurile din magazin."
+    },
+    "logro_14_tit": {
+      "es": "El gato estrellado",
+      "en": "The Crashed Cat",
+      "fr": "Le chat étoilé",
+      "de": "Die abgestürzte Katze",
+      "it": "Il gatto schiantato",
+      "pt": "O gato estrelado",
+      "ro": "Pisica Prăbușită"
+    },
+    "logro_14_desc": {
+      "es": "Muere 100 veces en total.",
+      "en": "Die 100 times in total.",
+      "fr": "Mourez 100 fois au total.",
+      "de": "Stirb insgesamt 100 Mal.",
+      "it": "Muori 100 volte in totale.",
+      "pt": "Morra 100 vezes no total.",
+      "ro": "Mori de 100 de ori în total."
+    },
+    "logro_15_tit": {
+      "es": "Patrocinador",
+      "en": "Sponsor",
+      "fr": "Sponsor",
+      "de": "Sponsor",
+      "it": "Sponsor",
+      "pt": "Patrocinador",
+      "ro": "Sponsor"
+    },
+    "logro_15_desc": {
+      "es": "Ve un anuncio recompensado para conseguir gemas extra.",
+      "en": "Watch a rewarded ad to earn extra gems.",
+      "fr": "Regardez une pub récompensée pour obtenir des gemmes bonus.",
+      "de": "Sieh dir eine Belohnungswerbung an, um extra Edelsteine zu erhalten.",
+      "it": "Guarda un annuncio con ricompensa per ottenere gemme extra.",
+      "pt": "Veja um anúncio premiado para ganhar gemas extras.",
+      "ro": "Urmărește o reclamă cu recompensă pentru pietre în plus."
+    },
+    "logro_16_tit": {
+      "es": "Gran persistencia",
+      "en": "Great Persistence",
+      "fr": "Grande persévérance",
+      "de": "Große Beharrlichkeit",
+      "it": "Grande persistenza",
+      "pt": "Grande persistência",
+      "ro": "Marea Persistență"
+    },
+    "logro_16_desc": {
+      "es": "Revive usando el botón 'Continuar partida' tras un impacto.",
+      "en": "Revive using the 'Continue Game' button after a crash.",
+      "fr": "Revis grâce au bouton 'Continuer' après un impact.",
+      "de": "Belebe dich nach einem Crash mit dem 'Weiterspielen'-Button wieder.",
+      "it": "Rinasci usando il pulsante 'Continua' dopo un impatto.",
+      "pt": "Reviva usando o botão 'Continuar' após uma colisão.",
+      "ro": "Reînvie folosind butonul 'Continuă' după un impact."
+    },
+    "logro_17_tit": {
+      "es": "Un vuelo demasiado corto",
+      "en": "Too Short a Flight",
+      "fr": "Un vol bien trop court",
+      "de": "Ein viel zu kurzer Flug",
+      "it": "Un volo troppo breve",
+      "pt": "Um voo curto demais",
+      "ro": "Un Zbor Prea Scurt"
+    },
+    "logro_17_desc": {
+      "es": "Estréllate contra el primer obstáculo nada más empezar.",
+      "en": "Crash into the very first obstacle right at the start.",
+      "fr": "Écrasez-vous contre le premier obstacle dès le début.",
+      "de": "Kollidiere direkt am Anfang mit dem allerersten Hindernis.",
+      "it": "Schiantati contro il primo ostacolo appena inizi.",
+      "pt": "Bata no primeiro obstáculo logo no início.",
+      "ro": "Prăbușește-te în primul obstacol chiar la început."
+    },
+    "logro_18_tit": {
+      "es": "Muuuuuy alto",
+      "en": "Moo-ving High",
+      "fr": "Meuh-gnifique",
+      "de": "Muuuuh-tastisch hoch",
+      "it": "Muuuuu-to in alto",
+      "pt": "Muuuuuito alto",
+      "ro": "Muuuuult prea sus"
+    },
+    "logro_18_desc": {
+      "es": "Juega una partida con la skin de Cowsmo equipada.",
+      "en": "Play a game with the Cowsmo skin equipped.",
+      "fr": "Jouez une partie avec le skin Cowsmo équipé.",
+      "de": "Spiele ein Spiel mit ausgerüstetem Cowsmo-Skin.",
+      "it": "Gioca una partida con la skin Cowsmo equipaggiata.",
+      "pt": "Jogue uma partida com a skin Cowsmo equipada.",
+      "ro": "Joacă o rundă cu skinul Cowsmo echipat."
+    },
+    "logro_19_tit": {
+      "es": "Oso orbital",
+      "en": "Orbital Bear",
+      "fr": "Ours orbital",
+      "de": "Orbitaler Bär",
+      "it": "Orso orbitale",
+      "pt": "Urso orbital",
+      "ro": "Ursul Orbital"
+    },
+    "logro_19_desc": {
+      "es": "Juega una partida con la skin de Orion equipada.",
+      "en": "Play a game with the Orion skin equipped.",
+      "fr": "Jouez une partie avec le skin Orion équipé.",
+      "de": "Spiele ein Spiel mit ausgerüstetem Orion-Skin.",
+      "it": "Gioca una partida con la skin Orion equipaggiata.",
+      "pt": "Jogue uma partida com a skin Orion equipada.",
+      "ro": "Joacă o rundă cu skinul Orion echipat."
+    },
+    "gameover_titulo": {
+      "es": "GAME OVER",
+      "en": "GAME OVER",
+      "fr": "PARTIE TERMINÉE",
+      "de": "SPIEL VORBEI",
+      "it": "GAME OVER",
+      "pt": "FIM DE JOGO",
+      "ro": "JOC TERMINAT"
+    },
+    "gameover_puntuacion": {
+      "es": "Puntuación actual: ",
+      "en": "Current score: ",
+      "fr": "Score actuel : ",
+      "de": "Aktueller Punktestand: ",
+      "it": "Punteggio attuale: ",
+      "pt": "Pontuação atual: ",
+      "ro": "Scor curent: "
+    },
+    "gameover_record": {
+      "es": "Mejor puntuación: ",
+      "en": "High score: ",
+      "fr": "Meilleur score : ",
+      "de": "Bester Punktestand: ",
+      "it": "Miglior punteggio: ",
+      "pt": "Melhor pontuação: ",
+      "ro": "Cel mai bun scor: "
+    },
+    "gameover_continuar": {
+      "es": "Continuar",
+      "en": "Continue",
+      "fr": "Continuer",
+      "de": "Weiterspielen",
+      "it": "Continua",
+      "pt": "Continuar",
+      "ro": "Continuă"
+    },
+    "gameover_volver_menu": {
+      "es": "Menú Principal",
+      "en": "Main Menu",
+      "fr": "Menu Principal",
+      "de": "Hauptmenü",
+      "it": "Menu Principale",
+      "pt": "Menu Principal",
+      "ro": "Meniu Principal"
+    },
+    "tienda_titulo": {
+      "es": "Tienda",
+      "en": "Shop",
+      "fr": "Boutique",
+      "de": "Shop",
+      "it": "Negozio",
+      "pt": "Loja",
+      "ro": "Magazin"
+    },
+    "tienda_equipado": {
+      "es": "EQUIPADO",
+      "en": "EQUIPPED",
+      "fr": "ÉQUIPÉ",
+      "de": "AUSGERÜSTET",
+      "it": "EQUIPAGGIATO",
+      "pt": "EQUIPADO",
+      "ro": "ECHIPAT"
+    },
+    "tienda_seleccionar": {
+      "es": "SELECCIONAR",
+      "en": "SELECT",
+      "fr": "SÉLECTIONNER",
+      "de": "WÄHLEN",
+      "it": "SELEZIONA",
+      "pt": "SELECIONAR",
+      "ro": "SELECTEAZĂ"
+    },
+    "tienda_comprar": {
+      "es": "COMPRAR",
+      "en": "BUY",
+      "fr": "ACHETER",
+      "de": "KAUFEN",
+      "it": "ACQUISTA",
+      "pt": "COMPRAR",
+      "ro": "CUMPĂRĂ"
+    },
+    "pausa_titulo": {
+      "es": "PAUSA",
+      "en": "PAUSE",
+      "fr": "PAUSE",
+      "de": "PAUSE",
+      "it": "PAUSA",
+      "pt": "PAUSA",
+      "ro": "PAUZĂ"
+    },
+    "pausa_continuar": {
+      "es": "Continuar",
+      "en": "Continue",
+      "fr": "Continuer",
+      "de": "Weiterspielen",
+      "it": "Continua",
+      "pt": "Continuar",
+      "ro": "Continuă"
+    },
+    "pausa_salir": {
+      "es": "Salir",
+      "en": "Exit",
+      "fr": "Quitter",
+      "de": "Beenden",
+      "it": "Esci",
+      "pt": "Sair",
+      "ro": "Ieșire"
+    },
+    "salir_titulo": {
+      "es": "¿Salir del juego?",
+      "en": "Exit Game?",
+      "fr": "Quitter le jeu ?",
+      "de": "Spiel beenden?",
+      "it": "Uscire dal gioco?",
+      "pt": "Sair do jogo?",
+      "ro": "Ieși din joc?"
+    },
+    "salir_mensaje": {
+      "es": "¿Estás seguro de que deseas salir?",
+      "en": "Are you sure you want to exit?",
+      "fr": "Êtes-vous sûr de vouloir quitter ?",
+      "de": "Möchtest du das Spiel wirklich beenden?",
+      "it": "Sei sicuro di voler uscire?",
+      "pt": "Tens a certeza de que queres sair?",
+      "ro": "Ești sigur că vrei să ieși?"
+    },
+    "salir_si": {
+      "es": "Sí",
+      "en": "Yes",
+      "fr": "Oui",
+      "de": "Ja",
+      "it": "Sì",
+      "pt": "Sim",
+      "ro": "Da"
+    },
+    "salir_no": {
+      "es": "No",
+      "en": "No",
+      "fr": "Non",
+      "de": "Nein",
+      "it": "No",
+      "pt": "Não",
+      "ro": "Nu"
+    },
+    "auth_aviso_id_vacio": {
+      "es": "Por favor, introduce un identificador.",
+      "en": "Please enter an identifier.",
+      "fr": "Veuillez entrer un identifiant.",
+      "de": "Bitte gib eine Kennung ein.",
+      "it": "Per favore, inserisci un identificatore.",
+      "pt": "Por favor, insira um identificador.",
+      "ro": "Te rugăm să introduci un identificator."
+    },
+    "auth_aviso_id_espacios": {
+      "es": "El ID no puede contener espacios en blanco.",
+      "en": "The ID cannot contain spaces.",
+      "fr": "L'identifiant ne peut pas contenir d'espaces.",
+      "de": "Die ID darf keine Leerzeichen enthalten.",
+      "it": "L'ID non può contenere spazi.",
+      "pt": "O ID não pode conter espaços em branco.",
+      "ro": "ID-ul nu poate conține spații libere."
+    },
+    "auth_aviso_id_corto": {
+      "es": "El ID debe tener al menos 3 caracteres.",
+      "en": "The ID must be at least 3 characters long.",
+      "fr": "L'identifiant doit comporter au moins 3 caractères.",
+      "de": "Die ID muss mindestens 3 Zeichen lang sein.",
+      "it": "L'ID deve contenere almeno 3 caratteri.",
+      "pt": "O ID deve ter pelo menos 3 caracteres.",
+      "ro": "ID-ul trebuie să aibă cel puțin 3 caractere."
+    },
+    "auth_aviso_pass_vacio": {
+      "es": "Por favor, introduce una contraseña.",
+      "en": "Please enter a password.",
+      "fr": "Veuillez entrer un mot de passe.",
+      "de": "Bitte gib ein Passwort ein.",
+      "it": "Per favore, inserisci una password.",
+      "pt": "Por favor, insira uma senha.",
+      "ro": "Te rugăm să introduci o parolă."
+    },
+    "auth_aviso_pass_corta": {
+      "es": "La contraseña debe tener al menos 8 caracteres.",
+      "en": "Password must be at least 8 characters long.",
+      "fr": "Le mot de passe doit comporter au moins 8 caractères.",
+      "de": "Das Passwort muss mindestens 8 Zeichen lang sein.",
+      "it": "La password deve contenere almeno 8 caratteri.",
+      "pt": "A senha deve ter pelo menos 8 caracteres.",
+      "ro": "Parola trebuie să aibă cel puțin 8 caractere."
+    },
+    "auth_aviso_pass_formato": {
+      "es": "La contraseña requiere al menos una letra y un número.",
+      "en": "Password requires at least one letter and one number.",
+      "fr": "Le mot de passe requiert au moins une lettre et un chiffre.",
+      "de": "Das Passwort erfordert mindestens einen Buchstaben und eine Zahl.",
+      "it": "La password richiede almeno una lettera e un numero.",
+      "pt": "A senha requer pelo menos uma letra e um número.",
+      "ro": "Parola necesită cel puțin o literă și un număr."
+    },
+    "auth_aviso_conectando": {
+      "es": "Estableciendo conexión...",
+      "en": "Connecting...",
+      "fr": "Connexion en cours...",
+      "de": "Verbindung wird hergestellt...",
+      "it": "Connessione in corso...",
+      "pt": "A estabelecer ligação...",
+      "ro": "Se stabilește conexiunea..."
+    },
+    "auth_aviso_cancelado": {
+      "es": "Conexión cancelada.",
+      "en": "Connection canceled.",
+      "fr": "Connexion annulée.",
+      "de": "Verbindung abgebrochen.",
+      "it": "Connessione annullata.",
+      "pt": "Ligação cancelada.",
+      "ro": "Conexiune anulată."
+    },
+    "auth_error_crear_cuenta": {
+      "es": "Error al crear la cuenta. Verifique los datos.",
+      "en": "Error creating account. Check your details.",
+      "fr": "Erreur lors de la création du compte. Vérifiez vos données.",
+      "de": "Fehler beim Erstellen des Kontos. Überprüfen Sie Ihre Daten.",
+      "it": "Errore durante la creazione dell'account. Controlla i dati.",
+      "pt": "Erro ao criar a conta. Verifique os dados.",
+      "ro": "Eroare la crearea contului. Verificați datele."
+    },
+    "auth_error_id_invalido": {
+      "es": "El ID no tiene un formato válido.",
+      "en": "The ID format is invalid.",
+      "fr": "Le format de l'identifiant n'est pas valide.",
+      "de": "Das ID-Format ist ungültig.",
+      "it": "Il formato dell'ID non è valido.",
+      "pt": "O formato do ID não é válido.",
+      "ro": "Formatul ID-ului nu este valid."
+    },
+    "auth_error_pass_debil": {
+      "es": "La contraseña es demasiado débil.",
+      "en": "Password is too weak.",
+      "fr": "Le mot de passe est trop faible.",
+      "de": "Das Passwort ist zu schwach.",
+      "it": "La password è troppo debole.",
+      "pt": "A senha é muito fraca.",
+      "ro": "Parola este prea slabă."
+    },
+    "auth_error_red": {
+      "es": "Error de red. Verifica tu conexión.",
+      "en": "Network error. Check your connection.",
+      "fr": "Erreur réseau. Vérifiez votre connexion.",
+      "de": "Netzwerkfehler. Überprüfen Sie Ihre Verbindung.",
+      "it": "Errore di rete. Controlla la tua connessione.",
+      "pt": "Erro de rede. Verifique a sua ligação.",
+      "ro": "Eroare de rețea. Verificați conexiunea."
+    },
+    "auth_exito_creada": {
+      "es": "Cuenta creada exitosamente.",
+      "en": "Account successfully created.",
+      "fr": "Compte créé avec succès.",
+      "de": "Konto erfolgreich erstellt.",
+      "it": "Account creato con successo.",
+      "pt": "Conta criada com sucesso.",
+      "ro": "Cont creat cu succes."
+    },
+    "auth_aviso_iniciando": {
+      "es": "Iniciando sesión...",
+      "en": "Signing in...",
+      "fr": "Connexion en cours...",
+      "de": "Anmelden...",
+      "it": "Accesso in corso...",
+      "pt": "A iniciar sessão...",
+      "ro": "Se conectează..."
+    },
+    "auth_error_pass_incorrecta": {
+      "es": "La contraseña no coincide con el ID registrado.",
+      "en": "Password does not match the registered ID.",
+      "fr": "Le mot de passe ne correspond pas à l'identifiant enregistré.",
+      "de": "Das Passwort stimmt nicht mit der registrierten ID überein.",
+      "it": "La password non corrisponde all'ID registrato.",
+      "pt": "A senha não corresponde ao ID registado.",
+      "ro": "Parola nu se potrivește cu ID-ul înregistrat."
+    },
+    "auth_error_usuario_no_encontrado": {
+      "es": "Usuario no encontrado.",
+      "en": "User not found.",
+      "fr": "Utilisateur introuvable.",
+      "de": "Benutzer nicht gefunden.",
+      "it": "Utente non trovato.",
+      "pt": "Usuário não encontrado.",
+      "ro": "Utilizator negăsit."
+    },
+    "auth_exito_iniciada": {
+      "es": "Sesión iniciada correctamente.",
+      "en": "Signed in successfully.",
+      "fr": "Connecté avec succès.",
+      "de": "Erfolgreich angemeldet.",
+      "it": "Accesso eseguito correttamente.",
+      "pt": "Sessão iniciada com sucesso.",
+      "ro": "Conectat cu succes."
+    },
+    "notif_logro_titulo": {
+      "es": "¡LOGRO DESBLOQUEADO!",
+      "en": "ACHIEVEMENT UNLOCKED!",
+      "fr": "SUCCÈS DÉVERROUILLÉ !",
+      "de": "ERFOLG FREIGESCHALTET!",
+      "it": "OBIETTIVO SBLOCCATO!",
+      "pt": "CONQUISTA DESBLOQUEADA!",
+      "ro": "REALIZARE DEBLOCATĂ!"
+    },
+    "notif_logro_recompensa": {
+      "es": "+100 GEMAS",
+      "en": "+100 GEMS",
+      "fr": "+100 GEMMES",
+      "de": "+100 EDELSTEINE",
+      "it": "+100 GEMME",
+      "pt": "+100 GEMAS",
+      "ro": "+100 PIETRE"
+    },
+    "notif_btn_aceptar": {
+      "es": "¡GENIAL!",
+      "en": "AWESOME!",
+      "fr": "GÉNIAL !",
+      "de": "SUPER!",
+      "it": "FANTASTICO!",
+      "pt": "INCRÍVEL!",
+      "ro": "GENIAL!"
+    }
+  }
+}

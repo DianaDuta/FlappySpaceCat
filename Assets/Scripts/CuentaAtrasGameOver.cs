@@ -28,6 +28,61 @@ public class CuentaAtrasGameOver : MonoBehaviour
     private float segundosRestantes;
     private bool haRespondido = false;
 
+    private void Awake()
+    {
+        if (textoBotonContinuar == null)
+        {
+            textoBotonContinuar = GetComponentInChildren<TextMeshProUGUI>();
+        }
+        if (botonContinuar == null)
+        {
+            botonContinuar = GetComponent<Button>();
+            if (botonContinuar == null) botonContinuar = GetComponentInChildren<Button>();
+        }
+    }
+
+    /// <summary>
+    /// Obtiene el texto base traducido según el idioma activo actual.
+    /// </summary>
+    private string ObtenerTextoBaseTraducido()
+    {
+        if (LocalizationManager.Instancia != null)
+        {
+            // Si el texto configurado contiene "jugando" o es más largo, intentar la clave específica
+            if (!string.IsNullOrEmpty(textoBotonOriginal) && textoBotonOriginal.ToLower().Contains("jugando"))
+            {
+                string txtLargo = LocalizationManager.Instancia.ObtenerTexto("gameover_continuar_jugando");
+                if (!string.IsNullOrEmpty(txtLargo) && txtLargo != "gameover_continuar_jugando")
+                {
+                    return txtLargo;
+                }
+            }
+
+            string traducido = LocalizationManager.Instancia.ObtenerTexto("gameover_continuar");
+            if (!string.IsNullOrEmpty(traducido) && traducido != "gameover_continuar")
+            {
+                return traducido;
+            }
+        }
+        return !string.IsNullOrEmpty(textoBotonOriginal) ? textoBotonOriginal : "Continuar";
+    }
+
+    /// <summary>
+    /// Obtiene el mensaje de tiempo expirado traducido según el idioma activo actual.
+    /// </summary>
+    private string ObtenerTextoExpiradoTraducido()
+    {
+        if (LocalizationManager.Instancia != null)
+        {
+            string expirado = LocalizationManager.Instancia.ObtenerTexto("gameover_tiempo_expirado");
+            if (!string.IsNullOrEmpty(expirado) && expirado != "gameover_tiempo_expirado")
+            {
+                return expirado;
+            }
+        }
+        return "Tiempo Expirado";
+    }
+
     /// <summary>
     /// Restablece el estado de respuesta, la cuenta atrás y la interactividad 
     /// y visibilidad del botón continuar a sus valores iniciales predeterminados.
@@ -45,12 +100,14 @@ public class CuentaAtrasGameOver : MonoBehaviour
 
         if (textoBotonContinuar != null)
         {
-            textoBotonContinuar.text = string.Format("{0} ({1})", textoBotonOriginal, duracionTotal);
+            textoBotonContinuar.text = string.Format("{0} ({1})", ObtenerTextoBaseTraducido(), duracionTotal);
         }
     }
 
     private void OnEnable()
     {
+        LocalizationManager.OnLanguageChanged += ActualizarUI;
+
         // Si ya se usó la opción de continuar en la partida en curso, se desactiva y oculta por completo
         if (GameManager.Instancia != null && GameManager.Instancia.haContinuadoEnPartida)
         {
@@ -80,6 +137,7 @@ public class CuentaAtrasGameOver : MonoBehaviour
 
     private void OnDisable()
     {
+        LocalizationManager.OnLanguageChanged -= ActualizarUI;
         DetenerTemporizador();
     }
 
@@ -147,7 +205,7 @@ public class CuentaAtrasGameOver : MonoBehaviour
     }
 
     /// <summary>
-    /// Actualiza los textos asociados con los segundos restantes.
+    /// Actualiza los textos asociados con los segundos restantes en el idioma activo.
     /// </summary>
     private void ActualizarUI()
     {
@@ -156,11 +214,11 @@ public class CuentaAtrasGameOver : MonoBehaviour
         {
             if (segundosRestantes > 0)
             {
-                textoBotonContinuar.text = string.Format("{0} ({1})", textoBotonOriginal, segundosRestantes);
+                textoBotonContinuar.text = string.Format("{0} ({1})", ObtenerTextoBaseTraducido(), segundosRestantes);
             }
             else
             {
-                textoBotonContinuar.text = "Tiempo Expirado";
+                textoBotonContinuar.text = ObtenerTextoExpiradoTraducido();
             }
         }
     }

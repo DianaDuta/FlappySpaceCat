@@ -40,8 +40,15 @@ public class ColeccionableGema : MonoBehaviour
 
             if (sonidoRecoger != null)
             {
-                Vector3 posicionCamara = Camera.main != null ? Camera.main.transform.position : transform.position;
-                AudioSource.PlayClipAtPoint(sonidoRecoger, posicionCamara, volumenSonido);
+                if (SonidosUIManager.Instancia != null)
+                {
+                    SonidosUIManager.Instancia.ReproducirSonidoBoton(sonidoRecoger);
+                }
+                else
+                {
+                    Vector3 posicionCamara = Camera.main != null ? Camera.main.transform.position : transform.position;
+                    AudioSource.PlayClipAtPoint(sonidoRecoger, posicionCamara, volumenSonido);
+                }
             }
 
             Destroy(gameObject);

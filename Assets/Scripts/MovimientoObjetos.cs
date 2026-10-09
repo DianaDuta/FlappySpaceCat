@@ -41,6 +41,12 @@ public class MovimientoObjetos : MonoBehaviour
     /// </summary>
     void Update()
     {
+        // Se evita el desplazamiento y la puntuación de obstáculos si se está esperando la reanudación del juego
+        if (GameManager.Instancia != null && GameManager.Instancia.estaEnEsperaDeContinuacion)
+        {
+            return;
+        }
+
         float velocidad = 3f;
         if (GameManager.Instancia != null)
         {

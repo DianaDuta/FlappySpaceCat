@@ -55,6 +55,12 @@ public class GeneradorMaestro : MonoBehaviour
     /// </summary>
     void Update()
     {
+        // Se evita la generación de obstáculos si se está esperando la reanudación del juego
+        if (GameManager.Instancia != null && GameManager.Instancia.estaEnEsperaDeContinuacion)
+        {
+            return;
+        }
+
         float frecuenciaBase = 3f; 
         if (LectorConfiguracion.Datos != null) frecuenciaBase = LectorConfiguracion.Datos.frecuenciaObstaculos;
 

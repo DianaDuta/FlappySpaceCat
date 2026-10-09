@@ -127,6 +127,7 @@ public class LogrosManager : MonoBehaviour
 
         Debug.Log("🎮 [GPGS] Iniciando conexión con Google Play Games Services...");
 
+        #if UNITY_ANDROID && !UNITY_EDITOR
         #if GOOGLE_PLAY_GAMES
         // Configuración e inicialización del plugin de Google Play Games
         PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
@@ -139,7 +140,7 @@ public class LogrosManager : MonoBehaviour
         PlayGamesPlatform.Activate(); // Establece el proveedor activo para la interfaz Social
         #endif
 
-        // Proceso de autenticación asíncrona no intrusiva (silenciosa)
+        // Proceso de autenticación asíncrona no intrusiva (silenciosa) en Android
         Social.localUser.Authenticate((bool exito) =>
         {
             if (exito)
@@ -153,9 +154,12 @@ public class LogrosManager : MonoBehaviour
             else
             {
                 autenticadoEnGooglePlay = false;
-                Debug.LogWarning("🎮 [GPGS] La autenticación silenciosa no se pudo completar. Esto es normal en el Editor de Unity o si el dispositivo no tiene los servicios de Google actualizados.");
+                Debug.LogWarning("🎮 [GPGS] La autenticación silenciosa no se pudo completar.");
             }
         });
+        #else
+        Debug.Log("🎮 [GPGS] Modo Editor: La sincronización con Google Play Games se ejecutará en dispositivos Android reales.");
+        #endif
     }
 
     /// <summary>
@@ -194,6 +198,12 @@ public class LogrosManager : MonoBehaviour
             
             Debug.Log("🏆 ¡NUEVO LOGRO DESBLOQUEADO!: " + logro.ToString() + " - Recompensa: 100 gemas");
             
+            // Notificar a la interfaz para desplegar el panel emergente o encolarlo si está jugando
+            if (NotificacionLogrosManager.Instancia != null)
+            {
+                NotificacionLogrosManager.Instancia.NotificarLogroDesbloqueado(logro);
+            }
+
             // Reporte asíncrono inmediato a la plataforma social vinculada
             ReportarLogroAGooglePlay(logro);
         }
@@ -206,6 +216,10 @@ public class LogrosManager : MonoBehaviour
     {
         if (!usarGooglePlayGames) return;
 
+        #if UNITY_EDITOR
+        // En el Editor de Unity no existen los servicios de Google Play, omitir reporte remoto
+        return;
+        #else
         string idGPGS = ObtenerIdGooglePlay(logro);
         if (string.IsNullOrEmpty(idGPGS))
         {
@@ -233,6 +247,7 @@ public class LogrosManager : MonoBehaviour
         {
             Debug.LogWarning("⚠️ [GPGS] No autenticado en Google Play. El logro " + logro.ToString() + " se sincronizará automáticamente la próxima vez que te conectes online.");
         }
+        #endif
     }
 
     /// <summary>
@@ -272,7 +287,8 @@ public class LogrosManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Recupera la correspondencia del identificador único de Google Play asignado a un TipoLogro.
+    /// Recupera la correspondencia del identificador único de Google Play asignado a un TipoLogro,
+    /// buscando primero en el Inspector y usando GPGSIds como respaldo automático.
     /// </summary>
     public string ObtenerIdGooglePlay(TipoLogro logro)
     {
@@ -280,13 +296,38 @@ public class LogrosManager : MonoBehaviour
         {
             foreach (MapeoLogroGPGS mapeo in mapeoLogrosGPGS)
             {
-                if (mapeo.tipo == logro)
+                if (mapeo.tipo == logro && !string.IsNullOrEmpty(mapeo.idGooglePlay))
                 {
                     return mapeo.idGooglePlay;
                 }
             }
         }
-        return "";
+
+        // Fallback automático con la clase autogenerada GPGSIds
+        switch (logro)
+        {
+            case TipoLogro.PrimerosPasos: return GPGSIds.achievement_primeros_pasos;
+            case TipoLogro.PilotoNovato: return GPGSIds.achievement_piloto_novato;
+            case TipoLogro.AstronautaHabil: return GPGSIds.achievement_astronauta_hbil;
+            case TipoLogro.CapitanEstelar: return GPGSIds.achievement_capitn_estelar;
+            case TipoLogro.LeyendaCosmos: return GPGSIds.achievement_leyenda_del_cosmos;
+            case TipoLogro.AgujeroNegro: return GPGSIds.achievement_agujero_negro;
+            case TipoLogro.VelocidadLuz: return GPGSIds.achievement_a_la_velocidad_de_la_luz;
+            case TipoLogro.BolsillosLlenos: return GPGSIds.achievement_con_los_bolsillos_llenos;
+            case TipoLogro.MagnateGalaxia: return GPGSIds.achievement_magnate_de_la_galaxia;
+            case TipoLogro.RachaCodiciosa: return GPGSIds.achievement_una_racha_codiciosa;
+            case TipoLogro.FiebreCristal: return GPGSIds.achievement_fiebre_de_cristal;
+            case TipoLogro.AvaroDespistado: return GPGSIds.achievement_varo_despistado;
+            case TipoLogro.CambioLook: return GPGSIds.achievement_un_cambio_de_look;
+            case TipoLogro.Coleccionista: return GPGSIds.achievement_coleccionista_de_la_moda;
+            case TipoLogro.GatoEstrellado: return GPGSIds.achievement_el_gato_estrellado;
+            case TipoLogro.Patrocinador: return GPGSIds.achievement_patrocinador;
+            case TipoLogro.Persistencia: return GPGSIds.achievement_gran_persistencia;
+            case TipoLogro.VueloCorto: return GPGSIds.achievement_un_vuelo_demasiado_corto;
+            case TipoLogro.MuuuyAlto: return GPGSIds.achievement_muuuuuy_alto;
+            case TipoLogro.OsoOrbital: return GPGSIds.achievement_oso_orbital;
+            default: return "";
+        }
     }
 
     // -------------------------------------------------------------------------

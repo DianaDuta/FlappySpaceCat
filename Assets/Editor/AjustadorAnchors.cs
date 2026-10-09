@@ -40,5 +40,34 @@ public class AjustadorAnchors
             Debug.LogWarning("¡Debes seleccionar un objeto de la UI (con RectTransform) primero!");
         }
     }
+
+    [MenuItem("Herramientas UI/Configurar Player Settings (Landscape e Icono)")]
+    public static void ConfigurarPlayerSettings()
+    {
+        // 1. Configurar Orientación a Landscape (Horizontal)
+        PlayerSettings.defaultInterfaceOrientation = UIOrientation.LandscapeLeft;
+
+        Debug.Log("✅ Orientación configurada exitosamente: Forzado modo Landscape (Horizontal).");
+
+        // 2. Asignar Icono de la Aplicación
+        Texture2D icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/app_icon.png");
+        if (icon == null)
+        {
+            icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Sprites/icono.png");
+        }
+
+        if (icon != null)
+        {
+            PlayerSettings.SetIcons(UnityEditor.Build.NamedBuildTarget.Unknown, new Texture2D[] { icon }, IconKind.Application);
+            PlayerSettings.SetIcons(UnityEditor.Build.NamedBuildTarget.Android, new Texture2D[] { icon }, IconKind.Application);
+            Debug.Log("✅ Icono de aplicación asignado correctamente en Player Settings.");
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ No se encontró la textura del icono en 'Assets/app_icon.png' ni en 'Assets/Sprites/icono.png'.");
+        }
+
+        AssetDatabase.SaveAssets();
+    }
 }
 #endif

@@ -32,7 +32,6 @@ dependencies {
 android {
   packaging {
       exclude ('/lib/armeabi/*' + '*')
-      exclude ('/lib/armeabi-v7a/*' + '*')
       exclude ('/lib/mips/*' + '*')
       exclude ('/lib/mips64/*' + '*')
       exclude ('/lib/x86/*' + '*')
@@ -78,3 +77,13 @@ android {
 **IL_CPP_BUILD_SETUP**
 **SOURCE_BUILD_SETUP**
 **EXTERNAL_SOURCES**
+
+afterEvaluate {
+    tasks.configureEach { task ->
+        if (task.name.contains("CMake") || task.name.contains("ExternalNativeBuild")) {
+            try {
+                task.doNotTrackState("Avoid race condition with CMake tmp files in Gradle 8.13")
+            } catch (Exception ignored) {}
+        }
+    }
+}

@@ -3,8 +3,10 @@ using GoogleMobileAds.Api;
 using System;
 
 /// <summary>
-/// Gestiona la solicitud, precarga y visualización de recursos publicitarios de AdMob,
-/// incluyendo bloques intersticiales y recompensados, además de coordinar la lógica de retorno.
+/// Gestiona la publicidad en el juego (AdMob):
+/// 1. Anuncio Largo (Recompensado - 50 Gemas) -> MostrarAnuncio50Gemas()
+/// 2. Anuncio Corto (Intersticial - Game Over) -> MostrarAnuncioGameOver()
+/// 3. Banners de publicidad -> MostrarBanner() / OcultarBanner()
 /// </summary>
 public class PublicidadManager : MonoBehaviour
 {
@@ -22,39 +24,44 @@ public class PublicidadManager : MonoBehaviour
     /// </summary>
     public static event Action OnAnuncioRecompensadoCompletado;
 
-    [Header("IDs de Prueba de AdMob")]
-    private string idBanner = "ca-app-pub-3940256099942544/6300978111";
-    private string idIntersticial = "ca-app-pub-3940256099942544/1033173712";
-    private string idRecompensado = "ca-app-pub-3940256099942544/5224354917";
+    [Header("IDs de AdMob (IDs de Prueba)")]
+    public string idBanner = "ca-app-pub-3940256099942544/6300978111";
+    public string idIntersticial = "ca-app-pub-3940256099942544/1033173712";
+    public string idRecompensado = "ca-app-pub-3940256099942544/5224354917";
 
     private BannerView anuncioBanner;
     private InterstitialAd anuncioIntersticial;
     private RewardedAd anuncioRecompensado;
     private bool reanudarJuego = false;
-    private bool volverAlMenu = false;
+    private bool mantenerMenuPausado = false;
 
     // -----------------------------------------------------------------------------
-    // MÉTODOS DE INICIALIZACIÓN
+    // MÉTODOS
     // -----------------------------------------------------------------------------
-    
-    /// <summary>
-    /// Establece la instancia Singleton persistente a través de la ejecución del programa.
-    /// </summary>
-    void Awake()
+    ///<sumary>
+    /// Awake: Crea una instancia única del objeto y evita que se destruya al cambiar de escena.
+    ///</sumary>
+    private void Awake()
     {
-        if (Instancia == null) { Instancia = this; DontDestroyOnLoad(gameObject); }
-        else { Destroy(gameObject); }
+        if (Instancia == null) 
+        { 
+            Instancia = this; 
+            DontDestroyOnLoad(gameObject); 
+        }
+        else 
+        { 
+            Destroy(gameObject); 
+        }
     }
 
     /// <summary>
     /// Realiza la inicialización de la API de Google Mobile Ads y despacha de manera asíncrona 
     /// las primeras solicitudes de carga en segundo plano.
     /// </summary>
-    void Start()
+    private void Start()
     {
         MobileAds.Initialize((InitializationStatus estado) => {
-            Debug.Log("SDK de Google Mobile Ads inicializado exitosamente.");
-            
+            Debug.Log("SDK de Google Mobile Ads inicializado.");
             CargarBanner();
             CargarIntersticial();
             CargarAnuncioRecompensado();
@@ -62,105 +69,150 @@ public class PublicidadManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Monitorea el indicador de reanudación del ciclo de la aplicación debido 
-    /// al cierre asíncrono de un contenedor publicitario.
+    /// Monitorea los indicadores de eventos asíncronos de publicidad para
+    /// ejecutarlos de forma segura en el hilo principal de Unity (Update).
     /// </summary>
-    void Update()
+    private void Update()
     {
         if (reanudarJuego)
         {
             reanudarJuego = false; 
-            
             if (GameManager.Instancia != null) 
             {
-                GameManager.Instancia.ContinuarPartida();
+                // Solo continuar la partida si se encuentra estrictamente en la pantalla de Game Over
+                if (GameManager.Instancia.panelGameOver != null && GameManager.Instancia.panelGameOver.activeSelf)
+                {
+                    GameManager.Instancia.PrepararContinuacionPartida();
+                }
+                else
+                {
+                    Debug.LogWarning("[PublicidadManager] Intento de reanudación ignorado porque no nos encontramos en la pantalla de Game Over.");
+                }
             }
         }
 
-        if (volverAlMenu)
+        if (mantenerMenuPausado)
         {
-            volverAlMenu = false;
-            if (GameManager.Instancia != null)
+            mantenerMenuPausado = false;
+            // Garantiza que tras el anuncio de 50 gemas el juego permanezca pausado y en el Menú Principal
+            if (GameManager.Instancia != null && GameManager.Instancia.panelMenuPrincipal != null && GameManager.Instancia.panelMenuPrincipal.activeSelf)
             {
-                GameManager.Instancia.MostrarMenuPrincipal();
+                Time.timeScale = 0f;
             }
         }
     }
 
-    // -----------------------------------------------------------------------------
-    // MÉTODOS DEL ANUNCIO INTERSTICIAL (GAME OVER)
-    // -----------------------------------------------------------------------------
-    
-    /// <summary>
-    /// Construye y envía una petición para la obtención de un recurso de publicidad a pantalla completa.
-    /// Suscribe el evento de cierre a la recarga y a la reactivación de la partida.
-    /// </summary>
+    // =========================================================================
+    // 1. ANUNCIO CORTO (INTERSTICIAL - GAME OVER)
+    // =========================================================================
+
     private void CargarIntersticial()
     {
         if (anuncioIntersticial != null) { anuncioIntersticial.Destroy(); anuncioIntersticial = null; }
 
+        string idFinal = string.IsNullOrEmpty(idIntersticial) ? "" : idIntersticial.Trim();
         AdRequest peticion = new AdRequest();
-        InterstitialAd.Load(idIntersticial, peticion, (InterstitialAd anuncio, LoadAdError error) =>
+        InterstitialAd.Load(idFinal, peticion, (InterstitialAd anuncio, LoadAdError error) =>
         {
-            if (error != null || anuncio == null) { Debug.LogError("Anomalía al obtener bloque intersticial: " + error); return; }
+            if (error != null || anuncio == null)
+            {
+                Debug.LogError("Error al cargar anuncio corto intersticial: " + error);
+                return;
+            }
             
             anuncioIntersticial = anuncio;
-            Debug.Log("Bloque intersticial obtenido y cacheado en memoria.");
             
             anuncioIntersticial.OnAdFullScreenContentClosed += () => {
                 CargarIntersticial();
-                reanudarJuego = true;
+                // Solo activa reanudarJuego si esta en el panel de Game Over
+                if (GameManager.Instancia != null && GameManager.Instancia.panelGameOver != null && GameManager.Instancia.panelGameOver.activeSelf)
+                {
+                    reanudarJuego = true;
+                }
             };
         });
     }
 
     /// <summary>
-    /// Verifica la disponibilidad del recurso precargado y lo despliega en la capa principal.
-    /// Informa a la plataforma analítica si el despliegue es exitoso.
+    /// Usar este método en el botón de Game Over / Continuar (Anuncio Corto ~5s)
+    /// </summary>
+    public void MostrarAnuncioGameOver()
+    {
+        MostrarIntersticial();
+    }
+
+    /// <summary>
+    /// Método principal para mostrar el anuncio corto de Game Over.
     /// </summary>
     public void MostrarIntersticial()
     {
         if (anuncioIntersticial != null && anuncioIntersticial.CanShowAd())
         {
             anuncioIntersticial.Show();
-            if(AnalyticsManager.Instancia != null) AnalyticsManager.Instancia.RegistrarEventoSimple("vio_anuncio_gameover");
+            if (AnalyticsManager.Instancia != null) 
+                AnalyticsManager.Instancia.RegistrarEventoSimple("vio_anuncio_gameover");
         }
         else
         {
-            Debug.LogWarning("El bloque intersticial no se encontró disponible en caché.");
+            Debug.LogWarning("Anuncio corto no listo.");
+            // Solo continuar partida directamente si el panel de Game Over está activo
+            if (GameManager.Instancia != null && GameManager.Instancia.panelGameOver != null && GameManager.Instancia.panelGameOver.activeSelf) 
+            {
+                Debug.LogWarning("Continuando la partida directamente desde Game Over...");
+                GameManager.Instancia.PrepararContinuacionPartida();
+            }
         }
     }
 
-    // -----------------------------------------------------------------------------
-    // MÉTODOS DEL ANUNCIO RECOMPENSADO (20 GEMAS)
-    // -----------------------------------------------------------------------------
-    
+    // =========================================================================
+    // 2. ANUNCIO LARGO (RECOMPENSADO - 50 GEMAS)
+    // =========================================================================
+
     /// <summary>
-    /// Gestiona la petición asíncrona de un material audiovisual bonificado
-    /// preparándolo para su eventual reproducción a demanda.
+    /// Carga un nuevo anuncio recompensado.
     /// </summary>
     private void CargarAnuncioRecompensado()
     {
         if (anuncioRecompensado != null) { anuncioRecompensado.Destroy(); anuncioRecompensado = null; }
 
+        string idFinal = string.IsNullOrEmpty(idRecompensado) ? "" : idRecompensado.Trim();
         AdRequest peticion = new AdRequest();
-        RewardedAd.Load(idRecompensado, peticion, (RewardedAd anuncio, LoadAdError error) =>
+        RewardedAd.Load(idFinal, peticion, (RewardedAd anuncio, LoadAdError error) =>
         {
-            if (error != null || anuncio == null) { Debug.LogError("Anomalía al obtener bloque bonificado: " + error); return; }
+            if (error != null || anuncio == null)
+            {
+                Debug.LogError("Error al cargar anuncio recompensado largo: " + error);
+                return;
+            }
             
             anuncioRecompensado = anuncio;
-            Debug.Log("Bloque de video bonificado cacheado en memoria.");
             
             anuncioRecompensado.OnAdFullScreenContentClosed += () => { 
                 CargarAnuncioRecompensado(); 
-                volverAlMenu = true; // Se procesará en el hilo principal (Update)
+                mantenerMenuPausado = true; // Se procesará de forma segura en el hilo principal (Update)
             };
         });
     }
 
     /// <summary>
-    /// Ejecuta la reproducción del material en formato recompensa y define
-    /// el delegado anónimo a ser activado tras la finalización completa de la visualización.
+    /// Método para mostrar el anuncio largo con recompensa de 50 gemas en el Menú Principal.
+    /// </summary>
+    public void MostrarAnuncio50Gemas()
+    {
+        MostrarAnuncioRecompensado();
+    }
+
+    /// <summary>
+    /// Mantiene compatibilidad hacia atrás con referencias previas.
+    /// </summary>
+    [System.Obsolete("Usar MostrarAnuncio50Gemas en su lugar.")]
+    public void MostrarAnuncio20Gemas()
+    {
+        MostrarAnuncio50Gemas();
+    }
+
+    /// <summary>
+    /// Método principal para mostrar el anuncio largo con recompensa de 50 gemas: MostrarAnuncio50Gemas().
     /// </summary>
     public void MostrarAnuncioRecompensado()
     {
@@ -173,19 +225,14 @@ public class PublicidadManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("El material audiovisual bonificado no se encontraba preparado.");
+            Debug.LogWarning("El anuncio recompensado de gemas no se encuentra listo.");
         }
     }
 
-    /// <summary>
-    /// Incrementa las reservas de divisa virtual del cliente en respuesta a
-    /// la confirmación de retención proveída por la API publicitaria, y sincroniza la transacción en línea.
-    /// </summary>
     private void DarRecompensaGemas()
     {
         int gemasActuales = SecurePrefs.GetInt("GemasLocales", 0);
-        
-        gemasActuales += 20;
+        gemasActuales += 50;
         SecurePrefs.SetInt("GemasLocales", gemasActuales);
         SecurePrefs.Save();
 
@@ -195,74 +242,53 @@ public class PublicidadManager : MonoBehaviour
             DatabaseManager.Instancia.GuardarGemasEnNube(idUsuario, gemasActuales);
         }
 
-        if (AnalyticsManager.Instancia != null) AnalyticsManager.Instancia.RegistrarEventoSimple("recompensa_20gemas_completada");
+        if (AnalyticsManager.Instancia != null) 
+            AnalyticsManager.Instancia.RegistrarEventoSimple("recompensa_50gemas_completada");
 
-        if (LogrosManager.Instancia != null)
-        {
+        if (LogrosManager.Instancia != null) 
             LogrosManager.Instancia.DesbloquearLogro(TipoLogro.Patrocinador);
-        }
 
-        Debug.Log("Balance de activos virtuales modificado. Crédito vigente: " + gemasActuales);
+        if (RetosDiariosManager.Instancia != null)
+            RetosDiariosManager.Instancia.RegistrarAnuncioVisto();
 
-        // Notifica a los scripts interesados (como el temporizador del botón)
+        Debug.Log("🎉 Recompensa otorgada: +50 Gemas. Total actual: " + gemasActuales);
+
+        mantenerMenuPausado = true;
+
+        // Dispara el evento para que el Temporizador del botón inicie su cooldown en el menú
         OnAnuncioRecompensadoCompletado?.Invoke();
     }
 
-    // -----------------------------------------------------------------------------
-    // MÉTODOS DEL ANUNCIO BANNER (ESTÁTICO)
-    // -----------------------------------------------------------------------------
+    // =========================================================================
+    // 3. BANNER PUBLICITARIO
+    // =========================================================================
 
-    /// <summary>
-    /// Crea y carga un banner publicitario en la parte superior central de la pantalla.
-    /// Se configura por defecto para mostrarse de inmediato tras la carga inicial.
-    /// </summary>
     private void CargarBanner()
     {
         if (anuncioBanner != null) { anuncioBanner.Destroy(); anuncioBanner = null; }
 
-        // Creamos el banner en la posición Top (superior centro) que es ideal para landscape
-        anuncioBanner = new BannerView(idBanner, AdSize.Banner, AdPosition.Top);
-
+        string idFinal = string.IsNullOrEmpty(idBanner) ? "" : idBanner.Trim();
+        anuncioBanner = new BannerView(idFinal, AdSize.Banner, AdPosition.Top);
         AdRequest peticion = new AdRequest();
         anuncioBanner.LoadAd(peticion);
-        
-        Debug.Log("Banner de AdMob solicitado y cargando...");
     }
 
-    /// <summary>
-    /// Hace visible el banner en la pantalla.
-    /// </summary>
     public void MostrarBanner()
     {
-        if (anuncioBanner != null)
-        {
-            anuncioBanner.Show();
-            Debug.Log("Banner publicitario desplegado en pantalla.");
-        }
+        if (anuncioBanner != null) anuncioBanner.Show();
     }
 
-    /// <summary>
-    /// Oculta el banner de la pantalla para evitar colisiones visuales o interrupciones.
-    /// </summary>
     public void OcultarBanner()
     {
-        if (anuncioBanner != null)
-        {
-            anuncioBanner.Hide();
-            Debug.Log("Banner publicitario ocultado de la pantalla.");
-        }
+        if (anuncioBanner != null) anuncioBanner.Hide();
     }
 
-    /// <summary>
-    /// Destruye el banner para liberar los recursos de memoria.
-    /// </summary>
     public void DestruirBanner()
     {
         if (anuncioBanner != null)
         {
             anuncioBanner.Destroy();
             anuncioBanner = null;
-            Debug.Log("Banner publicitario destruido de memoria.");
         }
     }
 

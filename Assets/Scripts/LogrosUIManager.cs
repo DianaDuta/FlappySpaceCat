@@ -32,6 +32,16 @@ public class LogrosUIManager : MonoBehaviour
     public Sprite spriteCandado; // Se mostrará cuando esté bloqueado
     public Sprite spriteTrofeo;  // Se mostrará cuando esté conseguido
 
+    public static LogrosUIManager Instancia;
+
+    private void Awake()
+    {
+        if (Instancia == null)
+        {
+            Instancia = this;
+        }
+    }
+
     void Start()
     {
         // Se asegura de que el panel empiece cerrado
@@ -78,9 +88,20 @@ public class LogrosUIManager : MonoBehaviour
 
             if (scriptUI != null)
             {
-                // Asignar textos
-                if (scriptUI.txtTitulo != null) scriptUI.txtTitulo.text = datos.titulo;
-                if (scriptUI.txtDescripcion != null) scriptUI.txtDescripcion.text = datos.descripcion;
+                // Asignar textos (con soporte de traducción automática)
+                string claveTitulo = $"logro_{(int)datos.tipo}_tit";
+                string claveDesc = $"logro_{(int)datos.tipo}_desc";
+
+                string tituloFinal = LocalizationManager.Instancia != null 
+                    ? LocalizationManager.Instancia.ObtenerTexto(claveTitulo, datos.titulo) 
+                    : datos.titulo;
+
+                string descFinal = LocalizationManager.Instancia != null 
+                    ? LocalizationManager.Instancia.ObtenerTexto(claveDesc, datos.descripcion) 
+                    : datos.descripcion;
+
+                if (scriptUI.txtTitulo != null) scriptUI.txtTitulo.text = tituloFinal;
+                if (scriptUI.txtDescripcion != null) scriptUI.txtDescripcion.text = descFinal;
                 
                 // Asignar icono si lo hay
                 if (datos.icono != null && scriptUI.iconoLogro != null)

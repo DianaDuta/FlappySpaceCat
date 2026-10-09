@@ -1,4 +1,9 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 /// <summary>
 /// Controla el comportamiento físico y las animaciones del personaje principal (jugador).
@@ -14,6 +19,7 @@ public class ControladorJugagor : MonoBehaviour
     public float fuerzaSalto = 5f; 
     private bool estaVivo = true;
     private Vector3 posicionOriginal;
+    private float tiempoBloqueoSalto = 0f;
     
 
     [Header("Efectos de Sonido")]
@@ -46,6 +52,14 @@ public class ControladorJugagor : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        if (audioSource.outputAudioMixerGroup == null && SonidosUIManager.Instancia != null && SonidosUIManager.Instancia.grupoEfectos != null)
+        {
+            audioSource.outputAudioMixerGroup = SonidosUIManager.Instancia.grupoEfectos;
+        }
         animator = GetComponent<Animator>();
 
         Vector3 posInicial = transform.position;
@@ -126,7 +140,35 @@ public class ControladorJugagor : MonoBehaviour
     /// </summary>
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && estaVivo && Time.timeScale > 0f)
+        // Se evita cualquier entrada física del jugador si se está esperando la reanudación del juego o si el salto está bloqueado
+        if ((GameManager.Instancia != null && GameManager.Instancia.estaEnEsperaDeContinuacion) || Time.unscaledTime < tiempoBloqueoSalto)
+        {
+            return;
+        }
+
+        bool saltoDetectado = false;
+#if ENABLE_INPUT_SYSTEM
+        if (Pointer.current != null && Pointer.current.press.wasPressedThisFrame)
+        {
+            saltoDetectado = true;
+        }
+#else
+        if (Input.GetMouseButtonDown(0))
+        {
+            saltoDetectado = true;
+        }
+#endif
+
+        // Anula el salto ÚNICAMENTE si el clic/toque se produjo sobre el botón de pausa
+        if (saltoDetectado && GameManager.Instancia != null && GameManager.Instancia.botonPausa != null)
+        {
+            if (EstaSobreObjetoUI(GameManager.Instancia.botonPausa))
+            {
+                saltoDetectado = false;
+            }
+        }
+
+        if (saltoDetectado && estaVivo && Time.timeScale > 0f)
         {
             rb.linearVelocity = Vector2.up * fuerzaSalto;       
             
@@ -241,6 +283,7 @@ public class ControladorJugagor : MonoBehaviour
 
         if (rb != null)
         {
+            rb.bodyType = RigidbodyType2D.Dynamic;
             rb.linearVelocity = Vector2.zero;
             rb.angularVelocity = 0f;
         }
@@ -255,5 +298,127 @@ public class ControladorJugagor : MonoBehaviour
         {
             faceRenderer.sprite = caraOriginal; 
         }
+    }
+
+    /// <summary>
+    /// Congela el movimiento físico y la simulación del jugador durante transiciones o esperas.
+    /// </summary>
+    public void Congelar()
+    {
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+    }
+
+    /// <summary>
+    /// Descongela la simulación física del jugador, restableciendo el tipo de cuerpo a dinámico.
+    /// </summary>
+    public void Descongelar()
+    {
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+    }
+
+    /// <summary>
+    /// Bloquea temporalmente el salto durante un breve intervalo (útil tras salir de pausas o pulsar botones UI).
+    /// </summary>
+    /// <param name="duracion">Tiempo en segundos reales a ignorar entradas de salto.</param>
+    public void BloquearSaltoTemporalmente(float duracion = 0.05f)
+    {
+        tiempoBloqueoSalto = Time.unscaledTime + duracion;
+    }
+
+    /// <summary>
+    /// Cancela cualquier impulso vertical residual acumulado al pausar el juego.
+    /// </summary>
+    public void CancelarImpulsoVertical()
+    {
+        if (rb != null && rb.bodyType == RigidbodyType2D.Dynamic)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Min(rb.linearVelocity.y, 0f));
+        }
+    }
+
+    /// <summary>
+    /// Comprueba de forma reutilizable si el puntero o toque actual se encuentra sobre un GameObject de UI específico (o cualquiera de sus hijos).
+    /// </summary>
+    /// <param name="objetoUI">El GameObject de la UI a comprobar (por ejemplo, el botón de pausa u otro elemento interactivo).</param>
+    /// <returns>True si el puntero/toque está sobre el objeto especificado, false en caso contrario.</returns>
+    public bool EstaSobreObjetoUI(GameObject objetoUI)
+    {
+        if (objetoUI == null || EventSystem.current == null) return false;
+
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        List<RaycastResult> resultados = new List<RaycastResult>();
+
+        // 1. Comprobación para ratón / puntero en escritorio
+        #if ENABLE_INPUT_SYSTEM
+            if (Pointer.current != null)
+            {
+                eventData.position = Pointer.current.position.ReadValue();
+            }
+        #else
+            eventData.position = Input.mousePosition;
+        #endif
+
+        EventSystem.current.RaycastAll(eventData, resultados);
+        for (int i = 0; i < resultados.Count; i++)
+        {
+            if (resultados[i].gameObject == objetoUI || resultados[i].gameObject.transform.IsChildOf(objetoUI.transform))
+            {
+                return true;
+            }
+        }
+
+        // 2. Comprobación para pantallas táctiles (móvil legacy)
+#if !ENABLE_INPUT_SYSTEM
+        for (int i = 0; i < Input.touchCount; i++)
+        {
+            eventData.position = Input.GetTouch(i).position;
+            resultados.Clear();
+            EventSystem.current.RaycastAll(eventData, resultados);
+
+            for (int j = 0; j < resultados.Count; j++)
+            {
+                if (resultados[j].gameObject == objetoUI || resultados[j].gameObject.transform.IsChildOf(objetoUI.transform))
+                {
+                    return true;
+                }
+            }
+        }
+#endif
+
+        #if ENABLE_INPUT_SYSTEM
+            if (Touchscreen.current != null)
+            {
+                var toques = Touchscreen.current.touches;
+                for (int i = 0; i < toques.Count; i++)
+                {
+                    if (toques[i].isInProgress)
+                    {
+                        eventData.position = toques[i].position.ReadValue();
+                        resultados.Clear();
+                        EventSystem.current.RaycastAll(eventData, resultados);
+
+                        for (int j = 0; j < resultados.Count; j++)
+                        {
+                            if (resultados[j].gameObject == objetoUI || resultados[j].gameObject.transform.IsChildOf(objetoUI.transform))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        #endif
+
+        return false;
     }
 }

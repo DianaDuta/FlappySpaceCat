@@ -33,6 +33,10 @@ public class PerfilManager : MonoBehaviour
     public GameObject panelPerfil;
     public RectTransform contenedorSkinPerfil;
 
+    [Header("Botón Iniciar Sesión")]
+    [Tooltip("Botón de inicio de sesión en el perfil. Se ocultará automáticamente si la sesión ya está activa.")]
+    public GameObject botonInicioSesion;
+
     [Header("Textos del Perfil")]
     public TextMeshProUGUI txtGemasTotales;
     public TextMeshProUGUI txtMejorPuntuacion;
@@ -47,6 +51,49 @@ public class PerfilManager : MonoBehaviour
     private GameObject skinInstanciadaPerfil;
     private GameObject skinInstanciadaMenu;
 
+    private void Start()
+    {
+        ActualizarVisibilidadBotonLogin();
+    }
+
+    /// <summary>
+    /// Comprueba si se ha establecido conexión de sesión exitosa con la cuenta
+    /// y oculta el botón de inicio de sesión ÚNICAMENTE si dicha sesión está registrada.
+    /// </summary>
+    public void ActualizarVisibilidadBotonLogin()
+    {
+        if (botonInicioSesion == null && panelPerfil != null)
+        {
+            Transform encontrado = BuscarTransformRecursivo(panelPerfil.transform, "Btn_InicioSesion");
+            if (encontrado != null) botonInicioSesion = encontrado.gameObject;
+        }
+
+        if (botonInicioSesion != null)
+        {
+            // Solo desaparece si se guardó el registro de conexión establecida con éxito
+            bool sesionExitosa = (SecurePrefs.GetInt("SesionIniciadaConExito", 0) == 1) || 
+                                 (PlayerPrefs.GetInt("SesionIniciadaConExito", 0) == 1);
+
+            botonInicioSesion.SetActive(!sesionExitosa);
+        }
+    }
+
+    /// <summary>
+    /// Busca de manera recursiva un Transform por su nombre dentro de la jerarquía de un padre.
+    /// </summary>
+    private Transform BuscarTransformRecursivo(Transform padre, string nombre)
+    {
+        if (padre == null) return null;
+        if (padre.name == nombre) return padre;
+
+        for (int i = 0; i < padre.childCount; i++)
+        {
+            Transform res = BuscarTransformRecursivo(padre.GetChild(i), nombre);
+            if (res != null) return res;
+        }
+        return null;
+    }
+
     /// <summary>
     /// Despliega el panel de perfil, carga las gemas del almacenamiento local
     /// y solicita de manera asíncrona la mejor puntuación a la base de datos.
@@ -54,6 +101,7 @@ public class PerfilManager : MonoBehaviour
     public void AbrirPerfil()
     {
         panelPerfil.SetActive(true);
+        ActualizarVisibilidadBotonLogin();
 
         int indiceSkinActiva = SecurePrefs.GetInt("SkinEquipada", 0);
         ActualizarIconoSkin(indiceSkinActiva);

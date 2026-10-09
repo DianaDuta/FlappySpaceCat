@@ -98,6 +98,37 @@ public class DatabaseManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Almacena la calificación por estrellas otorgada por el jugador en Firestore.
+    /// </summary>
+    /// <param name="idUsuario">Identificador único del usuario.</param>
+    /// <param name="estrellas">Número de estrellas (1 a 5).</param>
+    public void GuardarCalificacionEnNube(string idUsuario, int estrellas)
+    {
+        if (db == null) db = FirebaseFirestore.DefaultInstance;
+        if (db == null || string.IsNullOrEmpty(idUsuario)) return;
+
+        DocumentReference docRef = db.Collection("Jugadores").Document(idUsuario);
+
+        Dictionary<string, object> datos = new Dictionary<string, object>
+        {
+            { "calificacionEstrellas", estrellas },
+            { "fechaCalificacion", FieldValue.ServerTimestamp }
+        };
+
+        docRef.SetAsync(datos, SetOptions.MergeAll).ContinueWithOnMainThread(tarea =>
+        {
+            if (tarea.IsFaulted)
+            {
+                Debug.LogError("Error al guardar la calificación en Firestore: " + tarea.Exception);
+            }
+            else if (tarea.IsCompleted)
+            {
+                Debug.Log($"⭐ Calificación de {estrellas} estrellas registrada en Firestore.");
+            }
+        });
+    }
+
+    /// <summary>
     /// Consulta asíncronamente el documento del usuario para extraer la mejor puntuación registrada.
     /// Ejecuta una acción de retorno (callback) al finalizar la operación.
     /// </summary>
@@ -146,6 +177,37 @@ public class DatabaseManager : MonoBehaviour
                 }
             }
             alCompletar?.Invoke(0);
+        });
+    }
+
+    /// <summary>
+    /// Guarda el desbloqueo de una skin en el documento del usuario en Firestore.
+    /// </summary>
+    /// <param name="idUsuario">Identificador único del usuario.</param>
+    /// <param name="indiceSkin">Índice de la skin desbloqueada.</param>
+    public void GuardarSkinsDesbloqueadas(string idUsuario, int indiceSkin)
+    {
+        if (db == null) db = FirebaseFirestore.DefaultInstance;
+        if (db == null || string.IsNullOrEmpty(idUsuario)) return;
+
+        DocumentReference docRef = db.Collection("Jugadores").Document(idUsuario);
+
+        Dictionary<string, object> datos = new Dictionary<string, object>
+        {
+            { "SkinDesbloqueada_" + indiceSkin, 1 },
+            { "ultimaModificacion", FieldValue.ServerTimestamp }
+        };
+
+        docRef.SetAsync(datos, SetOptions.MergeAll).ContinueWithOnMainThread(tarea =>
+        {
+            if (tarea.IsFaulted)
+            {
+                Debug.LogError("Error al persistir skin en Firestore: " + tarea.Exception);
+            }
+            else if (tarea.IsCompleted)
+            {
+                Debug.Log($"🎨 Skin {indiceSkin} sincronizada en la nube.");
+            }
         });
     }
 }
