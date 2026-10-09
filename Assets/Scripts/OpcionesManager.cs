@@ -38,10 +38,10 @@ public class OpcionesManager : MonoBehaviour
     
     [Header("Enlaces y Soporte")]
     [Tooltip("URL pública de la política de privacidad.")]
-    public string urlPrivacidad = "https://dianarcado.github.io/FlappySpaceCat/privacy.html"; 
+    public string urlPrivacidad = "https://dianaduta.github.io/FlappySpaceCat/Legal/privacy.html"; 
 
     [Tooltip("URL pública de los términos de servicio.")]
-    public string urlTerminos = "https://dianarcado.github.io/FlappySpaceCat/terms.html";
+    public string urlTerminos = "https://dianaduta.github.io/FlappySpaceCat/Legal/terms.html";
 
     [Tooltip("Correo de contacto para soporte y feedback de jugadores.")]
     public string emailSoporte = "diana.soporte.dev@gmail.com";
