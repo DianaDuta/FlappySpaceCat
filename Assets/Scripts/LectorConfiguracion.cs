@@ -1,56 +1,89 @@
 using UnityEngine;
-using System.IO; // Para leer archivos
+using UnityEngine.Networking;
+using System.IO;
+using System.Collections;
 
-/*
-* Clase que representa la estructura de los datos de configuración del juego.
-* Los nombres de las variables deben coincidir con los nombres de las propiedades en el archivo JSON para que JsonUtility pueda mapearlos correctamente.
-*/
+/// <summary>
+/// Mapea la estructura serializada de las propiedades procedentes de los archivos remotos o locales.
+/// </summary>
 [System.Serializable]
 public class DatosJuego
 {
-    public float velocidadJuego;
-    public float frecuenciaObstaculos;
-    public float gravedadJugador;
+    public float velocidadJuego = 3.0f;
+    public float frecuenciaObstaculos = 2.0f;
+    public float gravedadJugador = 1.0f;
 }
-/*
-* Este script se encarga de leer la configuración del juego desde un archivo JSON.
-* El archivo JSON debe estar ubicado en la carpeta "StreamingAssets" del proyecto de Unity.
-* La clase DatosJuego define la estructura de los datos que se esperan en el JSON.
-* La instancia estática "Datos" permite acceder a estos valores desde cualquier otro script.
-*/
+
+/// <summary>
+/// Se encarga de deserializar la configuración JSON en cualquier plataforma (incluyendo Android APK),
+/// asegurando que la velocidad y gravedad sean idénticas a las probadas en el Editor.
+/// </summary>
 public class LectorConfiguracion : MonoBehaviour
 {
-    // Instancia estática para poder acceder a los datos desde cualquier otro script
-    public static DatosJuego Datos;
+    public static DatosJuego Datos = new DatosJuego { velocidadJuego = 3.0f, frecuenciaObstaculos = 2.0f, gravedadJugador = 1.0f };
 
-/*
-* Método Awake, se construye la ruta al archivo JSON y se verifica si existe.
-* Si el archivo existe, se lee su contenido y se parsea a un objeto de tipo DatosJuego utilizando JsonUtility.
-* Si el archivo no se encuentra, se asignan valores por defecto a la instancia de DatosJuego y se muestra un mensaje de error en la consola.
-*/
     void Awake()
     {
-        // Construye la ruta al archivo JSON simulando que es una respuesta de servidor
+        // Se fija el refresco a 60 FPS en teléfonos móviles para sincronizar la física exactamente igual al Editor
+        Application.targetFrameRate = 60;
+        StartCoroutine(CargarConfiguracion());
+    }
+
+    private IEnumerator CargarConfiguracion()
+    {
         string rutaArchivo = Path.Combine(Application.streamingAssetsPath, "configuracion.json");
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+        using (UnityWebRequest request = UnityWebRequest.Get(rutaArchivo))
+        {
+            yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string contenidoJson = request.downloadHandler.text;
+                Datos = JsonUtility.FromJson<DatosJuego>(contenidoJson);
+                Debug.Log("✅ [Android] configuracion.json cargado vía WebRequest. Velocidad: " + Datos.velocidadJuego + ", Gravedad: " + Datos.gravedadJugador);
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ [Android] No se pudo leer configuracion.json en APK. Usando valores estándar: Velocidad 3.0, Gravedad 1.0");
+                Datos = new DatosJuego { velocidadJuego = 3.0f, frecuenciaObstaculos = 2.0f, gravedadJugador = 1.0f };
+            }
+        }
+#else
         if (File.Exists(rutaArchivo))
         {
-            // Lee el texto del archivo
             string contenidoJson = File.ReadAllText(rutaArchivo);
-            
-            // Parsea el texto a un objeto de Unity
             Datos = JsonUtility.FromJson<DatosJuego>(contenidoJson);
-            
-            Debug.Log("Configuración cargada. Velocidad: " + Datos.velocidadJuego);
+            Debug.Log("✅ configuracion.json parseado correctamente. Velocidad: " + Datos.velocidadJuego + ", Gravedad: " + Datos.gravedadJugador);
         }
         else
         {
-            Debug.LogError("No se encontró el archivo de configuración. Usando valores por defecto.");
-            Datos = new DatosJuego {
-                velocidadJuego = 3f,
-                frecuenciaObstaculos = 2f,
-                gravedadJugador = 1.5f
-            };
+            Datos = new DatosJuego { velocidadJuego = 3.0f, frecuenciaObstaculos = 2.0f, gravedadJugador = 1.0f };
+        }
+        yield return null;
+#endif
+
+        AplicarValores();
+    }
+
+    public static void AplicarValores()
+    {
+        if (Datos == null) return;
+
+        if (GameManager.Instancia != null)
+        {
+            GameManager.Instancia.velocidadInicial = Datos.velocidadJuego;
+            GameManager.Instancia.velocidadActual = Datos.velocidadJuego;
+        }
+
+        ControladorJugagor jugador = FindFirstObjectByType<ControladorJugagor>();
+        if (jugador != null)
+        {
+            Rigidbody2D rb = jugador.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.gravityScale = Datos.gravedadJugador;
+            }
         }
     }
 }

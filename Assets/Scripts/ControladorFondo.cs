@@ -1,75 +1,150 @@
 using UnityEngine;
-/*
-* Controla el movimiento del fondo en el juego.
-* El fondo se mueve hacia la izquierda a una velocidad que es una fracción de la velocidad del juego para crear un efecto de parallax (profundidad).
-* Cuando el fondo se ha movido completamente hacia la izquierda, se teletransporta a la derecha para crear un efecto de fondo infinito.
-* El factor de parallax se puede ajustar desde el inspector para crear diferentes capas de fondo con diferentes velocidades.
-*/
+
+/// <summary>
+/// Controla el desplazamiento vectorial continuo del fondo (Fondo_0).
+/// Compensando el pivote central del SpriteRenderer:
+/// 1. Fondo Izquierda: Su borde izquierdo (bounds.min.x) se pega al borde izquierdo de la pantalla.
+/// 2. Fondo Derecha: Su borde izquierdo (bounds.min.x) se pega al borde derecho del Fondo Izquierda (bounds.max.x).
+/// </summary>
 public class ControladorFondo : MonoBehaviour
 {
     //--------------------------------
     // CAMPOS
     //--------------------------------
-    /* Factor de Parallax: 
-    * 0 = no se mueve
-    * 1 = se mueve igual que los obstaculos
-    * 0.1 = fondo muy lejano (lento)
-    * 0.5 = fondo medio
-    */
+    
     [Range(0f, 1f)]
+    [Tooltip("Multiplicador de velocidad para simular efecto Parallax.")]
     public float efectoParallax = 0.5f;
 
-    public float anchoImagen; // Cuánto mide la imagen de largo
+    [Tooltip("Referencia al otro objeto de fondo para encadenarlos infinitamente.")]
+    public Transform otroFondo;
+
+    [Tooltip("Ancho total de la imagen.")]
+    public float anchoImagen; 
+
+    private Vector3 posicionOriginal;
+    private SpriteRenderer spriteRenderer;
 
     //--------------------------------
     // MÉTODOS
     //--------------------------------
-    /* Método Start, se obtiene el ancho de la imagen del fondo a partir del SpriteRenderer si no se ha definido manualmente.
-    * Esto permite que el script funcione con cualquier imagen de fondo sin necesidad de ajustar el ancho en el inspector.
-    */
+    
+    void Awake()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
     void Start()
     {
-        // Si no define el ancho manualmente, se calcula solo
-        if (anchoImagen <= 0)
+        CalcularAncho();
+        AlinearFondosIniciales();
+        posicionOriginal = transform.position;
+    }
+
+    public void CalcularAncho()
+    {
+        if (spriteRenderer != null)
         {
-            SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-            if (sprite != null)
-            {
-                anchoImagen = sprite.bounds.size.x;
-            }
+            anchoImagen = spriteRenderer.bounds.size.x;
+        }
+        else if (anchoImagen <= 0f)
+        {
+            anchoImagen = transform.localScale.x;
         }
     }
 
-    /* Método Update, se obtiene la velocidad del juego desde el JSON y se calcula la velocidad real del fondo multiplicando la velocidad del juego por el factor de parallax.
-    * Luego se mueve el fondo hacia la izquierda utilizando transform.Translate.
-    * Si el fondo se ha movido completamente hacia la izquierda (su posición es menor que -ancho), se teletransporta a la derecha sumando 2 veces el ancho a su posición X.
-    * Esto crea un efecto de fondo infinito sin necesidad de tener múltiples imágenes.
-    */
+    /// <summary>
+    /// Alinea los fondos considerando el pivote central del SpriteRenderer:
+    /// - Fondo Izquierda: bounds.min.x = bordeIzquierdoPantalla
+    /// - Fondo Derecha: bounds.min.x = fondoIzquierda.bounds.max.x
+    /// </summary>
+    public void AlinearFondosIniciales()
+    {
+        if (Camera.main == null) return;
+
+        bool esIzquierda = name.ToLower().Contains("izq");
+        bool esDerecha = name.ToLower().Contains("drcha");
+
+        float medioAncho = (spriteRenderer != null) ? spriteRenderer.bounds.extents.x : (anchoImagen / 2f);
+
+        if (esIzquierda)
+        {
+            // Borde izquierdo real de la vista de la cámara
+            float bordeIzquierdoPantalla = Camera.main.ViewportToWorldPoint(new Vector3(0f, 0f, 0f)).x;
+            
+            // Posicionamos el centro del sprite de modo que su borde izquierdo caiga exactamente en bordeIzquierdoPantalla
+            transform.position = new Vector3(bordeIzquierdoPantalla + medioAncho, transform.position.y, transform.position.z);
+        }
+        else if (esDerecha && otroFondo != null)
+        {
+            // Garantiza que el fondo izquierdo esté alineado a la pantalla primero
+            ControladorFondo scriptOtro = otroFondo.GetComponent<ControladorFondo>();
+            if (scriptOtro != null)
+            {
+                scriptOtro.CalcularAncho();
+                scriptOtro.AlinearFondosIniciales();
+            }
+
+            SpriteRenderer srOtro = otroFondo.GetComponent<SpriteRenderer>();
+            float bordeDerechoFondoIzquierda = (srOtro != null) 
+                ? srOtro.bounds.max.x 
+                : (otroFondo.position.x + medioAncho);
+
+            // Posiciona el centro del fondo derecho para que su borde izquierdo caiga en el borde derecho del fondo izquierdo
+            transform.position = new Vector3(bordeDerechoFondoIzquierda + medioAncho, otroFondo.position.y, transform.position.z);
+        }
+    }
+
+    public void Restablecer()
+    {
+        AlinearFondosIniciales();
+        posicionOriginal = transform.position;
+    }
+
     void Update()
     {
-        /* Obtiene la velocidad base del juego del JSON, si no, usa 3 por defecto.*/
-        float velocidadBase = 3f;
-        if (LectorConfiguracion.Datos != null)
+        // Detener durante la pausa / espera
+        if (GameManager.Instancia != null && GameManager.Instancia.estaEnEsperaDeContinuacion)
         {
-            velocidadBase = LectorConfiguracion.Datos.velocidadJuego;
+            return;
         }
 
-        /*Calcula la velocidad real del fondo multiplicando la velocidad del juego por el factor de parallax.
-        * Ejemplo: Si el juego va a 3 y parallax es 0.1, el fondo se mueve a 0.3
-        */
-        float velocidadReal = velocidadBase * efectoParallax;
-        transform.Translate(Vector3.left * velocidadReal * Time.deltaTime);
-
-        /* TELETRANSPORTAR (Efecto Infinito)
-        * Si el fondo se ha movido completamente hacia la izquierda (su posición es menor que -ancho)
-        * Lo movemos 2 veces el ancho hacia la derecha para ponerlo a la cola
-        * Esto crea un efecto de fondo infinito sin necesidad de tener múltiples imágenes.
-        */
-        if (transform.position.x <= -anchoImagen)
+        float velocidadBase = 3f;
+        if (GameManager.Instancia != null)
         {
-            Vector3 nuevaPos = transform.position;
-            nuevaPos.x += 2 * anchoImagen; 
-            transform.position = nuevaPos;
+            velocidadBase = GameManager.Instancia.velocidadActual;
+        }
+
+        float velocidadReal = velocidadBase * efectoParallax;
+        transform.Translate(Vector3.left * velocidadReal * Time.deltaTime, Space.World);
+
+        // 1. Límite izquierdo de la vista de la cámara
+        float limiteIzquierdoCamara = (Camera.main != null) 
+            ? Camera.main.ViewportToWorldPoint(new Vector3(0f, 0f, 0f)).x 
+            : -anchoImagen;
+
+        // 2. Borde derecho real del gráfico actual
+        float limiteBordeDerechoSprite = (spriteRenderer != null) 
+            ? spriteRenderer.bounds.max.x 
+            : (transform.position.x + (anchoImagen / 2f));
+
+        // 3. Cuando el borde derecho sale totalmente por la izquierda de la cámara:
+        if (limiteBordeDerechoSprite <= limiteIzquierdoCamara)
+        {
+            if (otroFondo != null)
+            {
+                SpriteRenderer srOtro = otroFondo.GetComponent<SpriteRenderer>();
+                float medioAncho = (spriteRenderer != null) ? spriteRenderer.bounds.extents.x : (anchoImagen / 2f);
+                float posReubicacion = (srOtro != null) 
+                    ? (srOtro.bounds.max.x + medioAncho)
+                    : (otroFondo.position.x + anchoImagen);
+
+                transform.position = new Vector3(posReubicacion, otroFondo.position.y, transform.position.z);
+            }
+            else
+            {
+                transform.position += new Vector3(2f * anchoImagen, 0f, 0f);
+            }
         }
     }
 }
