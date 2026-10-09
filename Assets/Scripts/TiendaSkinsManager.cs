@@ -314,12 +314,6 @@ public class TiendaSkinsManager : MonoBehaviour
             {
                 RetosDiariosManager.Instancia.RegistrarCambioSkin();
             }
-
-            if (LogrosManager.Instancia != null)
-            {
-                if (indice == 5) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.MuuuyAlto);
-                if (indice == 4) LogrosManager.Instancia.DesbloquearLogro(TipoLogro.OsoOrbital);
-            }
         }
         else
         {

@@ -525,17 +525,14 @@ public class AuthManager : MonoBehaviour
 
     /// <summary>
     /// Comprueba si el usuario se ha registrado dentro de las primeras 24 horas 
-    /// desde que abrió el juego por primera vez para regalarle la skin de Cowsmo (índice 5) y otorgar el logro.
+    /// desde que abrió el juego por primera vez para regalarle la skin de Cowsmo (índice 5).
+    /// El logro MuuuyAlto se desbloqueará cuando juegue su primera partida con dicha skin.
     /// </summary>
     private void ComprobarRecompensaRegistro()
     {
         // Se comprueba si ya se le ha entregado la skin de Cowsmo (índice 5) para no repetir
         if (SecurePrefs.GetInt("RecompensaCowEntregada", 0) == 1 && SecurePrefs.GetInt("SkinDesbloqueada_5", 0) == 1)
         {
-            if (LogrosManager.Instancia != null)
-            {
-                LogrosManager.Instancia.DesbloquearLogro(TipoLogro.MuuuyAlto);
-            }
             return;
         }
 
@@ -573,12 +570,6 @@ public class AuthManager : MonoBehaviour
                 if (auth != null && auth.CurrentUser != null && DatabaseManager.Instancia != null)
                 {
                     DatabaseManager.Instancia.GuardarSkinsDesbloqueadas(auth.CurrentUser.UserId, indiceSkinCow);
-                }
-
-                // Desbloquear también el logro de Cowsmo
-                if (LogrosManager.Instancia != null)
-                {
-                    LogrosManager.Instancia.DesbloquearLogro(TipoLogro.MuuuyAlto);
                 }
 
                 // IMPORTANTE: Notificar de inmediato a la tienda y actualizar la UI para que se visualice
